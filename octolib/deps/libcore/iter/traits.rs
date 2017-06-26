@@ -57,7 +57,7 @@ use num::Wrapping;
 /// ```
 /// use std::iter::FromIterator;
 ///
-/// // A sample collection, that's just a wrapper over Vec<T>
+/// // A cargo_sample collection, that's just a wrapper over Vec<T>
 /// #[derive(Debug)]
 /// struct MyCollection(Vec<i32>);
 ///
@@ -166,7 +166,7 @@ pub trait FromIterator<A>: Sized {
 /// Implementing `IntoIterator` for your type:
 ///
 /// ```
-/// // A sample collection, that's just a wrapper over Vec<T>
+/// // A cargo_sample collection, that's just a wrapper over Vec<T>
 /// #[derive(Debug)]
 /// struct MyCollection(Vec<i32>);
 ///
@@ -281,7 +281,7 @@ impl<I: Iterator> IntoIterator for I {
 /// Implementing `Extend`:
 ///
 /// ```
-/// // A sample collection, that's just a wrapper over Vec<T>
+/// // A cargo_sample collection, that's just a wrapper over Vec<T>
 /// #[derive(Debug)]
 /// struct MyCollection(Vec<i32>);
 ///

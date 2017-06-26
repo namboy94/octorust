@@ -2,6 +2,7 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
+import os
 import sys
 import argparse
 
@@ -50,6 +51,8 @@ def parse_args() -> Config:
         out = source.rsplit(".rs", 1)[0]
         if out == source:  # For crates
             out = out + ".out"
+        out = os.path.basename(out)  # Make output land in current working directory
+
     else:
         out = args.output
 

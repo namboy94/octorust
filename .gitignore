@@ -1,4 +1,7 @@
 .idea/
 target/
 Cargo.lock
-sample/Cargo.toml
+samples/cargo_sample/Cargo.toml
+*.egg-info
+dist/
+build/

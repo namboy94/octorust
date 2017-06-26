@@ -28,7 +28,8 @@ class Config(object):
         self.out = out
 
         # Generate names
-        self.rust_static_lib = "lib" + self.source.rsplit(".rs", 1)[0] + ".a"
+        base_name = str(os.path.basename(self.source))
+        self.rust_static_lib = "lib" + base_name.rsplit(".rs", 1)[0] + ".a"
         self.c_file = "dummy.c"
         self.c_object = "dummy.o"
 

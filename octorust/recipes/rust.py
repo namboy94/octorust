@@ -114,7 +114,7 @@ def generate_leon_specification():
     Generates a rust target specification file for the SPARC LEON architecture
     The specification file assumes a gcc cross-compiler for the architecture
     in the path called 'sparc-leon-linux-uclibc-gcc', which is one of the
-    sample targets when using crosstool-ng.
+    cargo_sample targets when using crosstool-ng.
     The specification file is saved as leon.json
     :return: None
     """

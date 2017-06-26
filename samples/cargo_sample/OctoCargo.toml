@@ -1,5 +1,5 @@
 [package]
-name = "sample"
+name = "cargo_sample"
 version = "0.1.0"
 authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
 
