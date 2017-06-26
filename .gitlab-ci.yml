@@ -27,3 +27,32 @@ build_cargo_x86_sample:
     - rm ~/.netrc
     - ./cargo_sample.out
 
+build_rustc_x86_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - echo $NETRC_CREDENTIALS > ~/.netrc
+    - octorust samples/rustc_sample/rustc_sample.rs
+    - rm ~/.netrc
+    - ./cargo_sample.out
+
+build_cargo_x64_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - echo $NETRC_CREDENTIALS > ~/.netrc
+    - octorust samples/cargo_sample --architecture x64native
+    - rm ~/.netrc
+    - ./cargo_sample.out
+
+build_rustc_x64_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - echo $NETRC_CREDENTIALS > ~/.netrc
+    - octorust samples/rustc_sample/rustc_sample.rs --architecture x64native
+    - rm ~/.netrc
+    - ./cargo_sample.out
