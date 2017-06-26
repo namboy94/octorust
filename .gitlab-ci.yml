@@ -25,4 +25,5 @@ build_cargo_x86_sample:
     - echo $NETRC_CREDENTIALS > ~/.netrc
     - octorust samples/cargo_sample
     - rm ~/.netrc
+    - ./cargo_sample.out
 
