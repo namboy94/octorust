@@ -41,8 +41,14 @@ class Config(object):
             "leon": "sparc-elf-gcc"}[self.arch]
 
         if not self.check_if_in_path(self.gcc):
-            print("gcc '" + self.gcc + "' not in path. Can not continue.")
-            sys.exit(1)
+
+            sparc_elf = os.path.join(os.path.expanduser("~"),
+                                     ".octorust", "toolchains", "sparc-elf")
+            if self.arch == "leon" and os.path.isdir(sparc_elf):
+                self.gcc = os.path.join(sparc_elf, "bin", "sparc-elf-gcc")
+            else:
+                print("gcc '" + self.gcc + "' not in path. Can not continue.")
+                sys.exit(1)
 
         # Dependencies
         self.dependency_dir = os.path.join(os.path.expanduser("~"),

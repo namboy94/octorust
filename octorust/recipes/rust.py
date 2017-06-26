@@ -41,7 +41,7 @@ def compile_rustc(config: Config):
     elif config.arch == "x64guest":
         command += []
     elif config.arch == "leon":
-        generate_leon_specification()
+        generate_leon_specification(config)
         command += ["--target", "leon"]
 
     command.append(config.source)
@@ -77,7 +77,7 @@ def compile_cargo(config: Config):
         command += ["build"]
         output = "target/debug/lib" + crate_name + ".a"
     elif config.arch == "leon":
-        generate_leon_specification()
+        generate_leon_specification(config)
         command += ["rustc", "--target", "leon", "--", "-C", "link-dead-code"]
         output = "target/leon/debug/lib" + crate_name + ".a"
 
@@ -111,13 +111,16 @@ def generate_cargo_toml(config: Config):
         )
 
 
-def generate_leon_specification():
+def generate_leon_specification(config: Config):
     """
     Generates a rust target specification file for the SPARC LEON architecture
     The specification file assumes a gcc cross-compiler for the architecture
     in the path called 'sparc-leon-linux-uclibc-gcc', which is one of the
     cargo_sample targets when using crosstool-ng.
+    The installation process should in theory install a sparc-elf-gcc
+    compiler though.
     The specification file is saved as leon.json
+    :param config: The configuration used
     :return: None
     """
 
@@ -131,7 +134,7 @@ def generate_leon_specification():
         "target-endian": "big",
         "target-pointer-width": "32",
         "linker-flavor": "ld",
-        "linker": "sparc-elf-gcc",
+        "linker": config.gcc,
         "link-args": [
             "-nostartfiles"
         ]
