@@ -1,0 +1,7 @@
+stages:
+  - lint
+
+python_lint:
+  stage: lint
+  script:
+    - pep8 .
