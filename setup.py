@@ -29,10 +29,11 @@ shutil.copytree("octolib", octolib_dep)
 if not os.path.isdir(os.path.join(deps, "irtss-current")):
     os.makedirs(os.path.join(deps, "irtss-current"))
 
-if not Config.check_if_in_path("sparc-elf-gcc"):
+toolchain_dir = os.path.join(os.path.expanduser("~"),
+                             ".octorust", "toolchains")
+if not Config.check_if_in_path("sparc-elf-gcc") \
+        and not os.path.isdir(os.path.join(toolchain_dir, "sparc-elf")):
 
-    toolchain_dir = os.path.join(os.path.expanduser("~"),
-                                 ".octorust", "toolchains")
     if not os.path.isdir(toolchain_dir):
         os.makedirs(toolchain_dir)
 
