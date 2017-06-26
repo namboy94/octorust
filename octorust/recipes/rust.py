@@ -63,9 +63,6 @@ def compile_cargo(config: Config):
     """
 
     crate_name = os.path.basename(config.source)
-    if not crate_name:
-        crate_name = os.path.dirname(config.source)
-    print(crate_name)
 
     current = os.getcwd()
     os.chdir(config.source)
@@ -88,7 +85,7 @@ def compile_cargo(config: Config):
     Popen(command).wait()
 
     os.rename(output, os.path.join(current, "lib" + crate_name + ".a"))
-    cleanup(["leon.json", "Cargo.toml", "target"])
+    cleanup(["leon.json", "Cargo.toml"])
 
     os.chdir(current)
 

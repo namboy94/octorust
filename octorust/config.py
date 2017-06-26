@@ -27,9 +27,6 @@ class Config(object):
         self.source = source
         self.out = out
 
-        if self.source.endswith("/"):
-            self.source = self.source.rsplit("/", 1)[0]
-
         # Generate names
         self.rust_static_lib = "lib" + self.source.rsplit(".rs", 1)[0] + ".a"
         self.c_file = "dummy.c"

@@ -37,6 +37,8 @@ def link_app(config: Config):
     elif config.arch == "leon":
         pass  # TODO
 
+    print(command)
+
     Popen(command).wait()
     cleanup([config.c_object, config.rust_static_lib])
 

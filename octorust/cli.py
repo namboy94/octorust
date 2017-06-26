@@ -38,13 +38,20 @@ def parse_args() -> Config:
     variant = determine_variant(args.variant, arch)
 
     source = args.input
+    if source.endswith("/"):  # Trim away trailing slashes
+        source = source.rsplit("/", 1)[0]
 
     if source is None:
         print("Currently, input files must be passed explicitly.")
         sys.exit(1)
         # TODO more cases, like a config file etc.
 
-    out = args.output if args.output is not None else source.rsplit(".rs", 1)[0]
+    if args.output is None:
+        out = source.rsplit(".rs", 1)[0]
+        if out == source:  # For crates
+            out = out + ".out"
+    else:
+        out = args.output
 
     return Config(arch, variant, source, out)
 
