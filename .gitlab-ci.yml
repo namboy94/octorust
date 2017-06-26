@@ -1,10 +1,7 @@
 stages:
   - lint
   - install
-  - build_1
-  - build_2
-  - build_3
-  - build_4
+  - build
 
 python_lint:
   stage: lint
@@ -19,43 +16,42 @@ install_octorust:
     - linux-buildserver
   script:
     - python setup.py install --user
+    - echo $NETRC_CREDENTIALS > ~/.netrc
+    - octorust -a x86guest --fetch-irtss
+    - octorust -a x64native --fetch-irtss
+    - octorust -a leon --fetch-irtss
+    - rm ~/.netrc
 
 build_cargo_x86_sample:
-  stage: build_1
+  stage: build
   tags:
     - linux-buildserver
   script:
-    - echo $NETRC_CREDENTIALS > ~/.netrc
     - octorust samples/cargo_sample
-    - rm ~/.netrc
     - ./cargo_sample.out
 
 build_rustc_x86_sample:
-  stage: build_2
+  stage: build
   tags:
     - linux-buildserver
   script:
-    - echo $NETRC_CREDENTIALS > ~/.netrc
     - octorust samples/rustc_sample/rustc_sample.rs
-    - rm ~/.netrc
     - ./rustc_sample
 
 build_cargo_x64_sample:
-  stage: build_3
+  stage: build
   tags:
     - linux-buildserver
   script:
-    - echo $NETRC_CREDENTIALS > ~/.netrc
     - octorust samples/cargo_sample --architecture x64native
-    - rm ~/.netrc
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel cargo_sample.out
+    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G \
+      -no-reboot -display none -kernel cargo_sample.out
 
 build_rustc_x64_sample:
-  stage: build_4
+  stage: build
   tags:
     - linux-buildserver
   script:
-    - echo $NETRC_CREDENTIALS > ~/.netrc
     - octorust samples/rustc_sample/rustc_sample.rs --architecture x64native
-    - rm ~/.netrc
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel rustc_sample
+    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G \
+      -no-reboot -display none -kernel rustc_sample

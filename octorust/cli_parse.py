@@ -32,11 +32,23 @@ def parse_args() -> Config:
     parser.add_argument("-o", "--output",
                         help="The output binary file. "
                              "Defaults to a name based on the input file")
+    parser.add_argument("--fetch-irtss", action="store_true",
+                        help="Can be used to dowload an IRTSS release. "
+                             "Will use the specified architecture and variant")
 
     args = parser.parse_args()
 
     arch = determine_architecture(args.architecture)
     variant = determine_variant(args.variant, arch)
+
+    if args.fetch_irtss:
+        dummy_config = Config(arch, variant, "a", "b")
+        if not os.path.isdir(dummy_config.irtss_release_path):
+            dummy_config.download_irtss()
+            print("IRTSS release downloaded.")
+        else:
+            print("IRTSS release already exists.")
+        sys.exit(0)
 
     source = args.input
     if source.endswith("/"):  # Trim away trailing slashes
