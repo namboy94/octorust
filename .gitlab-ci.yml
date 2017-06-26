@@ -1,5 +1,7 @@
 stages:
   - lint
+  - install
+  - build
 
 python_lint:
   stage: lint
@@ -7,3 +9,20 @@ python_lint:
     - linux-buildserver
   script:
     - pep8 .
+
+install_octorust:
+  stage: install
+  tags:
+    - linux-buildserver
+  script:
+    - python setup.py install --user
+
+build_cargo_x86_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - echo $NETRC_CREDENTIALS > ~/.netrc
+    - octorust samples/cargo_sample
+    - rm ~/.netrc
+
