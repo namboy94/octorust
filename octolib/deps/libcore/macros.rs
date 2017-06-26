@@ -35,6 +35,8 @@ macro_rules! panic {
 /// This will invoke the [`panic!`] macro if the provided expression cannot be
 /// evaluated to `true` at runtime.
 ///
+/// # Uses
+///
 /// Assertions are always checked in both debug and release builds, and cannot
 /// be disabled. See [`debug_assert!`] for assertions that are not enabled in
 /// release builds by default.
@@ -45,12 +47,14 @@ macro_rules! panic {
 /// Other use-cases of `assert!` include [testing] and enforcing run-time
 /// invariants in safe code (whose violation cannot result in unsafety).
 ///
-/// This macro has a second version, where a custom panic message can
+/// # Custom Messages
+///
+/// This macro has a second form, where a custom panic message can
 /// be provided with or without arguments for formatting.
 ///
 /// [`panic!`]: macro.panic.html
 /// [`debug_assert!`]: macro.debug_assert.html
-/// [testing]: ../book/testing.html
+/// [testing]: ../book/first-edition/testing.html
 ///
 /// # Examples
 ///
@@ -85,14 +89,15 @@ macro_rules! assert {
     );
 }
 
-/// Asserts that two expressions are equal to each other.
+/// Asserts that two expressions are equal to each other (using [`PartialEq`]).
 ///
 /// On panic, this macro will print the values of the expressions with their
 /// debug representations.
 ///
-/// Like [`assert!`], this macro has a second version, where a custom
+/// Like [`assert!`], this macro has a second form, where a custom
 /// panic message can be provided.
 ///
+/// [`PartialEq`]: cmp/trait.PartialEq.html
 /// [`assert!`]: macro.assert.html
 ///
 /// # Examples
@@ -111,8 +116,9 @@ macro_rules! assert_eq {
         match (&$left, &$right) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
-                    panic!("assertion failed: `(left == right)` \
-                           (left: `{:?}`, right: `{:?}`)", left_val, right_val)
+                    panic!(r#"assertion failed: `(left == right)`
+  left: `{:?}`,
+ right: `{:?}`"#, left_val, right_val)
                 }
             }
         }
@@ -121,8 +127,9 @@ macro_rules! assert_eq {
         match (&($left), &($right)) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
-                    panic!("assertion failed: `(left == right)` \
-                           (left: `{:?}`, right: `{:?}`): {}", left_val, right_val,
+                    panic!(r#"assertion failed: `(left == right)`
+  left: `{:?}`,
+ right: `{:?}`: {}"#, left_val, right_val,
                            format_args!($($arg)+))
                 }
             }
@@ -130,14 +137,15 @@ macro_rules! assert_eq {
     });
 }
 
-/// Asserts that two expressions are not equal to each other.
+/// Asserts that two expressions are not equal to each other (using [`PartialEq`]).
 ///
 /// On panic, this macro will print the values of the expressions with their
 /// debug representations.
 ///
-/// Like `assert!()`, this macro has a second version, where a custom
+/// Like [`assert!`], this macro has a second form, where a custom
 /// panic message can be provided.
 ///
+/// [`PartialEq`]: cmp/trait.PartialEq.html
 /// [`assert!`]: macro.assert.html
 ///
 /// # Examples
@@ -156,8 +164,9 @@ macro_rules! assert_ne {
         match (&$left, &$right) {
             (left_val, right_val) => {
                 if *left_val == *right_val {
-                    panic!("assertion failed: `(left != right)` \
-                           (left: `{:?}`, right: `{:?}`)", left_val, right_val)
+                    panic!(r#"assertion failed: `(left != right)`
+  left: `{:?}`,
+ right: `{:?}`"#, left_val, right_val)
                 }
             }
         }
@@ -166,8 +175,9 @@ macro_rules! assert_ne {
         match (&($left), &($right)) {
             (left_val, right_val) => {
                 if *left_val == *right_val {
-                    panic!("assertion failed: `(left != right)` \
-                           (left: `{:?}`, right: `{:?}`): {}", left_val, right_val,
+                    panic!(r#"assertion failed: `(left != right)`
+  left: `{:?}`,
+ right: `{:?}`: {}"#, left_val, right_val,
                            format_args!($($arg)+))
                 }
             }
@@ -182,6 +192,8 @@ macro_rules! assert_ne {
 ///
 /// Like [`assert!`], this macro also has a second version, where a custom panic
 /// message can be provided.
+///
+/// # Uses
 ///
 /// Unlike [`assert!`], `debug_assert!` statements are only enabled in non
 /// optimized builds by default. An optimized build will omit all
@@ -542,7 +554,8 @@ macro_rules! unreachable {
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
 macro_rules! unimplemented {
-    () => (panic!("not yet implemented"))
+    () => (panic!("not yet implemented"));
+    ($($arg:tt)+) => (panic!("not yet implemented: {}", format_args!($($arg)*)));
 }
 
 /// Built-in macros to the compiler itself.
@@ -553,6 +566,17 @@ macro_rules! unimplemented {
 ///
 /// For more information, see documentation for `std`'s macros.
 mod builtin {
+
+    /// Unconditionally causes compilation to fail with the given error message when encountered.
+    ///
+    /// For more information, see the [RFC].
+    ///
+    /// [RFC]: https://github.com/rust-lang/rfcs/blob/master/text/1695-add-error-macro.md
+    #[unstable(feature = "compile_error_macro", issue = "40872")]
+    #[macro_export]
+    #[cfg(dox)]
+    macro_rules! compile_error { ($msg:expr) => ({ /* compiler built-in */ }) }
+
     /// The core macro for formatted string creation & output.
     ///
     /// For more information, see the documentation for [`std::format_args!`].

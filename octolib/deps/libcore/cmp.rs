@@ -67,6 +67,10 @@ use self::Ordering::*;
 /// the rule that `eq` is a strict inverse of `ne`; that is, `!(a == b)` if and
 /// only if `a != b`.
 ///
+/// Implementations of `PartialEq`, `PartialOrd`, and `Ord` *must* agree with
+/// each other. It's easy to accidentally make them disagree by deriving some
+/// of the traits and manually implementing others.
+///
 /// An example implementation for a domain in which two books are considered
 /// the same book if their ISBN matches, even if the formats differ:
 ///
@@ -386,6 +390,10 @@ impl<T: Ord> Ord for Reverse<T> {
 /// Then you must define an implementation for `cmp()`. You may find it useful to use
 /// `cmp()` on your type's fields.
 ///
+/// Implementations of `PartialEq`, `PartialOrd`, and `Ord` *must* agree with each other. It's
+/// easy to accidentally make them disagree by deriving some of the traits and manually
+/// implementing others.
+///
 /// Here's an example where you want to sort people by height only, disregarding `id`
 /// and `name`:
 ///
@@ -435,6 +443,42 @@ pub trait Ord: Eq + PartialOrd<Self> {
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
     fn cmp(&self, other: &Self) -> Ordering;
+
+    /// Compares and returns the maximum of two values.
+    ///
+    /// Returns the second argument if the comparison determines them to be equal.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #![feature(ord_max_min)]
+    ///
+    /// assert_eq!(2, 1.max(2));
+    /// assert_eq!(2, 2.max(2));
+    /// ```
+    #[unstable(feature = "ord_max_min", issue = "25663")]
+    fn max(self, other: Self) -> Self
+    where Self: Sized {
+        if other >= self { other } else { self }
+    }
+
+    /// Compares and returns the minimum of two values.
+    ///
+    /// Returns the first argument if the comparison determines them to be equal.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #![feature(ord_max_min)]
+    ///
+    /// assert_eq!(1, 1.min(2));
+    /// assert_eq!(2, 2.min(2));
+    /// ```
+    #[unstable(feature = "ord_max_min", issue = "25663")]
+    fn min(self, other: Self) -> Self
+    where Self: Sized {
+        if self <= other { self } else { other }
+    }
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
@@ -474,14 +518,18 @@ impl PartialOrd for Ordering {
 ///
 /// ## How can I implement `PartialOrd`?
 ///
-/// PartialOrd only requires implementation of the `partial_cmp` method, with the others generated
-/// from default implementations.
+/// `PartialOrd` only requires implementation of the `partial_cmp` method, with the others
+/// generated from default implementations.
 ///
 /// However it remains possible to implement the others separately for types which do not have a
 /// total order. For example, for floating point numbers, `NaN < 0 == false` and `NaN >= 0 ==
 /// false` (cf. IEEE 754-2008 section 5.11).
 ///
 /// `PartialOrd` requires your type to be `PartialEq`.
+///
+/// Implementations of `PartialEq`, `PartialOrd`, and `Ord` *must* agree with each other. It's
+/// easy to accidentally make them disagree by deriving some of the traits and manually
+/// implementing others.
 ///
 /// If your type is `Ord`, you can implement `partial_cmp()` by using `cmp()`:
 ///
@@ -666,6 +714,8 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
 ///
 /// Returns the first argument if the comparison determines them to be equal.
 ///
+/// Internally uses an alias to `Ord::min`.
+///
 /// # Examples
 ///
 /// ```
@@ -677,12 +727,14 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
 #[inline]
 #[stable(feature = "rust1", since = "1.0.0")]
 pub fn min<T: Ord>(v1: T, v2: T) -> T {
-    if v1 <= v2 { v1 } else { v2 }
+    v1.min(v2)
 }
 
 /// Compares and returns the maximum of two values.
 ///
 /// Returns the second argument if the comparison determines them to be equal.
+///
+/// Internally uses an alias to `Ord::max`.
 ///
 /// # Examples
 ///
@@ -695,7 +747,7 @@ pub fn min<T: Ord>(v1: T, v2: T) -> T {
 #[inline]
 #[stable(feature = "rust1", since = "1.0.0")]
 pub fn max<T: Ord>(v1: T, v2: T) -> T {
-    if v2 >= v1 { v2 } else { v1 }
+    v1.max(v2)
 }
 
 // Implementation of PartialEq, Eq, PartialOrd and Ord for primitive types

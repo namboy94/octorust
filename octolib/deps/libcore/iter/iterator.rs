@@ -130,9 +130,10 @@ pub trait Iterator {
     ///
     /// ```
     /// // an infinite iterator has no upper bound
+    /// // and the maximum possible lower bound
     /// let iter = 0..;
     ///
-    /// assert_eq!((0, None), iter.size_hint());
+    /// assert_eq!((usize::max_value(), None), iter.size_hint());
     /// ```
     #[inline]
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -261,7 +262,7 @@ pub trait Iterator {
     /// Creates an iterator starting at the same point, but stepping by
     /// the given amount at each iteration.
     ///
-    /// Note that it will always return the first element of the range,
+    /// Note that it will always return the first element of the iterator,
     /// regardless of the step given.
     ///
     /// # Panics
