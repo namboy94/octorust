@@ -262,7 +262,7 @@ pub trait Iterator {
     /// Creates an iterator starting at the same point, but stepping by
     /// the given amount at each iteration.
     ///
-    /// Note that it will always return the first element of the iterator,
+    /// Note that it will always return the first element of the range,
     /// regardless of the step given.
     ///
     /// # Panics

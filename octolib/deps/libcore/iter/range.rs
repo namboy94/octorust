@@ -252,9 +252,6 @@ step_impl_no_between!(u128 i128);
 #[derive(Clone, Debug)]
 #[unstable(feature = "step_by", reason = "recent addition",
            issue = "27741")]
-#[rustc_deprecated(since = "1.19.0",
-                   reason = "replaced by `iter::StepBy`")]
-#[allow(deprecated)]
 pub struct StepBy<A, R> {
     step_by: A,
     range: R,
@@ -275,9 +272,6 @@ impl<A: Step> ops::RangeFrom<A> {
     /// ```
     #[unstable(feature = "step_by", reason = "recent addition",
                issue = "27741")]
-    #[rustc_deprecated(since = "1.19.0",
-                       reason = "replaced by `Iterator::step_by`")]
-    #[allow(deprecated)]
     pub fn step_by(self, by: A) -> StepBy<A, Self> {
         StepBy {
             step_by: by,
@@ -303,9 +297,6 @@ impl<A: Step> ops::Range<A> {
     /// ```
     #[unstable(feature = "step_by", reason = "recent addition",
                issue = "27741")]
-    #[rustc_deprecated(since = "1.19.0",
-                       reason = "replaced by `Iterator::step_by`")]
-    #[allow(deprecated)]
     pub fn step_by(self, by: A) -> StepBy<A, Self> {
         StepBy {
             step_by: by,
@@ -330,9 +321,6 @@ impl<A: Step> ops::RangeInclusive<A> {
     /// ```
     #[unstable(feature = "step_by", reason = "recent addition",
                issue = "27741")]
-    #[rustc_deprecated(since = "1.19.0",
-                       reason = "replaced by `Iterator::step_by`")]
-    #[allow(deprecated)]
     pub fn step_by(self, by: A) -> StepBy<A, Self> {
         StepBy {
             step_by: by,
@@ -343,7 +331,6 @@ impl<A: Step> ops::RangeInclusive<A> {
 
 #[unstable(feature = "step_by", reason = "recent addition",
            issue = "27741")]
-#[allow(deprecated)]
 impl<A> Iterator for StepBy<A, ops::RangeFrom<A>> where
     A: Clone,
     for<'a> &'a A: Add<&'a A, Output = A>
@@ -364,13 +351,11 @@ impl<A> Iterator for StepBy<A, ops::RangeFrom<A>> where
 }
 
 #[unstable(feature = "fused", issue = "35602")]
-#[allow(deprecated)]
 impl<A> FusedIterator for StepBy<A, ops::RangeFrom<A>>
     where A: Clone, for<'a> &'a A: Add<&'a A, Output = A> {}
 
 #[unstable(feature = "step_by", reason = "recent addition",
            issue = "27741")]
-#[allow(deprecated)]
 impl<A: Step + Clone> Iterator for StepBy<A, ops::Range<A>> {
     type Item = A;
 
@@ -408,13 +393,11 @@ impl<A: Step + Clone> Iterator for StepBy<A, ops::Range<A>> {
 }
 
 #[unstable(feature = "fused", issue = "35602")]
-#[allow(deprecated)]
 impl<A: Step + Clone> FusedIterator for StepBy<A, ops::Range<A>> {}
 
 #[unstable(feature = "inclusive_range",
            reason = "recently added, follows RFC",
            issue = "28237")]
-#[allow(deprecated)]
 impl<A: Step + Clone> Iterator for StepBy<A, ops::RangeInclusive<A>> {
     type Item = A;
 
@@ -454,7 +437,6 @@ impl<A: Step + Clone> Iterator for StepBy<A, ops::RangeInclusive<A>> {
 }
 
 #[unstable(feature = "fused", issue = "35602")]
-#[allow(deprecated)]
 impl<A: Step + Clone> FusedIterator for StepBy<A, ops::RangeInclusive<A>> {}
 
 macro_rules! range_exact_iter_impl {

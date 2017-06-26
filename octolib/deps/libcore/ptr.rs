@@ -408,11 +408,11 @@ impl<T: ?Sized> *const T {
     ///
     /// Basic usage:
     ///
-    /// ```
-    /// let ptr: *const u8 = &10u8 as *const u8;
+    /// ```ignore
+    /// let val: *const u8 = &10u8 as *const u8;
     ///
     /// unsafe {
-    ///     if let Some(val_back) = ptr.as_ref() {
+    ///     if let Some(val_back) = val.as_ref() {
     ///         println!("We got back the value: {}!", val_back);
     ///     }
     /// }
@@ -570,11 +570,11 @@ impl<T: ?Sized> *mut T {
     ///
     /// Basic usage:
     ///
-    /// ```
-    /// let ptr: *mut u8 = &mut 10u8 as *mut u8;
+    /// ```ignore
+    /// let val: *mut u8 = &mut 10u8 as *mut u8;
     ///
     /// unsafe {
-    ///     if let Some(val_back) = ptr.as_ref() {
+    ///     if let Some(val_back) = val.as_ref() {
     ///         println!("We got back the value: {}!", val_back);
     ///     }
     /// }
