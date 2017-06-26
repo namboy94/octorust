@@ -4,5 +4,5 @@ version = "0.1.0"
 authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
 
 [dependencies]
-core = { path = "../invasive-rust-rust/src/libcore" }
-libc = { path = "../invasive-rust-libc", default-features = false }
+core = { path = "../../invasive-rust-rust/src/libcore" }
+libc = { path = "../../invasive-rust-libc", default-features = false }

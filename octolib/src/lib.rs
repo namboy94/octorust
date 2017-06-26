@@ -23,3 +23,4 @@ extern {
 pub fn get_tile_id() -> u32 {
     return unsafe { __get_tile_id() }
 }
+pub fn helloworld(){ unsafe { printf("Hello World".as_ptr()); } }
