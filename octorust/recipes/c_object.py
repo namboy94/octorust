@@ -58,7 +58,20 @@ def compile_c_object(config: Config):
         ]
 
     elif config.arch == "leon":
-        pass  # TODO
+
+        command += [
+            "-mcpu=v8",
+            "-O3",
+            "-nostdinc",
+            "-fno-asynchronous-unwind-tables",
+            "-fno-stack-protector",
+            "-I" + config.irtss_include,
+            "-isystem",
+            config.c_include,
+            "-D__OCTOPOS__",
+            "-std=gnu99"
+
+        ]
 
     command += ["-c", config.c_file, "-o", config.c_object]
     Popen(command).wait()

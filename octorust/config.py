@@ -44,7 +44,10 @@ class Config(object):
             sys.exit(1)
 
         # TODO Find dynamically
-        self.c_include = "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/include"
+        if self.arch.startswith("x"):
+            self.c_include = "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/include"
+        else:
+            self.c_include = "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/include"
 
         # Dependencies
         self.dependency_dir = os.path.join(os.path.expanduser("~"), ".octorust")

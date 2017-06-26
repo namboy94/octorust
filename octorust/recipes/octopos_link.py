@@ -41,7 +41,27 @@ def link_app(config: Config):
         ]
 
     elif config.arch == "leon":
-        pass  # TODO
+
+        "   n.o -lotail -static"
+
+        command += [
+            "-L" + config.irtss_lib,
+            "-nostdlib",
+            "-Wl,-T," + config.irtss_sections_x,
+            get_native_object("crti.o", config),
+            get_native_object("crtbegin.o", config),
+            config.c_object,
+            config.rust_static_lib,
+            "-loctopos",
+            "-lc++",
+            "-lcsubset",
+            "-loctopos",
+            "-lgcc",
+            get_native_object("crtend.o", config),
+            get_native_object("crtn.o", config),
+            "-lotail",
+            "-static"
+        ]
 
     Popen(command).wait()
     cleanup([config.c_object, config.rust_static_lib])
@@ -85,13 +105,13 @@ def get_native_object(target: str, config: Config) -> str:
     elif config.arch == "leon":
 
         if target == "crti.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crti.o"
+            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crti.o"
         elif target == "crtbegin.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtbegin.o"
+            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crtbegin.o"
         elif target == "crtend.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtend.o"
+            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crtend.o"
         elif target == "crtn.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crtn.o"
+            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crtn.o"
 
 
     return ""
