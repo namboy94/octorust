@@ -131,7 +131,7 @@ def generate_leon_specification():
         "target-endian": "big",
         "target-pointer-width": "32",
         "linker-flavor": "ld",
-        "linker": "sparc-leon-linux-uclibc-gcc",
+        "linker": "sparc-elf-gcc",
         "link-args": [
             "-nostartfiles"
         ]
