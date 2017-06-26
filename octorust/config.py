@@ -43,12 +43,23 @@ class Config(object):
         # TODO Find dynamically
         self.c_include = "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/include"
 
-        # IRTSS  TODO Make this more configurable
+        # Dependencies
+        self.dependency_dir = os.path.join(os.path.expanduser("~"), ".octorust")
+
+        self.octolib = os.path.join(self.dependency_dir, "octolib")
+        self.libcore = os.path.join(self.octolib, "deps", "libcore")
+        self.libc = os.path.join(self.octolib, "deps", "libc")
+
+        # IRTSS
         target = self.arch + "/" + self.variant
-        self.irtss_release_path = "../../releases/current/" + target
+        irtss_base_path = os.path.join(self.dependency_dir, "releases/current/")
+        self.irtss_release_path = os.path.join(irtss_base_path, target)
+
         self.irtss_include = os.path.join(self.irtss_release_path, "include")
         self.irtss_lib = os.path.join(self.irtss_release_path, "lib")
         self.irtss_sections_x = os.path.join(self.irtss_lib, "sections.x")
+
+        self.check_dependencies()
 
     @staticmethod
     def check_if_in_path(command: str) -> bool:
@@ -62,3 +73,19 @@ class Config(object):
             if os.path.isfile(os.path.join(path, command)):
                 return True
         return False
+
+    def check_dependencies(self):
+        """
+        Checks if all dependencies are present. If not, the program exits.
+        :return: None
+        """
+        for dependency in [self.octolib,
+                           self.libcore,
+                           self.libc,
+                           self.irtss_release_path]:
+            if not os.path.isdir(dependency):
+                print("Dependency " + dependency + "' not sattisfied.")
+                print("Please install this dependency or run\n"
+                      "'./compile.py depgen'\n"
+                      "from the octorust source directory")
+                sys.exit(1)

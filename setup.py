@@ -1,4 +1,6 @@
 # imports
+import os
+import shutil
 from setuptools import setup, find_packages
 
 
@@ -13,3 +15,11 @@ setup(name="octorust",
       tests_require=['nose'],
       scripts=["bin/octorust"],
       zip_safe=False)
+
+#  Custom dependency installation
+deps = os.path.join(os.path.expanduser("~"), ".octorust")
+octolib_dep = os.path.join(deps, "octolib")
+
+if os.path.isdir(octolib_dep):
+    shutil.rmtree(octolib_dep)
+shutil.copytree("octolib", octolib_dep)
