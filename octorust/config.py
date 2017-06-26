@@ -21,3 +21,6 @@ class Config(object):
         self.variant = variant
         self.source = source
         self.out = out
+
+        # Generate names
+        self.rust_static_lib = "lib" + self.source.rsplit(".rs", 1)[0] + ".a"

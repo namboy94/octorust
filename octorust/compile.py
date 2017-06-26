@@ -120,48 +120,8 @@ def get_irtss_release_path(arch: str, variant: str) -> str:
     return os.path.join("../..", "releases", "current", arch, variant)
 
 
-def compile_rust(arch: str, source: str) -> str:
-    """
-    Compiles the rust file to a static library for use in OctoPOS
-    :param arch: The architecture for which to compile to 
-    :param source: The source file to compile
-    :return: The path to the generated library file
-    """
-
-    rustc = ["rustc"]
-
-    if arch == "x86guest":
-        rustc += ["--target", "i686-unknown-linux-gnu"]
-    elif arch == "leon":
-        generate_leon_specification()
-        rustc += ["--target", "leon"]
-
-    rustc += [source]
-    Popen(rustc).wait()
-
-    return "lib" + source.rsplit(".rs", 1)[0] + ".a"
 
 
-def generate_leon_specification():
-
-    leon_spec = {
-        "arch": "sparc",
-        "data-layout": "E-m:e-p:32:32-i64:64-f128:64-n32-S64",
-        "executables": True,
-        "llvm-target": "sparc",
-        "os": "none",
-        "panic-strategy": "abort",
-        "target-endian": "big",
-        "target-pointer-width": "32",
-        "linker-flavor": "ld",
-        "linker": "sparc-leon-linux-uclibc-gcc",
-        "link-args": [
-            "-nostartfiles"
-        ]
-    }
-
-    with open("leon.json", 'w') as spec_file:
-        json.dump(leon_spec, spec_file)
 
 
 def cleanup():
