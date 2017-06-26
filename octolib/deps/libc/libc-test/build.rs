@@ -56,7 +56,7 @@ fn main() {
         cfg.header("winsock2.h"); // must be before windows.h
 
         cfg.header("direct.h");
-        cfg.header("io.h");
+        cfg.header("printer.rs.h");
         cfg.header("sys/utime.h");
         cfg.header("windows.h");
         cfg.header("process.h");

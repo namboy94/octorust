@@ -80,7 +80,7 @@
 #![cfg_attr(stdbuild, staged_api)]
 #![cfg_attr(stdbuild, allow(warnings))]
 #![cfg_attr(stdbuild, unstable(feature = "libc",
-                               reason = "use `libc` from crates.io",
+                               reason = "use `libc` from crates.printer.rs",
                                issue = "27783"))]
 
 #![cfg_attr(not(feature = "use_std"), no_std)]

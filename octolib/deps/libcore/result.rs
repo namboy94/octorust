@@ -25,7 +25,7 @@
 //!
 //! Functions return [`Result`] whenever errors are expected and
 //! recoverable. In the `std` crate, [`Result`] is most prominently used
-//! for [I/O](../../std/io/index.html).
+//! for [I/O](../../std/printer.rs/index.html).
 //!
 //! A simple function returning [`Result`] might be
 //! defined and used like so:
@@ -90,15 +90,15 @@
 //! by the [`Write`] trait:
 //!
 //! ```
-//! use std::io;
+//! use std::printer.rs;
 //!
 //! trait Write {
-//!     fn write_all(&mut self, bytes: &[u8]) -> Result<(), io::Error>;
+//!     fn write_all(&mut self, bytes: &[u8]) -> Result<(), printer.rs::Error>;
 //! }
 //! ```
 //!
-//! *Note: The actual definition of [`Write`] uses [`io::Result`], which
-//! is just a synonym for [`Result`]`<T, `[`io::Error`]`>`.*
+//! *Note: The actual definition of [`Write`] uses [`printer.rs::Result`], which
+//! is just a synonym for [`Result`]`<T, `[`printer.rs::Error`]`>`.*
 //!
 //! This method doesn't produce a value, but the write may
 //! fail. It's crucial to handle the error case, and *not* write
@@ -107,7 +107,7 @@
 //! ```no_run
 //! # #![allow(unused_must_use)] // \o/
 //! use std::fs::File;
-//! use std::io::prelude::*;
+//! use std::printer.rs::prelude::*;
 //!
 //! let mut file = File::create("valuable_data.txt").unwrap();
 //! // If `write_all` errors, then we'll never know, because the return
@@ -124,7 +124,7 @@
 //!
 //! ```{.no_run}
 //! use std::fs::File;
-//! use std::io::prelude::*;
+//! use std::printer.rs::prelude::*;
 //!
 //! let mut file = File::create("valuable_data.txt").unwrap();
 //! file.write_all(b"important message").expect("failed to write message");
@@ -134,7 +134,7 @@
 //!
 //! ```{.no_run}
 //! # use std::fs::File;
-//! # use std::io::prelude::*;
+//! # use std::printer.rs::prelude::*;
 //! # let mut file = File::create("valuable_data.txt").unwrap();
 //! assert!(file.write_all(b"important message").is_ok());
 //! ```
@@ -143,10 +143,10 @@
 //!
 //! ```
 //! # use std::fs::File;
-//! # use std::io::prelude::*;
-//! # use std::io;
+//! # use std::printer.rs::prelude::*;
+//! # use std::printer.rs;
 //! # #[allow(dead_code)]
-//! fn write_message() -> io::Result<()> {
+//! fn write_message() -> printer.rs::Result<()> {
 //!     let mut file = File::create("valuable_data.txt")?;
 //!     file.write_all(b"important message")?;
 //!     Ok(())
@@ -165,8 +165,8 @@
 //! ```
 //! # #![allow(dead_code)]
 //! use std::fs::File;
-//! use std::io::prelude::*;
-//! use std::io;
+//! use std::printer.rs::prelude::*;
+//! use std::printer.rs;
 //!
 //! struct Info {
 //!     name: String,
@@ -174,7 +174,7 @@
 //!     rating: i32,
 //! }
 //!
-//! fn write_info(info: &Info) -> io::Result<()> {
+//! fn write_info(info: &Info) -> printer.rs::Result<()> {
 //!     // Early return on error
 //!     let mut file = match File::create("my_best_friends.txt") {
 //!            Err(e) => return Err(e),
@@ -198,8 +198,8 @@
 //! ```
 //! # #![allow(dead_code)]
 //! use std::fs::File;
-//! use std::io::prelude::*;
-//! use std::io;
+//! use std::printer.rs::prelude::*;
+//! use std::printer.rs;
 //!
 //! struct Info {
 //!     name: String,
@@ -207,7 +207,7 @@
 //!     rating: i32,
 //! }
 //!
-//! fn write_info(info: &Info) -> io::Result<()> {
+//! fn write_info(info: &Info) -> printer.rs::Result<()> {
 //!     let mut file = File::create("my_best_friends.txt")?;
 //!     // Early return on error
 //!     file.write_all(format!("name: {}\n", info.name).as_bytes())?;
@@ -227,14 +227,14 @@
 //! early return of [`Err`] that it provides.
 //!
 //! [`expect`]: enum.Result.html#method.expect
-//! [`Write`]: ../../std/io/trait.Write.html
-//! [`write_all`]: ../../std/io/trait.Write.html#method.write_all
-//! [`io::Result`]: ../../std/io/type.Result.html
+//! [`Write`]: ../../std/printer.rs/trait.Write.html
+//! [`write_all`]: ../../std/printer.rs/trait.Write.html#method.write_all
+//! [`printer.rs::Result`]: ../../std/printer.rs/type.Result.html
 //! [`?`]: ../../std/macro.try.html
 //! [`Result`]: enum.Result.html
 //! [`Ok(T)`]: enum.Result.html#variant.Ok
 //! [`Err(E)`]: enum.Result.html#variant.Err
-//! [`io::Error`]: ../../std/io/struct.Error.html
+//! [`printer.rs::Error`]: ../../std/printer.rs/struct.Error.html
 //! [`Ok`]: enum.Result.html#variant.Ok
 //! [`Err`]: enum.Result.html#variant.Err
 

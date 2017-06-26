@@ -293,16 +293,16 @@ macro_rules! debug_assert_ne {
 /// # Examples
 ///
 /// ```
-/// use std::io;
+/// use std::printer.rs;
 /// use std::fs::File;
-/// use std::io::prelude::*;
+/// use std::printer.rs::prelude::*;
 ///
 /// enum MyError {
 ///     FileWriteError
 /// }
 ///
-/// impl From<io::Error> for MyError {
-///     fn from(e: io::Error) -> MyError {
+/// impl From<printer.rs::Error> for MyError {
+///     fn from(e: printer.rs::Error) -> MyError {
 ///         MyError::FileWriteError
 ///     }
 /// }
@@ -340,22 +340,22 @@ macro_rules! try {
 /// This macro accepts a format string, a list of arguments, and a 'writer'. Arguments will be
 /// formatted according to the specified format string and the result will be passed to the writer.
 /// The writer may be any value with a `write_fmt` method; generally this comes from an
-/// implementation of either the [`std::fmt::Write`] or the [`std::io::Write`] trait. The macro
+/// implementation of either the [`std::fmt::Write`] or the [`std::printer.rs::Write`] trait. The macro
 /// returns whatever the 'write_fmt' method returns; commonly a [`std::fmt::Result`], or an
-/// [`io::Result`].
+/// [`printer.rs::Result`].
 ///
 /// See [`std::fmt`] for more information on the format string syntax.
 ///
 /// [`std::fmt`]: ../std/fmt/index.html
 /// [`std::fmt::Write`]: ../std/fmt/trait.Write.html
-/// [`std::io::Write`]: ../std/io/trait.Write.html
+/// [`std::printer.rs::Write`]: ../std/printer.rs/trait.Write.html
 /// [`std::fmt::Result`]: ../std/fmt/type.Result.html
-/// [`io::Result`]: ../std/io/type.Result.html
+/// [`printer.rs::Result`]: ../std/printer.rs/type.Result.html
 ///
 /// # Examples
 ///
 /// ```
-/// use std::io::Write;
+/// use std::printer.rs::Write;
 ///
 /// let mut w = Vec::new();
 /// write!(&mut w, "test").unwrap();
@@ -364,18 +364,18 @@ macro_rules! try {
 /// assert_eq!(w, b"testformatted arguments");
 /// ```
 ///
-/// A module can import both `std::fmt::Write` and `std::io::Write` and call `write!` on objects
+/// A module can import both `std::fmt::Write` and `std::printer.rs::Write` and call `write!` on objects
 /// implementing either, as objects do not typically implement both. However, the module must
 /// import the traits qualified so their names do not conflict:
 ///
 /// ```
 /// use std::fmt::Write as FmtWrite;
-/// use std::io::Write as IoWrite;
+/// use std::printer.rs::Write as IoWrite;
 ///
 /// let mut s = String::new();
 /// let mut v = Vec::new();
 /// write!(&mut s, "{} {}", "abc", 123).unwrap(); // uses fmt::Write::write_fmt
-/// write!(&mut v, "s = {:?}", s).unwrap(); // uses io::Write::write_fmt
+/// write!(&mut v, "s = {:?}", s).unwrap(); // uses printer.rs::Write::write_fmt
 /// assert_eq!(v, b"s = \"abc 123\"");
 /// ```
 #[macro_export]
@@ -399,7 +399,7 @@ macro_rules! write {
 /// # Examples
 ///
 /// ```
-/// use std::io::Write;
+/// use std::printer.rs::Write;
 ///
 /// let mut w = Vec::new();
 /// writeln!(&mut w).unwrap();
@@ -409,18 +409,18 @@ macro_rules! write {
 /// assert_eq!(&w[..], "\ntest\nformatted arguments\n".as_bytes());
 /// ```
 ///
-/// A module can import both `std::fmt::Write` and `std::io::Write` and call `write!` on objects
+/// A module can import both `std::fmt::Write` and `std::printer.rs::Write` and call `write!` on objects
 /// implementing either, as objects do not typically implement both. However, the module must
 /// import the traits qualified so their names do not conflict:
 ///
 /// ```
 /// use std::fmt::Write as FmtWrite;
-/// use std::io::Write as IoWrite;
+/// use std::printer.rs::Write as IoWrite;
 ///
 /// let mut s = String::new();
 /// let mut v = Vec::new();
 /// writeln!(&mut s, "{} {}", "abc", 123).unwrap(); // uses fmt::Write::write_fmt
-/// writeln!(&mut v, "s = {:?}", s).unwrap(); // uses io::Write::write_fmt
+/// writeln!(&mut v, "s = {:?}", s).unwrap(); // uses printer.rs::Write::write_fmt
 /// assert_eq!(v, b"s = \"abc 123\\n\"\n");
 /// ```
 #[macro_export]

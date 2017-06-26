@@ -88,15 +88,15 @@ pub struct Error;
 /// A collection of methods that are required to format a message into a stream.
 ///
 /// This trait is the type which this modules requires when formatting
-/// information. This is similar to the standard library's [`io::Write`] trait,
+/// information. This is similar to the standard library's [`printer.rs::Write`] trait,
 /// but it is only intended for use in libcore.
 ///
 /// This trait should generally not be implemented by consumers of the standard
-/// library. The [`write!`] macro accepts an instance of [`io::Write`], and the
-/// [`io::Write`] trait is favored over implementing this trait.
+/// library. The [`write!`] macro accepts an instance of [`printer.rs::Write`], and the
+/// [`printer.rs::Write`] trait is favored over implementing this trait.
 ///
 /// [`write!`]: ../../std/macro.write.html
-/// [`io::Write`]: ../../std/io/trait.Write.html
+/// [`printer.rs::Write`]: ../../std/printer.rs/trait.Write.html
 #[stable(feature = "rust1", since = "1.0.0")]
 pub trait Write {
     /// Writes a slice of bytes into this writer, returning whether the write

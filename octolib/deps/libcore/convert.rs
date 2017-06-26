@@ -270,16 +270,16 @@ pub trait Into<T>: Sized {
 /// An example usage for error handling:
 ///
 /// ```
-/// use std::io::{self, Read};
+/// use std::printer.rs::{self, Read};
 /// use std::num;
 ///
 /// enum CliError {
-///     IoError(io::Error),
+///     IoError(printer.rs::Error),
 ///     ParseError(num::ParseIntError),
 /// }
 ///
-/// impl From<io::Error> for CliError {
-///     fn from(error: io::Error) -> Self {
+/// impl From<printer.rs::Error> for CliError {
+///     fn from(error: printer.rs::Error) -> Self {
 ///         CliError::IoError(error)
 ///     }
 /// }
