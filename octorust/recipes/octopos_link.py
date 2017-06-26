@@ -13,54 +13,29 @@ def link_app(config: Config):
 
     command = [config.gcc, "-o", config.out]
 
-    if config.arch.startswith("x"):
+    if config.arch == "x86guest":
+        command.append("-m32")
+    elif config.arch == "x64native":
+        command.append("-Wl,--build-id=none")
 
-        if config.arch == "x86guest":
-            command.append("-m32")
-        elif config.arch == "x64native":
-            command.append("-Wl,--build-id=none")
-
-        command += [  # Shared arguments for x86guest and x64native
-            "-L" + config.irtss_lib,
-            "-nostdlib",
-            "-Wl,-T," + config.irtss_sections_x,
-            get_native_object("crti.o", config),
-            get_native_object("crtbegin.o", config),
-            config.c_object,
-            config.rust_static_lib,
-            "-loctopos",
-            "-lc++",
-            "-lcsubset",
-            "-loctopos",
-            "-lgcc",
-            get_native_object("crtend.o", config),
-            get_native_object("crtn.o", config),
-            "-lotail",
-            "-static"
-        ]
-
-    elif config.arch == "leon":
-
-        "   n.o -lotail -static"
-
-        command += [
-            "-L" + config.irtss_lib,
-            "-nostdlib",
-            "-Wl,-T," + config.irtss_sections_x,
-            get_native_object("crti.o", config),
-            get_native_object("crtbegin.o", config),
-            config.c_object,
-            config.rust_static_lib,
-            "-loctopos",
-            "-lc++",
-            "-lcsubset",
-            "-loctopos",
-            "-lgcc",
-            get_native_object("crtend.o", config),
-            get_native_object("crtn.o", config),
-            "-lotail",
-            "-static"
-        ]
+    command += [  # Shared arguments for all architectures
+        "-L" + config.irtss_lib,
+        "-nostdlib",
+        "-Wl,-T," + config.irtss_sections_x,
+        get_native_object("crti.o", config),
+        get_native_object("crtbegin.o", config),
+        config.c_object,
+        config.rust_static_lib,
+        "-loctopos",
+        "-lc++",
+        "-lcsubset",
+        "-loctopos",
+        "-lgcc",
+        get_native_object("crtend.o", config),
+        get_native_object("crtn.o", config),
+        "-lotail",
+        "-static"
+    ]
 
     Popen(command).wait()
     cleanup([config.c_object, config.rust_static_lib])
