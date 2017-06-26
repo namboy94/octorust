@@ -1,7 +1,10 @@
 stages:
   - lint
   - install
-  - build
+  - build_1
+  - build_2
+  - build_3
+  - build_4
 
 python_lint:
   stage: lint
@@ -18,7 +21,7 @@ install_octorust:
     - python setup.py install --user
 
 build_cargo_x86_sample:
-  stage: build
+  stage: build_1
   tags:
     - linux-buildserver
   script:
@@ -28,7 +31,7 @@ build_cargo_x86_sample:
     - ./cargo_sample.out
 
 build_rustc_x86_sample:
-  stage: build
+  stage: build_2
   tags:
     - linux-buildserver
   script:
@@ -38,7 +41,7 @@ build_rustc_x86_sample:
     - ./cargo_sample.out
 
 build_cargo_x64_sample:
-  stage: build
+  stage: build_3
   tags:
     - linux-buildserver
   script:
@@ -48,7 +51,7 @@ build_cargo_x64_sample:
     - ./cargo_sample.out
 
 build_rustc_x64_sample:
-  stage: build
+  stage: build_4
   tags:
     - linux-buildserver
   script:
