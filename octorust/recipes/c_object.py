@@ -20,41 +20,41 @@ def compile_c_object(config: Config):
 
     command = [config.gcc]
 
-    if config.arch == "x86guest":
+    if config.arch.startswith("x"):
 
-        command += [
-            "-mfpmath=sse",
-            "-msse2",
-            "-m32",
-            "-nostdinc",
-            "-fno-asynchronous-unwind-tables",
-            "-fno-stack-protector",
+        if config.arch == "x86guest":
+
+            command += [
+                "-mfpmath=sse",
+                "-msse2",
+                "-m32",
+                "-nostdinc",
+                "-fno-asynchronous-unwind-tables",
+                "-fno-stack-protector",
+            ]
+
+        elif config.arch == "x64native":
+
+            command += [
+                "-m64",
+                "-fno-stack-protector",
+                "-mno-red-zone",
+                "-nodefaultlibs",
+                "-nostdlib",
+                "-mcx16",
+                "-D__STDC_LIMIT_MACROS",
+                "-O3",
+                "-nostdinc",
+                "-fno-asynchronous-unwind-tables",
+                "-fno-stack-protector",
+            ]
+
+        command += [  # Same for x86guest and x64native
             "-I" + config.irtss_include,
             "-isystem",
             config.c_include,
             "-D__OCTOPOS__",
-            "-std=gnu11",
-        ]
-
-    elif config.arch == "x64native":
-
-        command += [
-            "-m64",
-            "-fno-stack-protector",
-            "-mno-red-zone",
-            "-nodefaultlibs",
-            "-nostdlib",
-            "-mcx16",
-            "-D__STDC_LIMIT_MACROS",
-            "-O3",
-            "-nostdinc",
-            "-fno-asynchronous-unwind-tables",
-            "-fno-stack-protector",
-            "-I" + config.irtss_include,
-            "-isystem",
-            config.c_include,
-            "-D__OCTOPOS__",
-            "-std=gnu11",
+            "-std=gnu11"
         ]
 
     elif config.arch == "leon":

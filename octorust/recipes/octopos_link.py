@@ -14,32 +14,14 @@ def link_app(config: Config):
 
     command = [config.gcc, "-o", config.out]
 
-    if config.arch == "x86guest":
+    if config.arch.startswith("x"):
 
-        command += [
-            "-m32",
-            "-L" + config.irtss_lib,
-            "-nostdlib",
-            "-Wl,-T," + config.irtss_sections_x,
-            get_native_object("crti.o", config),
-            get_native_object("crtbegin.o", config),
-            config.c_object,
-            config.rust_static_lib,
-            "-loctopos",
-            "-lc++",
-            "-lcsubset",
-            "-loctopos",
-            "-lgcc",
-            get_native_object("crtend.o", config),
-            get_native_object("crtn.o", config),
-            "-lotail",
-            "-static"
-        ]
+        if config.arch == "x86guest":
+            command.append("-m32")
+        elif config.arch == "x64native":
+            command.append("-Wl,--build-id=none")
 
-    elif config.arch == "x64native":
-
-        command += [
-            "-Wl,--build-id=none",
+        command += [  # Shared arguments for x86guest and x64native
             "-L" + config.irtss_lib,
             "-nostdlib",
             "-Wl,-T," + config.irtss_sections_x,
@@ -99,5 +81,17 @@ def get_native_object(target: str, config: Config) -> str:
             return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtend.o"
         elif target == "crtn.o":
             return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crtn.o"
+
+    elif config.arch == "leon":
+
+        if target == "crti.o":
+            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crti.o"
+        elif target == "crtbegin.o":
+            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtbegin.o"
+        elif target == "crtend.o":
+            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtend.o"
+        elif target == "crtn.o":
+            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crtn.o"
+
 
     return ""
