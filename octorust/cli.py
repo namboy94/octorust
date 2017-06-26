@@ -36,10 +36,13 @@ def parse_args() -> Config:
     arch = determine_architecture(args.architecture)
     variant = determine_variant(args.variant, arch)
     source = args.input
-    out = args.output if args.output is not None else source.rsplit(".rs", 1)[0]
 
     if source is None:
-        pass  # TODO more cases like fetch-release
+        print("Currently, input files must be passed explicitly.")
+        sys.exit(1)
+        # TODO more cases, like a config file etc.
+
+    out = args.output if args.output is not None else source.rsplit(".rs", 1)[0]
 
     return Config(arch, variant, source, out)
 

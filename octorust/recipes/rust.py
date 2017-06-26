@@ -18,7 +18,7 @@ def compile_rust_static_library(config: Config):
     :return: None
     """
 
-    command = ["rustc"]
+    command = ["rustc", "--crate-type", "staticlib"]
 
     if config.arch == "x86guest":
         command += ["--target", "i686-unknown-linux-gnu"]

@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+"""
+Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
+"""
+
+from octorust.compile import main
+
+if __name__ == "__main__":
+    main()

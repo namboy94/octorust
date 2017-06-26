@@ -11,7 +11,7 @@ from octorust.recipes.shared import cleanup
 
 def link_app(config: Config):
 
-    command = [config.arch, "-o", config.out]
+    command = [config.gcc, "-o", config.out]
 
     if config.arch == "x86guest":
         command.append("-m32")  # 32 bit
