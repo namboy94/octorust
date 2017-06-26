@@ -1,47 +1,25 @@
 #!/usr/bin/env python3
+"""
+Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
+"""
 
 # TODO Cleanup, Comments, Maybe splitting up into more source files
 
 import os
 import json
-import argparse
-from typing import Tuple
 from subprocess import Popen
-
-
-def parse_args() -> Tuple[str, str, str, str]:
-    """
-    Parses the arguments
-    :return: A tuple consisting of: The target architecture, 
-                                    The target variant,
-                                    The input file location,
-                                    The output file location
-    """
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("architecture", help="The target architecture for the application. "
-                                             "May be one of (leon|x86guest|x64native)")
-    parser.add_argument("variant", help="Specifies the variant of the target, for example 'generic' "
-                                        "or '4t5c-chipit' etc.")
-    parser.add_argument("input", help="The input file")
-    parser.add_argument("output", help="The output file")
-
-    args = parser.parse_args()
-    arch = args.architecture
-    variant = args.variant
-    source = args.input
-    out = args.output
-
-    return arch, variant, source, out
+from octorust.cli import parse_args
 
 
 def main():
 
-    arch, variant, source, out = parse_args()
+    config = parse_args()
+
     rustlib = compile_rust(arch, source)
     c_dummy = generate_c_dummy()
     c_object = compile_c_object(arch, variant, c_dummy)
     link_app(arch, variant, rustlib, c_object, out)
+    cleanup()
 
 
 def generate_c_dummy() -> str:
@@ -185,6 +163,15 @@ def generate_leon_specification():
     with open("leon.json", 'w') as spec_file:
         json.dump(leon_spec, spec_file)
 
+
+def cleanup():
+    cleanup_files = [
+        "dummy.c",
+    ]
+
+    for element in cleanup_files:
+        if os.path.isfile(element):
+            os.remove(element)
 
 
 
