@@ -13,6 +13,7 @@ def cleanup(cleanup_targets: List[str]):
     :param cleanup_targets: The files and directories to delete
     :return: None
     """
+    return
     for cleanup_file in cleanup_targets:
         if os.path.isfile(cleanup_file):
             os.remove(cleanup_file)

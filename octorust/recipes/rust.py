@@ -84,6 +84,10 @@ def compile_cargo(config: Config):
     generate_cargo_toml(config)
     Popen(command).wait()
 
+    if not os.path.isfile(output):
+        print("Compilation failed")
+        sys.exit(1)
+
     os.rename(output, os.path.join(current, "lib" + crate_name + ".a"))
     cleanup(["leon.json", "Cargo.toml"])
 

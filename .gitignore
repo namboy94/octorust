@@ -1,3 +1,4 @@
 .idea/
-octolib/target
+target/
 Cargo.lock
+sample/Cargo.toml
