@@ -60,14 +60,14 @@ build_cargo_leon_sample:
     - linux-buildserver
   script:
     - octorust samples/cargo_sample --architecture leon
-    - qemu-sparc cargo_sample.out
+#    - qemu-sparc cargo_sample.out
 
-build_rustc_leon_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/rustc_sample/rustc_sample.rs --architecture leon
-    - qemu-sparc rustc_sample
+#build_rustc_leon_sample:
+#  stage: build
+#  tags:
+#    - linux-buildserver
+#  script:
+#    - octorust samples/rustc_sample/rustc_sample.rs --architecture leon
+#    - qemu-sparc rustc_sample
 
 
