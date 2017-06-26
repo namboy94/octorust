@@ -4,6 +4,8 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 
 import os
 import sys
+import shutil
+from octorust.irtss import get_irtss_release
 
 
 class Config(object):
@@ -24,6 +26,9 @@ class Config(object):
         self.variant = variant
         self.source = source
         self.out = out
+
+        if self.source.endswith("/"):
+            self.source = self.source.rsplit("/", 1)[0]
 
         # Generate names
         self.rust_static_lib = "lib" + self.source.rsplit(".rs", 1)[0] + ".a"
@@ -52,7 +57,7 @@ class Config(object):
 
         # IRTSS
         target = self.arch + "/" + self.variant
-        irtss_base_path = os.path.join(self.dependency_dir, "releases/current/")
+        irtss_base_path = os.path.join(self.dependency_dir, "irtss-current")
         self.irtss_release_path = os.path.join(irtss_base_path, target)
 
         self.irtss_include = os.path.join(self.irtss_release_path, "include")
@@ -77,15 +82,33 @@ class Config(object):
     def check_dependencies(self):
         """
         Checks if all dependencies are present. If not, the program exits.
+        IRTSS builds are however fetched automatically
         :return: None
         """
         for dependency in [self.octolib,
                            self.libcore,
-                           self.libc,
-                           self.irtss_release_path]:
+                           self.libc]:
             if not os.path.isdir(dependency):
-                print("Dependency " + dependency + "' not sattisfied.")
-                print("Please install this dependency or run\n"
-                      "'./compile.py depgen'\n"
-                      "from the octorust source directory")
+                print("Dependency " + dependency + "' not satisfied.")
+                print("Please reinstall octorust.")
                 sys.exit(1)
+
+        if not os.path.isdir(self.irtss_release_path):
+            self.download_irtss()
+
+    def download_irtss(self):
+        """
+        Downloads the latest IRTSS release for the target architecture and
+        variant.
+        :return: None
+        """
+
+        release = get_irtss_release(self.arch, self.variant)
+
+        if not os.path.isdir(os.path.dirname(self.irtss_release_path)):
+            os.makedirs(os.path.dirname(self.irtss_release_path))
+
+        os.rename(os.path.join(release, self.arch, self.variant),
+                  self.irtss_release_path)
+
+        shutil.rmtree(release)

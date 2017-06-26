@@ -2,8 +2,9 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
-import argparse
 import sys
+import argparse
+
 
 from octorust.config import Config
 
@@ -35,6 +36,7 @@ def parse_args() -> Config:
 
     arch = determine_architecture(args.architecture)
     variant = determine_variant(args.variant, arch)
+
     source = args.input
 
     if source is None:

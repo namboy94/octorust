@@ -3,6 +3,10 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
+import os
+import sys
+if __name__ == '__main__':
+    sys.path.insert(0, os.path.abspath("../"))
 
 from octorust.cli import parse_args
 from octorust.recipes.rust import compile_rust_static_library

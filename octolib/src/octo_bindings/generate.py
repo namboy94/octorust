@@ -7,7 +7,7 @@ from subprocess import Popen
 try:
     dir = sys.argv[1]
 except IndexError:
-    dir = "../../irtss/2017-06-13/x86guest/generic"
+    dir = "../../irtssa/2017-06-13/x86guest/generic"
 
 api_dir = os.path.join(dir, "include")
 

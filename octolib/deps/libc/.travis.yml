@@ -8,7 +8,7 @@ install:
 script:
   - cargo build
   - cargo build --no-default-features
-  - cargo generate-lockfile --manifest-path libc-test/Cargo.toml
+  - cargo generate-lockfile --manifest-path libc-test/OctoCargo.toml
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       sh ci/run-docker.sh $TARGET;
     else

@@ -3,15 +3,19 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
 import os
+import shutil
 from typing import List
 
 
-def cleanup(cleanup_files: List[str]):
+def cleanup(cleanup_targets: List[str]):
     """
-    Deletes all files in a list, provided these files actually exist
-    :param cleanup_files: The files to delete
+    Deletes all files or directories in a list, provided these actually exist
+    :param cleanup_targets: The files and directories to delete
     :return: None
     """
-    for cleanup_file in cleanup_files:
+    for cleanup_file in cleanup_targets:
         if os.path.isfile(cleanup_file):
             os.remove(cleanup_file)
+    for cleanup_dir in cleanup_targets:
+        if os.path.isdir(cleanup_dir):
+            shutil.rmtree(cleanup_dir)

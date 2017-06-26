@@ -18,7 +18,7 @@ build: false
 
 test_script:
   - cargo test --target %TARGET%
-  - cargo run --manifest-path libc-test/Cargo.toml --target %TARGET%
+  - cargo run --manifest-path libc-test/OctoCargo.toml --target %TARGET%
 
 cache:
   - target

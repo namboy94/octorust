@@ -23,3 +23,6 @@ octolib_dep = os.path.join(deps, "octolib")
 if os.path.isdir(octolib_dep):
     shutil.rmtree(octolib_dep)
 shutil.copytree("octolib", octolib_dep)
+
+if not os.path.isdir(os.path.join(deps, "irtss-current")):
+    os.makedirs(os.path.join(deps, "irtss-current"))

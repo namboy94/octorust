@@ -14,7 +14,7 @@ other common platform libraries.
 """
 
 [dependencies]
-core = { path = "../invasive-rust-rust/src/libcore" }
+core = { path = "../libcore" }
 
 [features]
 default = ["use_std"]
