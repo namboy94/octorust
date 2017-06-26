@@ -5,6 +5,7 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 import os
 import sys
 import shutil
+from subprocess import check_output
 from octorust.irtss import get_irtss_release
 
 
@@ -42,12 +43,6 @@ class Config(object):
         if not self.check_if_in_path(self.gcc):
             print("gcc '" + self.gcc + "' not in path. Can not continue.")
             sys.exit(1)
-
-        # TODO Find dynamically
-        if self.arch.startswith("x"):
-            self.c_include = "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/include"
-        else:
-            self.c_include = "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/include"
 
         # Dependencies
         self.dependency_dir = os.path.join(os.path.expanduser("~"), ".octorust")
@@ -113,3 +108,16 @@ class Config(object):
                   self.irtss_release_path)
 
         shutil.rmtree(release)
+
+    def get_native_path(self, target: str) -> str:
+        """
+        Queries gcc for a native object or include path
+        :param target: The target whose path should be found
+        :return: The path of the target
+        """
+
+        command = [self.gcc, "--print-file-name", target]
+        if self.arch == "x86guest":
+            command.append("-m32")
+
+        return check_output(command).decode().strip()

@@ -52,7 +52,7 @@ def compile_c_object(config: Config):
         command += [  # Same for x86guest and x64native
             "-I" + config.irtss_include,
             "-isystem",
-            config.c_include,
+            config.get_native_path("include"),
             "-D__OCTOPOS__",
             "-std=gnu11"
         ]
@@ -67,7 +67,7 @@ def compile_c_object(config: Config):
             "-fno-stack-protector",
             "-I" + config.irtss_include,
             "-isystem",
-            config.c_include,
+            config.get_native_path("include"),
             "-D__OCTOPOS__",
             "-std=gnu99"
 
