@@ -4,8 +4,7 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 
 import os
 import sys
-import shutil
-from subprocess import Popen
+from subprocess import Popen, check_output
 from octorust.config import Config
 from octorust.recipes.shared import cleanup
 
@@ -77,41 +76,9 @@ def link_app(config: Config):
 
 
 def get_native_object(target: str, config: Config) -> str:
-    # TODO PLEASE FIX ME!!!
-    # TODO Find these dynamically, determined by architecture of course
 
+    command = [config.gcc, "--print-file-name", target]
     if config.arch == "x86guest":
+        command.append("-m32")
 
-        if target == "crti.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib32/crti.o"
-        elif target == "crtbegin.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/32/crtbegin.o"
-        elif target == "crtend.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/32/crtend.o"
-        elif target == "crtn.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib32/crtn.o"
-
-    elif config.arch == "x64native":
-
-        if target == "crti.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crti.o"
-        elif target == "crtbegin.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtbegin.o"
-        elif target == "crtend.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/crtend.o"
-        elif target == "crtn.o":
-            return "/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../lib/crtn.o"
-
-    elif config.arch == "leon":
-
-        if target == "crti.o":
-            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crti.o"
-        elif target == "crtbegin.o":
-            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crtbegin.o"
-        elif target == "crtend.o":
-            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crtend.o"
-        elif target == "crtn.o":
-            return "/home/hermann/.bin/toolchains/sparc-elf/bin/../lib/gcc/sparc-elf/7.1.0/v8/crtn.o"
-
-
-    return ""
+    return check_output(command).decode().strip()
