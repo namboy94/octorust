@@ -45,7 +45,8 @@ class Config(object):
             sys.exit(1)
 
         # Dependencies
-        self.dependency_dir = os.path.join(os.path.expanduser("~"), ".octorust")
+        self.dependency_dir = os.path.join(os.path.expanduser("~"),
+                                           ".octorust")
 
         self.octolib = os.path.join(self.dependency_dir, "octolib")
         self.libcore = os.path.join(self.octolib, "deps", "libcore")

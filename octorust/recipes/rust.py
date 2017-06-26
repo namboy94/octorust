@@ -15,7 +15,7 @@ def compile_rust_static_library(config: Config):
     """
     Compiles a rust file or crate as a static '.a' library. In case this fails,
     the program will exit.
-    :param config: The previously determined configuration 
+    :param config: The previously determined configuration
     :return: None
     """
     if os.path.isdir(config.source):
@@ -109,6 +109,7 @@ def generate_cargo_toml(config: Config):
             "core = { path = \"" + config.libcore + "\" }\n" +
             "octolib = { path = \"" + config.octolib + "\" }"
         )
+
 
 def generate_leon_specification():
     """

@@ -3,5 +3,7 @@ stages:
 
 python_lint:
   stage: lint
+  tags:
+    - linux-buildserver
   script:
     - pep8 .

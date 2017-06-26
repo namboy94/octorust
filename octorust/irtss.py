@@ -5,14 +5,13 @@ from subprocess import check_output, Popen
 def get_irtss_release(arch: str, variant: str) -> str:
     """
     Retrieves an irtss release from the invasic release site
-    
     This requires a .netrc file in the user's home directory with the
     format:
-    
+
     machine www4.cs.fau.de
     login <username>
     password <password>
-    
+
     Of course, valid login credentials are required
     :param arch: The architecture for which to download the release
     :param variant: The variant for which to download the release
@@ -30,7 +29,8 @@ def get_irtss_release(arch: str, variant: str) -> str:
 
     url = base_url + filename
 
-    Popen(["wget", "-nv", "--no-check-certificate", "-O", filename, url]).wait()
+    Popen(["wget", "-nv", "--no-check-certificate", "-O", filename, url])\
+        .wait()
     Popen(["tar", "xjf", filename]).wait()
     os.remove(filename)
     os.remove("current")

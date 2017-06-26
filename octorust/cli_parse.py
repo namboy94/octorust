@@ -23,8 +23,8 @@ def parse_args() -> Config:
                              "May be one of (leon|x86guest|x64native). "
                              "Defaults to x86guest.")
     parser.add_argument("-v", "--variant",
-                        help="Specifies the variant of the target, for example "
-                             "'generic' or '4t5c-chipit' etc."
+                        help="Specifies the variant of the target, for example"
+                             " 'generic' or '4t5c-chipit' etc."
                              "Defaults to an appropriate value for the "
                              "specified architecture.")
     parser.add_argument("input", nargs="?",
@@ -51,7 +51,8 @@ def parse_args() -> Config:
         out = source.rsplit(".rs", 1)[0]
         if out == source:  # For crates
             out = out + ".out"
-        out = os.path.basename(out)  # Make output land in current working directory
+        # Make output land in current working directory
+        out = os.path.basename(out)
 
     else:
         out = args.output
