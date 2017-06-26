@@ -73,7 +73,7 @@ def compile_cargo(config: Config):
     if config.arch == "x86guest":
         command += ["build", "--target", "i686-unknown-linux-gnu"]
         output = "target/i686-unknown-linux-gnu/debug/lib" + crate_name + ".a"
-    elif config.arch == "x64guest":
+    elif config.arch == "x64native":
         command += ["build"]
         output = "target/debug/lib" + crate_name + ".a"
     elif config.arch == "leon":
@@ -81,6 +81,7 @@ def compile_cargo(config: Config):
         command += ["rustc", "--target", "leon", "--", "-C", "link-dead-code"]
         output = "target/leon/debug/lib" + crate_name + ".a"
 
+    print(command)
     generate_cargo_toml(config)
     Popen(command).wait()
 

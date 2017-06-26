@@ -37,7 +37,26 @@ def compile_c_object(config: Config):
         ]
 
     elif config.arch == "x64native":
-        pass  # TODO
+
+        command += [
+            "-m64",
+            "-fno-stack-protector",
+            "-mno-red-zone",
+            "-nodefaultlibs",
+            "-nostdlib",
+            "-mcx16",
+            "-D__STDC_LIMIT_MACROS",
+            "-O3",
+            "-nostdinc",
+            "-fno-asynchronous-unwind-tables",
+            "-fno-stack-protector",
+            "-I" + config.irtss_include,
+            "-isystem",
+            config.c_include,
+            "-D__OCTOPOS__",
+            "-std=gnu11",
+        ]
+
     elif config.arch == "leon":
         pass  # TODO
 
