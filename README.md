@@ -1,5 +1,7 @@
 # octorust
 
+#//TODO Better Documentation
+
 ## Notes
 
 A nightly rustc is required to compile libcore
