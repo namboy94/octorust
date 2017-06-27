@@ -35,6 +35,8 @@ def parse_args() -> Config:
     parser.add_argument("--fetch-irtss", action="store_true",
                         help="Can be used to dowload an IRTSS release. "
                              "Will use the specified architecture and variant")
+    parser.add_argument("-r", "--run", action="store_true",
+                        help="Executes the application after compilation")
 
     args = parser.parse_args()
 
@@ -42,7 +44,7 @@ def parse_args() -> Config:
     variant = determine_variant(args.variant, arch)
 
     if args.fetch_irtss:
-        dummy_config = Config(arch, variant, "a", "b")
+        dummy_config = Config(arch, variant, "a", "b", False)
         if not os.path.isdir(dummy_config.irtss_release_path):
             dummy_config.download_irtss()
             print("IRTSS release downloaded.")
@@ -69,7 +71,7 @@ def parse_args() -> Config:
     else:
         out = args.output
 
-    return Config(arch, variant, source, out)
+    return Config(arch, variant, source, out, args.run)
 
 
 def determine_architecture(arch_param: str) -> str:

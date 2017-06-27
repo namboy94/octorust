@@ -15,18 +15,21 @@ class Config(object):
     process.
     """
 
-    def __init__(self, arch: str, variant: str, source: str, out: str):
+    def __init__(self, arch: str, variant: str, source: str, out: str,
+                 run: bool):
         """
         Creates a new Config object
         :param arch: The target architecture
         :param variant: The target variant
         :param source: The input source file
         :param out: The output file
+        :param run: Flag that executes the file upon compilation
         """
         self.arch = arch
         self.variant = variant
         self.source = source
         self.out = out
+        self.run = run
 
         # Generate names
         base_name = str(os.path.basename(self.source))

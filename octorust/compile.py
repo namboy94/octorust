@@ -7,6 +7,7 @@ from octorust.cli_parse import parse_args
 from octorust.recipes.rust import compile_rust_static_library
 from octorust.recipes.c_object import compile_c_object
 from octorust.recipes.octopos_link import link_app
+from octorust.recipes.run import run_executable
 
 
 def main():
@@ -19,6 +20,9 @@ def main():
     compile_rust_static_library(config)
     compile_c_object(config)
     link_app(config)
+
+    if config.run:
+        run_executable(config)
 
 
 if __name__ == "__main__":  # Main Entry Point

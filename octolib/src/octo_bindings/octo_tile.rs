@@ -3,16 +3,6 @@
 use libc::c_void;
 use octo_bindings::octo_types::tile_id_t;
 
-/**
-  * \brief Maximum tile count
-  */
-//#define ARCH_MAX_TILE_COUNT cf_hw_sys_max_tiles
-/**
-  * \brief Alignment in byte that is necessary for DMA transfers. TLM
-  * allocators use the same alignment for allocations.
-  */
-//#define ARCH_DMA_BLOCK_SIZE cf_hw_hal_memArea_tlm_alignment
-
 extern {
     #[link_name="get_cpu_id"]
     fn __get_cpu_id() -> u32;
