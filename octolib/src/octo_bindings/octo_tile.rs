@@ -1,7 +1,7 @@
 /// Status information about tile and its components; conversion functions for TLM pointer
 
 use libc::c_void;
-pub type tile_id_t = u8;
+use octo_bindings::octo_types::tile_id_t;
 
 /**
   * \brief Maximum tile count
