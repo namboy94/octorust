@@ -2,11 +2,12 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
+import argparse
 import os
 import sys
-import argparse
 from typing import List
-from octorust.config import Config
+
+from octorust.util.config import Config
 
 
 # For accessing the parsed argparse.Namespace, ignore unresolved references

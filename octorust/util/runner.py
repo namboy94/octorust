@@ -3,7 +3,8 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
 from subprocess import Popen
-from octorust.config import Config
+
+from octorust.util.config import Config
 
 
 def run_executable(config: Config):
@@ -14,7 +15,7 @@ def run_executable(config: Config):
     """
 
     arch = config.arch
-    app = config.out
+    app = config.output
 
     if arch == "x86guest":
         Popen(["./" + app]).wait()
@@ -25,3 +26,5 @@ def run_executable(config: Config):
                "-no-reboot", "-display", "none", "-kernel", app]).wait()
     elif arch == "leon":
         Popen(["qemu-sparc", app]).wait()
+    else:
+        print("Unsupported Architecture. Can't run application")

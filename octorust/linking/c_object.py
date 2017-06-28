@@ -5,8 +5,9 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 import os
 import sys
 from subprocess import Popen
-from octorust.config import Config
-from octorust.recipes.shared import cleanup
+
+from octorust.linking.shared import cleanup
+from octorust.util.config import Config
 
 
 def compile_c_object(config: Config):

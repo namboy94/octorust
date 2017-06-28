@@ -1,10 +1,11 @@
 # imports
 import os
 import shutil
-from setuptools import setup, find_packages
-from octorust.config import Config
 from subprocess import Popen
 
+from setuptools import setup, find_packages
+
+from octorust.util.config import Config
 
 setup(name="octorust",
       version="0.0.1",

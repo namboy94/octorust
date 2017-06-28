@@ -3,8 +3,8 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
-from octorust.cli_parse import generate_config
 from octorust.dependencies.irtss import get_irtss_release
+from octorust.util.cli_parse import generate_config
 
 
 def main():

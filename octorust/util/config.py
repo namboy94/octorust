@@ -15,20 +15,20 @@ class Config(object):
     process.
     """
 
-    def __init__(self, arch: str, variant: str, source: str, out: str,
+    def __init__(self, arch: str, variant: str, source: str, output: str,
                  mode: List[str]):
         """
         Creates a new Config object
         :param arch: The target architecture
         :param variant: The target variant
         :param source: The input source file
-        :param out: The output file
+        :param output: The output file
         :param mode: The mode in which to run this program
         """
         self.arch = arch
         self.variant = variant
         self.source = source
-        self.out = out
+        self.output = output
         self.mode = mode
 
         # Paths to dependencies locally installed by setup.py

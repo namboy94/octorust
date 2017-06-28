@@ -2,13 +2,14 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
+import json
 import os
 import sys
-import json
 from shutil import copyfile
 from subprocess import Popen
-from octorust.config import Config
-from octorust.recipes.shared import cleanup
+
+from octorust.linking.shared import cleanup
+from octorust.util.config import Config
 
 
 def compile_rust_static_library(config: Config):
