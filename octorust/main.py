@@ -3,8 +3,10 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
-from octorust.dependencies.irtss import get_irtss_release
+from octorust.util.runner import run_executable
 from octorust.util.cli_parse import generate_config
+from octorust.dependencies.irtss import get_irtss_release
+from octorust.recipes.rustc import compile_using_rustc
 
 
 def main():
@@ -16,7 +18,7 @@ def main():
     config = generate_config()
 
     if "compile_rustc" in config.mode:
-        # TODO Compile Rust
+        compile_using_rustc(config)
         pass
 
     elif "compile_cargo" in config.mode:
@@ -32,7 +34,7 @@ def main():
         print("Please double-check your input")
 
     if "run" in config.mode:
-        # TODO Run
+        run_executable(config.output, config.arch)
         pass
 
 
