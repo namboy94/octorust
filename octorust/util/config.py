@@ -57,6 +57,6 @@ class Config(object):
         depcheck = dependency_check([self.octolib, self.libcore, self.libc],
                                     self.irtss_release_path)
 
-        if not depcheck[0]:
+        if not depcheck[0] and self.mode[0].startswith("compile"):
             print(depcheck[1])
             sys.exit(1)

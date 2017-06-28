@@ -25,12 +25,12 @@ def main():
         # TODO Compile Cargo
         pass
 
-    elif ["fetch_irtss"] in config.mode:
+    elif "fetch_irtss" in config.mode:
         get_irtss_release(config.irtss_release_path,
                           config.arch, config.variant)
 
     else:
-        print("Invalid Mode " + config.mode + ".")
+        print("Invalid Mode " + str(config.mode) + ".")
         print("Please double-check your input")
 
     if "run" in config.mode:

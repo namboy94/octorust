@@ -19,8 +19,9 @@ def compile_using_rustc(config: Config):
         generate_leon_specification(config)
 
     rust_object = compile_rust_object(config)
+    link_app(config, [rust_object])
 
-    cleanup(["leon.json"])
+    cleanup(["leon.json", rust_object])
 
 
 def compile_rust_object(config: Config) -> str:
@@ -32,11 +33,10 @@ def compile_rust_object(config: Config) -> str:
 
     object_file = config.output + ".o"
 
-    command = ["rustc", "--crate-type",
-               "staticlib", "-o",
-               object_file, "--target",
+    command = ["rustc", "--emit", "obj", "-o", object_file, "--target",
                get_rust_target_triple(config.arch), config.source]
 
+    print(command)
     Popen(command).wait()
 
     if not os.path.isfile(object_file):

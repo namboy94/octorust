@@ -24,7 +24,8 @@ def generate_config() -> Config:
     variant = determine_variant(args.variant, arch)
     source = args.input
 
-    if source.endswith("/"):  # Trim away trailing slashes
+    # Trim away trailing slashes
+    if source is not None and source.endswith("/"):
         source = source.rsplit("/", 1)[0]
 
     mode = determine_mode(source, args.fetch_irtss, args.run)
@@ -76,11 +77,12 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
     :return: The resulting mode as a list of job strings.
     """
 
-    if source.endswith(".rs"):
+    if source is not None and source.endswith(".rs"):
         print("Compiling using rustc")
         mode = ["compile_rustc"]
 
-    elif os.path.isfile(os.path.join(source, "OctoCargo.toml")):
+    elif source is not None and \
+            os.path.isfile(os.path.join(source, "OctoCargo.toml")):
         print("Compiling using Cargo:")
         mode = ["compile_cargo"]
 
