@@ -129,7 +129,7 @@ pub trait Unsize<T: ?Sized> {
 
 /// Types whose values can be duplicated simply by copying bits.
 ///
-/// By default, variable bindings have 'move semantics.' In other
+/// By default, variable bindings_test have 'move semantics.' In other
 /// words:
 ///
 /// ```
