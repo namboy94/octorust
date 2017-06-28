@@ -5,15 +5,37 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 import os
 import sys
 import argparse
-
-
+from typing import List
 from octorust.config import Config
 
 
-def parse_args() -> Config:
+# For accessing the parsed argparse.Namespace, ignore unresolved references
+# noinspection PyUnresolvedReferences
+def generate_config() -> Config:
     """
-    Parses the arguments for the CLI
-    :return: A configuration object for the provided arguments
+    Generates a Config object from the command line arguments
+    :return: The generated Config object
+    """
+    args = parse_args()
+
+    # Get parser results
+    arch = determine_architecture(args.architecture)
+    variant = determine_variant(args.variant, arch)
+    source = args.input
+
+    if source.endswith("/"):  # Trim away trailing slashes
+        source = source.rsplit("/", 1)[0]
+
+    mode = determine_mode(source, args.fetch_irtss, args.run)
+    output = determine_output_path(args.output, source, mode)
+
+    return Config(arch, variant, source, output, mode)
+
+
+def parse_args() -> argparse.Namespace:
+    """
+    Parses the command line arguments from the CLI
+    :return: The parsed argparse Namespace
     """
 
     parser = argparse.ArgumentParser()
@@ -38,40 +60,79 @@ def parse_args() -> Config:
     parser.add_argument("-r", "--run", action="store_true",
                         help="Executes the application after compilation")
 
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    arch = determine_architecture(args.architecture)
-    variant = determine_variant(args.variant, arch)
 
-    if args.fetch_irtss:
-        dummy_config = Config(arch, variant, "a", "b", False)
-        if not os.path.isdir(dummy_config.irtss_release_path):
-            dummy_config.download_irtss()
-            print("IRTSS release downloaded.")
-        else:
-            print("IRTSS release already exists.")
-        sys.exit(0)
+def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
+    """
+    Determines the mode in which the program will run
+    :param source: The source file/directory location
+    :param fetch_irtss: A flag that can be set to make the 
+                        application download an IRTSS release.
+                        Will be ranked below any actual compilation job
+    :param run: This flag can be set to automatically run a program upon
+                completion
+    :return: The resulting mode as a list of job strings.
+    """
 
-    source = args.input
-    if source.endswith("/"):  # Trim away trailing slashes
-        source = source.rsplit("/", 1)[0]
+    if source.endswith(".rs"):
+        print("Compiling using rustc")
+        mode = ["compile_rustc"]
+
+    elif os.path.isfile(os.path.join(source, "OctoCargo.toml")):
+        print("Compiling using Cargo:")
+        mode = ["compile_cargo"]
+
+    # Ignored if an actual compilation job is going to be run
+    elif fetch_irtss:
+        print("Fetching IRTSS:")
+        mode = ["fetch_irtss"]
+
+    else:  # Undefined modes can't be used
+        print("Undefined Mode, please check your combination of arguments")
+        sys.exit(1)
+
+    if run and mode[0].startswith("compile"):
+        mode.append("run")
+
+    return mode
+
+
+def determine_output_path(output_argument: str or None, source: str,
+                          mode: List[str]) -> str or None:
+    """
+    Determines the file path for the compiled output file
+    :param output_argument: The user-supplied output argument,
+                            which may not be set
+    :param source:          The source file/directory
+    :param mode:            The previously established application mode
+    :return:                The output file path,
+                            or None if no source was provided
+    """
 
     if source is None:
-        print("Currently, input files must be passed explicitly.")
-        sys.exit(1)
-        # TODO more cases, like a config file etc.
-
-    if args.output is None:
-        out = source.rsplit(".rs", 1)[0]
-        if out == source:  # For crates
-            out = out + ".out"
-        # Make output land in current working directory
-        out = os.path.basename(out)
+        return None
 
     else:
-        out = args.output
+        output = output_argument
 
-    return Config(arch, variant, source, out, args.run)
+        if output_argument is None:
+
+            if "compile_rustc" in mode:
+                output = source.rsplit(".rs", 1)[0]
+
+            elif "compile_cargo" in mode:
+                # It's safe to use basename here since the trailing
+                # forward slashes were already removed
+                output = os.path.basename(source)
+
+            else:  # Unsupported mode for compilation
+                return None
+
+        if output == source:
+            output += ".out"
+
+        return output
 
 
 def determine_architecture(arch_param: str) -> str:

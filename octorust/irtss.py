@@ -1,8 +1,29 @@
 import os
+import shutil
 from subprocess import check_output, Popen
 
 
-def get_irtss_release(arch: str, variant: str) -> str:
+def get_irtss_release(release_path: str, arch: str, variant: str):
+
+    # Only fetch release if it doesn't exist yet
+    if not os.path.isdir(release_path):
+
+        release = download_irtss_release(arch, variant)
+
+        parent_dir = os.path.dirname(release_path)
+        if not os.path.isdir(parent_dir):
+            os.makedirs(parent_dir)
+
+        os.rename(os.path.join(release, arch, variant), release_path)
+        shutil.rmtree(release)
+
+        print("IRTSS release downloaded.")
+
+    else:
+        print("IRTSS release already exists.")
+
+
+def download_irtss_release(arch: str, variant: str) -> str:
     """
     Retrieves an irtss release from the invasic release site
     This requires a .netrc file in the user's home directory with the
