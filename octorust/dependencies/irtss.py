@@ -4,6 +4,14 @@ from subprocess import check_output, Popen
 
 
 def get_irtss_release(release_path: str, arch: str, variant: str):
+    """
+    Downloads an IRTSS release and stores it in the local .octorust
+    directory.
+    :param release_path: The path to the locally stored irtss release directory
+    :param arch: The architecture for which to fetch a release
+    :param variant: The variant for which to fetch a release
+    :return: None
+    """
 
     # Only fetch release if it doesn't exist yet
     if not os.path.isdir(release_path):
@@ -16,8 +24,7 @@ def get_irtss_release(release_path: str, arch: str, variant: str):
 
         os.rename(os.path.join(release, arch, variant), release_path)
         shutil.rmtree(release)
-
-        print("IRTSS release downloaded.")
+        print("IRTSS release successfully downloaded.")
 
     else:
         print("IRTSS release already exists.")
