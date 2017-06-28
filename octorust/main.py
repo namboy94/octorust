@@ -7,6 +7,7 @@ from octorust.util.runner import run_executable
 from octorust.util.cli_parse import generate_config
 from octorust.dependencies.irtss import get_irtss_release
 from octorust.recipes.rustc import compile_using_rustc
+from octorust.recipes.cargo import compile_using_cargo
 
 
 def main():
@@ -22,7 +23,7 @@ def main():
         pass
 
     elif "compile_cargo" in config.mode:
-        # TODO Compile Cargo
+        compile_using_cargo(config)
         pass
 
     elif "fetch_irtss" in config.mode:

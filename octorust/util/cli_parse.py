@@ -123,6 +123,7 @@ def determine_output_path(output_argument: str or None, source: str,
 
             if "compile_rustc" in mode:
                 output = source.rsplit(".rs", 1)[0]
+                output = os.path.basename(output)
 
             elif "compile_cargo" in mode:
                 # It's safe to use basename here since the trailing
