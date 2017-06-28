@@ -1,23 +1,29 @@
 //use libc::{c_void};
 use octolib::octo_bindings::octo_tile::*;
+use octolib::helper::types::c_void;
 
 pub fn test_octo_tile() {
+
+    // Functions without parameters
     let cpu_id: u32 = get_cpu_id();
     let tile_id: u32 = get_tile_id();
     let tile_core_count: u32 = get_tile_core_count();
     let tile_count: u32 = get_tile_count();
     let compute_tile_count: u32 = get_compute_tile_count();
-    //let tlm_start: c_void = get_tlm_start();
+    let tlm_start: c_void = get_tlm_start();
     let tlm_size: u32 = get_tlm_size();
     let scratchpad_size: u32 = get_scratchpad_size();
+
+    // Functions with Parameters
+    // TODO figure out how to create array in rust (pointer-based)
+    //let compute_tile_ids: u32 = get_compute_tile_ids(x, y);
+    //fn __get_compute_tile_ids(tids: *const u32, count: u32) -> u32;
 }
 
 
 /*
 
-    #[link_name="get_compute_tile_ids"]
-    fn __get_compute_tile_ids(tids: *const u32, count: u32) -> u32;
-
+    TODO Figure out how to use these functions
 
     #[link_name="get_tile_id_from_ptr"]
     fn __get_tile_id_from_ptr(global_tlm_ptr: c_void) -> i32;
