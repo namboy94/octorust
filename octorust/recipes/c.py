@@ -48,7 +48,7 @@ def compile_c_object(config: Config, target: str) -> str:
         ]
 
     elif config.arch == "leon":
-        command += ["-mcpu=v8", "-O3",]
+        command += ["-mcpu=v8", "-O3"]
 
     command += [  # Same for all architectures
         "-nostdinc",
