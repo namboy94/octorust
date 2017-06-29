@@ -52,8 +52,6 @@ pub extern "C" fn main_rust_ilet(claim: u8) {
 	//	   abort();
 	// }
 
-	// TODO BOOKMARK
-
 	// We will send an i-let to tile 1 and then want to wait until that i-let
 	// has finished executing. For this purpose, we use a signalling primitive.
 	// The simple_signal construct holds an internal counter and offers two
@@ -63,17 +61,20 @@ pub extern "C" fn main_rust_ilet(claim: u8) {
 	// * simple_signal_signal() decrements the counter. If the counter reaches
 	//   zero, the suspended i-let is woken up.
 
+	// TODO implement simple_signal, simple_signal_init
 	// Create a signal and initialise its counter with 1.
 	// Note that the signal lies on the i-let's stack, in our own TLM.
-	simple_signal signal;
+	let signal: simple_signal;
 	simple_signal_init(&signal, 1);
 
+	// TODO implement simple_ilet, simple_ilet_init, proxy_infect
 	// Create the i-let we want to execute on tile 1, and pass a pointer to the
 	// signal as argument.
-	simple_ilet iLet;
+	let iLet: simple_ilet ;
 	simple_ilet_init(&iLet, remoteILetFunc, &signal);
 	proxy_infect(pc, &iLet, 1);
 
+	// TODO implement simple_signal_wait
 	// Now wait until the remote i-let has notified us of its completion.
 	simple_signal_wait(&signal);
 
@@ -82,4 +83,33 @@ pub extern "C" fn main_rust_ilet(claim: u8) {
 	// returning from main_rust_ilet() will not terminate the application!
 	guest_shutdown();
 
+}
+
+
+// This is the function we execute on tile 1.
+fn remoteILetFunc(arg: c_void) {
+
+	// Be friendly and greet the user.
+	print_text("Hello from tile \0");
+    print_u32(get_tile_id());
+    print_text("!\n\0");
+
+	// TODO implement simple_ilet, simple_ilet_init, dispatch_claim_send_reply
+	// We want to tell main_ilet() that we have finished doing what we wanted to
+	// do. For that purpose, we have been given a pointer to a simple_signal
+	// structure (arg). But - and this is the tricky part - we cannot access
+	// that data structure directly because it resides in another TLM, of which
+	// we have no coherent view!
+	// So we need to create another i-let, send that i-let back to the tile
+	// where we came from, and let it care of doing the signalling for us.
+	let reply: simple_ilet;
+	simple_ilet_init(&reply, doSignal, arg);
+	dispatch_claim_send_reply(&reply);
+}
+
+// This is the i-let that notifies main_ilet() that the execution on tile 1 has
+// finished.
+fn doSignal(arg: c_void) {
+	// TODO figure this out, Implement simple_signal_signal
+	simple_signal_signal(static_cast<simple_signal *>(arg));
 }
