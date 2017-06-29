@@ -77,21 +77,22 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
     :return: The resulting mode as a list of job strings.
     """
 
+    mode = []
+
     if source is not None and source.endswith(".rs"):
         print("Compiling using rustc")
-        mode = ["compile_rustc"]
+        mode.append("compile_rustc")
 
     elif source is not None and \
             os.path.isfile(os.path.join(source, "OctoCargo.toml")):
         print("Compiling using Cargo:")
-        mode = ["compile_cargo"]
+        mode.append("compile_cargo")
 
-    # Ignored if an actual compilation job is going to be run
-    elif fetch_irtss:
+    if fetch_irtss:
         print("Fetching IRTSS:")
-        mode = ["fetch_irtss"]
+        mode.append("fetch_irtss")
 
-    else:  # Undefined modes can't be used
+    if len(mode) == 0:  # Undefined modes can't be used
         print("Undefined Mode, please check your combination of arguments")
         sys.exit(1)
 

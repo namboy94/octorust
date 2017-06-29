@@ -18,25 +18,18 @@ def main():
     """
     config = generate_config()
 
-    if "compile_rustc" in config.mode:
-        compile_using_rustc(config)
-        pass
-
-    elif "compile_cargo" in config.mode:
-        compile_using_cargo(config)
-        pass
-
-    elif "fetch_irtss" in config.mode:
+    if "fetch_irtss" in config.mode:
         get_irtss_release(config.irtss_release_path,
                           config.arch, config.variant)
 
-    else:
-        print("Invalid Mode " + str(config.mode) + ".")
-        print("Please double-check your input")
+    if "compile_rustc" in config.mode:
+        compile_using_rustc(config)
 
-    if "run" in config.mode:
+    elif "compile_cargo" in config.mode:
+        compile_using_cargo(config)
+
+    if "run" in config.mode and config.mode[0].startswith("compile"):
         run_executable(config.output, config.arch)
-        pass
 
 
 if __name__ == "__main__":  # Main Entry Point

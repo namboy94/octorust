@@ -53,10 +53,23 @@ class Config(object):
         self.crtend_o = get_native_path(self.gcc, self.arch, "crtend.o")
         self.crtn_o = get_native_path(self.gcc, self.arch, "crtn.o")
 
-        # Dependency check:
+        self.dependency_check()
+
+    def dependency_check(self):
+        """
+        Checks if all required dependencies are available and acts
+        accordingly
+        :return: None
+        """
+
         depcheck = dependency_check([self.octolib, self.libcore, self.libc],
                                     self.irtss_release_path)
 
         if not depcheck[0] and self.mode[0].startswith("compile"):
-            print(depcheck[1])
-            sys.exit(1)
+
+            if depcheck[1] == self.irtss_release_path \
+                    and "fetch_irtss" in self.mode:
+                pass  # IRTSS will be downloaded
+            else:
+                print(depcheck[1])
+                sys.exit(1)

@@ -40,12 +40,7 @@ def compile_static_library(config: Config) -> str:
         command += ["--", "-C", "link-dead-code"]
 
     libname = "lib" + crate_name + ".a"
-    print(libname)
-    # For x64, cargo doesn't create a separate build directory
-    if target_triple == "x86_64-unknown-linux-gnu":
-        output = os.path.join("target", "debug", libname)
-    else:
-        output = os.path.join("target", target_triple, "debug", libname)
+    output = os.path.join("target", target_triple, "debug", libname)
 
     print(command)
     Popen(command).wait()
@@ -183,7 +178,7 @@ def generate_c_dummy(destination: str):
 
     data = "#include <stdint.h>\n" \
            "#include <octopos.h>\n" \
-           "extern void rust_main_ilet(uint8_t claim_t);\n" \
+           "void rust_main_ilet(uint8_t claim_t);\n" \
            "void main_ilet(uint8_t claim_t) { rust_main_ilet(claim_t); }"
 
     with open(destination, 'w') as dummy:

@@ -16,15 +16,17 @@ def check_if_in_path(command: str) -> bool:
 
 
 def dependency_check(directories: List[str], irtss_release_path: str = "") \
-        -> Tuple[bool, str]:
+        -> Tuple[bool, str, str]:
     """
     Checks if various dependencies are satisfied
     :param directories: Directories to check
     :param irtss_release_path: The IRTSS release path. Can be left blank,
                                in which case it will simply be ignored
-    :return: A tuple of a boolean and a string, with the boolean indicating
-             if all dependencies are accounted for, and the string consisting
-             of a potential error message in case a dependency is missing
+    :return: A tuple of a boolean and two strings, with the boolean indicating
+             if all dependencies are accounted for, and the strings consisting
+             of a the name of the first found missing dependency and the second
+             string containing a potential error message in case a
+             dependency is missing
     """
 
     for dependency in directories:
@@ -32,11 +34,13 @@ def dependency_check(directories: List[str], irtss_release_path: str = "") \
 
             message = "Dependency " + dependency + "' not satisfied.\n"
             message += "Please reinstall octorust."
-            return False, message
+            return False, dependency, message
 
+    # IRTSS release check must be last
     if not os.path.isdir(irtss_release_path) and irtss_release_path != "":
-        return False, "No local IRTSS release found. Use --fetch_irtss to " \
-                      "download the corresponding IRTSS release for your " \
-                      "architecture and variant."
+        return False, irtss_release_path, \
+               "No local IRTSS release found. Use --fetch-irtss to download " \
+               "the corresponding IRTSS release for " \
+               "your architecture and variant."
 
-    return True, ""
+    return True, "", ""
