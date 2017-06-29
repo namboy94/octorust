@@ -3,7 +3,7 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
-from octorust.compile import main
+from octorust.main import main
 
 if __name__ == "__main__":
     main()

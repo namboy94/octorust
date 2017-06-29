@@ -1,5 +1,6 @@
 #![feature(lang_items, libc)]
 #![no_std]
+#![no_main]
 
 extern crate libc;
 
@@ -19,10 +20,8 @@ extern {
 
 }
 
-
-
 #[no_mangle]
-pub extern "C" fn main_rust_ilet(claim: u8){
+pub extern "C" fn main_ilet(claim: u8){
 	unsafe { printf("Hello World!\nTile ID: %d\n\0".as_ptr(), get_tile_id()); }
 	unsafe { shutdown(0); }
 }

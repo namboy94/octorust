@@ -28,7 +28,7 @@ build_cargo_x86_sample:
     - linux-buildserver
   script:
     - octorust samples/cargo_sample
-    - ./cargo_sample.out
+    - ./cargo_sample
 
 build_rustc_x86_sample:
   stage: build
@@ -38,13 +38,21 @@ build_rustc_x86_sample:
     - octorust samples/rustc_sample/rustc_sample.rs
     - ./rustc_sample
 
+build_c_x86_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - octorust samples/c_sample/c_sample.c
+    - ./c_sample
+
 build_cargo_x64_sample:
   stage: build
   tags:
     - linux-buildserver
   script:
     - octorust samples/cargo_sample --architecture x64native
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel cargo_sample.out
+    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel cargo_sample
 
 build_rustc_x64_sample:
   stage: build
@@ -54,13 +62,29 @@ build_rustc_x64_sample:
     - octorust samples/rustc_sample/rustc_sample.rs --architecture x64native
     - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel rustc_sample
 
+build_c_x64_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - octorust samples/c_sample/c_sample.c --architecture x64native
+    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel c_sample
+
 build_cargo_leon_sample:
   stage: build
   tags:
     - linux-buildserver
   script:
     - octorust samples/cargo_sample --architecture leon
-#    - qemu-sparc cargo_sample.out
+#    - qemu-sparc cargo_sample
+
+build_cargo_leon_sample:
+  stage: build
+  tags:
+    - linux-buildserver
+  script:
+    - octorust samples/c_sample/c_sample.c --architecture leon
+#    - qemu-sparc c_sample
 
 #build_rustc_leon_sample:
 #  stage: build
