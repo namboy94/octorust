@@ -7,7 +7,7 @@ mod tests;
 use tests::octo_tile::test_octo_tile;
 
 #[no_mangle]
-pub extern "C" fn main_rust_ilet(claim: u8) {
+pub extern "C" fn rust_main_ilet(claim: u8) {
     print_text("Starting Testing\0");
     newline();
 
