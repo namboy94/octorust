@@ -5,16 +5,24 @@ from subprocess import Popen
 from octorust.util.files import cleanup
 from octorust.util.config import Config
 from octorust.linking.octopos_link import link_app
+from octorust.recipes.c import compile_c_object
 from octorust.recipes.rust import get_rust_target_triple,\
     generate_leon_specification
 
 
 def compile_using_cargo(config: Config):
+    """
+    Compiles a rust crate using cargo. This crate needs to use an
+    'OctoCargo.toml' file instead of the normal 'Cargo.toml' file
+    :param config: The configuration to use while compiling
+    :return: None
+    """
 
     static_lib = compile_static_library(config)
-    c_object = compile_c_object(config)
+    c_file = generate_c_dummy()
+    c_object = compile_c_object(config, c_file)
     link_app(config, [c_object, static_lib])
-    cleanup([c_object, static_lib])
+    cleanup([c_file, c_object, static_lib])
 
 
 def compile_static_library(config: Config) -> str:
@@ -91,90 +99,15 @@ def read_crate_name_from_cargo_toml(cargo_toml: str) -> str:
     sys.exit(1)
 
 
-def compile_c_object(config: Config) -> str:
-    """
-    Compiles A C file that acts as a compatibility layer to OctoPOS
-    :param config: The config that defines the compiler options
-    :return: The path to the generated object file
-    """
-
-    generate_c_dummy("dummy.c")
-
-    command = [config.gcc]
-
-    if config.arch.startswith("x"):
-
-        if config.arch == "x86guest":
-
-            command += [
-                "-mfpmath=sse",
-                "-msse2",
-                "-m32",
-                "-nostdinc",
-                "-fno-asynchronous-unwind-tables",
-                "-fno-stack-protector",
-            ]
-
-        elif config.arch == "x64native":
-
-            command += [
-                "-m64",
-                "-fno-stack-protector",
-                "-mno-red-zone",
-                "-nodefaultlibs",
-                "-nostdlib",
-                "-mcx16",
-                "-D__STDC_LIMIT_MACROS",
-                "-O3",
-                "-nostdinc",
-                "-fno-asynchronous-unwind-tables",
-                "-fno-stack-protector",
-            ]
-
-        command += [  # Same for x86guest and x64native
-            "-I" + config.irtss_include,
-            "-isystem",
-            config.gcc_include,
-            "-D__OCTOPOS__",
-            "-std=gnu11"
-        ]
-
-    elif config.arch == "leon":
-
-        command += [
-            "-mcpu=v8",
-            "-O3",
-            "-nostdinc",
-            "-fno-asynchronous-unwind-tables",
-            "-fno-stack-protector",
-            "-I" + config.irtss_include,
-            "-isystem",
-            config.gcc_include,
-            "-D__OCTOPOS__",
-            "-std=gnu99"
-
-        ]
-
-    command += ["-c", "dummy.c", "-o", "dummy.o"]
-    print(command)
-    Popen(command).wait()
-
-    cleanup(["dummy.c"])
-
-    if not os.path.isfile("dummy.o"):
-        print("C Object did not compile. Can not continue.")
-        sys.exit(1)
-
-    return "dummy.o"
-
-
-def generate_c_dummy(destination: str):
+def generate_c_dummy() -> str:
     """
     Writes a dummy C file that acts as 'glue' to get rust working with
     OctoPOS
-    :param destination: The dummy file location
-    :return: None
+    :return: The path to the dummy file
     """
+    destination = "dummy.c"
+    while os.path.isfile(destination):
+        destination = "_" + destination
 
     data = "#include <stdint.h>\n" \
            "#include <octopos.h>\n" \
@@ -183,3 +116,5 @@ def generate_c_dummy(destination: str):
 
     with open(destination, 'w') as dummy:
         dummy.write(data)
+
+    return destination
