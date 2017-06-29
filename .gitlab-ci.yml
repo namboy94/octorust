@@ -2,6 +2,7 @@ stages:
   - lint
   - install
   - build
+  - test
 
 python_lint:
   stage: lint
@@ -94,4 +95,9 @@ build_cargo_leon_sample:
 #    - octorust samples/rustc_sample/rustc_sample.rs --architecture leon
 #    - qemu-sparc rustc_sample
 
-
+test_bindings:
+  stage: test
+  tags:
+    - linux-buildserver
+  script:
+    - octorust test/bindings_test -r
