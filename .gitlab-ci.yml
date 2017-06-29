@@ -28,7 +28,7 @@ build_cargo_x86_sample:
     - linux-buildserver
   script:
     - octorust samples/cargo_sample
-    - ./cargo_sample.out
+    - ./cargo_sample
 
 build_rustc_x86_sample:
   stage: build
@@ -44,7 +44,7 @@ build_cargo_x64_sample:
     - linux-buildserver
   script:
     - octorust samples/cargo_sample --architecture x64native
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel cargo_sample.out
+    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel cargo_sample
 
 build_rustc_x64_sample:
   stage: build
