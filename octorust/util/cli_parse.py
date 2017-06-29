@@ -69,7 +69,7 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
     """
     Determines the mode in which the program will run
     :param source: The source file/directory location
-    :param fetch_irtss: A flag that can be set to make the 
+    :param fetch_irtss: A flag that can be set to make the
                         application download an IRTSS release.
                         Will be ranked below any actual compilation job
     :param run: This flag can be set to automatically run a program upon
