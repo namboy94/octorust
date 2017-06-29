@@ -83,6 +83,10 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
         print("Compiling using rustc")
         mode.append("compile_rustc")
 
+    elif source is not None and source.endswith(".c"):
+        print("Compiling C file")
+        mode.append("compile_c")
+
     elif source is not None and \
             os.path.isfile(os.path.join(source, "OctoCargo.toml")):
         print("Compiling using Cargo:")
@@ -124,6 +128,10 @@ def determine_output_path(output_argument: str or None, source: str,
 
             if "compile_rustc" in mode:
                 output = source.rsplit(".rs", 1)[0]
+                output = os.path.basename(output)
+
+            elif "compile_c" in mode:
+                output = source.rsplit(".c", 1)[0]
                 output = os.path.basename(output)
 
             elif "compile_cargo" in mode:

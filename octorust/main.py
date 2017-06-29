@@ -6,6 +6,7 @@ Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 from octorust.util.runner import run_executable
 from octorust.util.cli_parse import generate_config
 from octorust.dependencies.irtss import get_irtss_release
+from octorust.recipes.c import compile_c
 from octorust.recipes.rustc import compile_using_rustc
 from octorust.recipes.cargo import compile_using_cargo
 
@@ -27,6 +28,9 @@ def main():
 
     elif "compile_cargo" in config.mode:
         compile_using_cargo(config)
+
+    elif "compile_c" in config.mode:
+        compile_c(config)
 
     if "run" in config.mode and config.mode[0].startswith("compile"):
         run_executable(config.output, config.arch)
