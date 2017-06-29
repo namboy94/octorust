@@ -33,13 +33,14 @@ def compile_static_library(config: Config) -> str:
     crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
 
     target_triple = get_rust_target_triple(config.arch)
-    command = ["cargo", "rustc", "--", "--target", target_triple]
+    command = ["cargo", "rustc", "--target", target_triple]
 
     if config.arch == "leon":
         generate_leon_specification(config)
-        command += ["-C", "link-dead-code"]
+        command += ["--", "-C", "link-dead-code"]
 
     libname = "lib" + crate_name + ".a"
+    print(libname)
     # For x64, cargo doesn't create a separate build directory
     if target_triple == "x86_64-unknown-linux-gnu":
         output = os.path.join("target", "debug", libname)
@@ -89,7 +90,7 @@ def read_crate_name_from_cargo_toml(cargo_toml: str) -> str:
 
     for line in lines:
         if "name=" in line.replace(" ", ""):
-            return line.split("=", 1)[1].strip()
+            return line.split("=", 1)[1].replace("\"", "").strip()
 
     print("Cargo.toml does not contain a project name")
     sys.exit(1)
@@ -181,7 +182,9 @@ def generate_c_dummy(destination: str):
     """
 
     data = "#include <stdint.h>\n" \
-           "void main_rust_ilet(uint8_t claim_t);"
+           "#include <octopos.h>\n" \
+           "extern void rust_main_ilet(uint8_t claim_t);\n" \
+           "void main_ilet(uint8_t claim_t) { rust_main_ilet(claim_t); }"
 
     with open(destination, 'w') as dummy:
         dummy.write(data)
