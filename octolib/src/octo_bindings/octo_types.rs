@@ -27,23 +27,23 @@ pub type res_type_t = u8;
 /// os::agent::ProxyAgentOctoClaims can be used in an iLet to access
 /// an iLet's os::agent:AgentOctoClaim, even if the iLet does not run on the tile where
 /// the os::agent:AgentOctoClaim object is located.
-pub type agentclaim_t = * c_void;
+pub type agentclaim_t = *mut c_void;
 
 /// Represents a os::agent::Constraints* in the C interface.
 /// So a constraints_t must be castable to a os::agent::Constraints* via static cast.
-pub type constraints_t = * c_void;
+pub type constraints_t = *mut c_void;
 
 /// Represents aos::agent::AgentInstance* in the C interface.
 /// So a agent_t must be castable to a os::agent::AgentInstance* via static cast.
-pub type agent_t = * c_void;
+pub type agent_t = *mut c_void;
 
 /*
  * Both gain_t and loss_t are actually two-dimensional uint8_t arrays,
  * bounded by the tile_count and res_per_tile parameters.
  */
-pub type gain_t = * c_void;
-pub type loss_t = * c_void;
-pub type resize_env_t = * c_void;
+pub type gain_t = *mut c_void;
+pub type loss_t = *mut c_void;
+pub type resize_env_t = *mut c_void;
 
 // TODO Look for a way to port this
 //typedef void (*resize_handler_t)(const agentclaim_t, const size_t /* tile_count */, const size_t /* res_per_tile */, const gain_t, const loss_t, const resize_env_t);
