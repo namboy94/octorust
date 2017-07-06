@@ -2,7 +2,7 @@
 
 extern crate octolib;
 use octolib::helper::printer::print_text;
-use octolib::octo_bindings::octo_agent::agent_stresstest_agentoctoclaim;
+use octolib::octo_agent::agent_stresstest_agentoctoclaim;
 
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {

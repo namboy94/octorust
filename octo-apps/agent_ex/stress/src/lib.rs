@@ -1,8 +1,8 @@
 #![no_std]
 
 extern crate octolib;
-use octolib::octo_bindings::octo_types::*;
-use octolib::octo_bindings::octo_agent::{agent_constr_create};
+use octolib::octo_types::*;
+use octolib::octo_agent::{agent_constr_create};
 
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {

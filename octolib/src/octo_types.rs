@@ -1,5 +1,6 @@
-use libc::c_void;
+use libc::c_void as __c_void;
 
+pub type c_void = __c_void;
 pub type claim_t = u8;
 pub type tile_id_t = u8;
 pub type tile_quantity_t = u8;

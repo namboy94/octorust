@@ -1,4 +1,4 @@
-use octo_bindings::octo_types::*;
+use octo_types::*;
 
 extern {
     #[link_name="agent_agent_create"]

@@ -1,7 +1,6 @@
 /// Status information about tile and its components; conversion functions for TLM pointer
 
-use libc::c_void;
-use octo_bindings::octo_types::tile_id_t;
+use octo_types::*;
 
 extern {
     #[link_name="get_cpu_id"]
