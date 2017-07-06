@@ -2,6 +2,8 @@
 #![crate_type="lib"]
 #![no_std]
 
+#![allow(non_camel_case_types)]
+
 // enable external C functions
 extern crate libc;
 

@@ -37,6 +37,9 @@ pub type constraints_t = *mut c_void;
 /// So a agent_t must be castable to a os::agent::AgentInstance* via static cast.
 pub type agent_t = *mut c_void;
 
+// Originally in octo_proxy_claim.h
+pub type proxy_claim_t = *mut c_void;
+
 /*
  * Both gain_t and loss_t are actually two-dimensional uint8_t arrays,
  * bounded by the tile_count and res_per_tile parameters.
@@ -45,9 +48,13 @@ pub type gain_t = *mut c_void;
 pub type loss_t = *mut c_void;
 pub type resize_env_t = *mut c_void;
 
-// TODO Look for a way to port this
-//typedef void (*resize_handler_t)(const agentclaim_t, const size_t /* tile_count */, const size_t /* res_per_tile */, const gain_t, const loss_t, const resize_env_t);
-//typedef void (*reinvade_handler_t)(void); // handler which gets called on reinvade. Currently without arguments.
+pub type resize_handler_t = Option<unsafe extern "C" fn(arg1: agentclaim_t,
+                                                        arg2: usize,
+                                                        arg3: usize,
+                                                        arg4: gain_t,
+                                                        arg5: loss_t,
+                                                        arg6: resize_env_t)>;
+pub type reinvade_handler_t = Option<unsafe extern "C" fn()>;
 
 /// Size type for DMA buffers.
 pub type buf_size_t = u32;

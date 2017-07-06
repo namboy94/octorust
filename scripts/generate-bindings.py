@@ -111,14 +111,26 @@ def convert_comments(block: List[str]) -> List[str]:
 
         elif line.replace("///", "").strip().startswith("\\param "):
             if prev_line is None or \
-                    not prev_line.replace("///", "").strip().startswith(
+                    not prev_line.replace("*", "").strip().startswith(
                         "\\param "):
-                converted.append("/// # Arguments")
+                converted.append("///\n/// # Arguments")
                 converted.append("///")
             line = line.replace("\\param ", "").replace("///", "").strip()
             varname = line.split(" ", 1)[0]
             line = "/// * `" + varname + "` - " + line.split(" ", 1)[1]
-            line += "\n///"
+
+            if next_line is None or \
+                    not next_line.replace("*", "").strip().startswith(
+                        "\\param "):
+                line += "\n///"
+
+        elif line.replace("///", "").strip().startswith("\\note "):
+
+            if prev_line is None or \
+                    not prev_line.replace("*", "").strip().startswith(
+                        "\\note "):
+                converted.append("///\n/// # Note\n///")
+            line = "/// " + line.split("note", 1)[1]
 
         converted.append(line)
 
