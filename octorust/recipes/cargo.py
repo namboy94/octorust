@@ -22,7 +22,7 @@ def compile_using_cargo(config: Config):
     c_file = generate_c_dummy()
     c_object = compile_c_object(config, c_file)
     link_app(config, [c_object, static_lib])
-    cleanup([c_file, c_object, static_lib])
+    cleanup([c_file, c_object, static_lib], config)
 
 
 def compile_static_library(config: Config) -> str:
@@ -58,7 +58,7 @@ def compile_static_library(config: Config) -> str:
         sys.exit(1)
 
     os.rename(output, os.path.join(current, libname))
-    cleanup(["leon.json", "Cargo.toml"])
+    cleanup(["leon.json", "Cargo.toml"], config)
 
     os.chdir(current)
     return libname

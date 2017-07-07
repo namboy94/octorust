@@ -16,7 +16,7 @@ class Config(object):
     """
 
     def __init__(self, arch: str, variant: str, source: str, output: str,
-                 mode: List[str]):
+                 mode: List[str], keep: bool):
         """
         Creates a new Config object
         :param arch: The target architecture
@@ -24,12 +24,14 @@ class Config(object):
         :param source: The input source file
         :param output: The output file
         :param mode: The mode in which to run this program
+        :param keep: Specifies if generated files should be deleted or not
         """
         self.arch = arch
         self.variant = variant
         self.source = source
         self.output = output
         self.mode = mode
+        self.keep = keep
 
         # Paths to dependencies locally installed by setup.py
         self.dependency_dir = os.path.join(

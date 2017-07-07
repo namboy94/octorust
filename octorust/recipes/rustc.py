@@ -21,7 +21,7 @@ def compile_using_rustc(config: Config):
     rust_object = compile_rust_object(config)
     link_app(config, [rust_object])
 
-    cleanup(["leon.json", rust_object])
+    cleanup(["leon.json", rust_object], config)
 
 
 def compile_rust_object(config: Config) -> str:

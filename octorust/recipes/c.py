@@ -14,7 +14,7 @@ def compile_c(config: Config):
     """
     object_file = compile_c_object(config, config.source)
     link_app(config, [object_file])
-    cleanup([object_file])
+    cleanup([object_file], config)
 
 
 def compile_c_object(config: Config, target: str) -> str:

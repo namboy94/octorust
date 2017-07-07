@@ -31,7 +31,7 @@ def generate_config() -> Config:
     mode = determine_mode(source, args.fetch_irtss, args.run)
     output = determine_output_path(args.output, source, mode)
 
-    return Config(arch, variant, source, output, mode)
+    return Config(arch, variant, source, output, mode, args.keep)
 
 
 def parse_args() -> argparse.Namespace:
@@ -61,6 +61,8 @@ def parse_args() -> argparse.Namespace:
                              "Will use the specified architecture and variant")
     parser.add_argument("-r", "--run", action="store_true",
                         help="Executes the application after compilation")
+    parser.add_argument("-k", "--keep", action="store_true",
+                        help="Keeps the produced files. Helpful for debugging")
 
     return parser.parse_args()
 
