@@ -1,5 +1,5 @@
 #![feature(intrinsics, lang_items)]
-#![crate_type="lib"]
+#![crate_type="staticlib"]
 #![no_std]
 
 #![allow(non_camel_case_types)]

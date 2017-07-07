@@ -1,29 +1,45 @@
 #![no_std]
 
 extern crate octolib;
+extern { fn printf(s: *const u8, ...); }
 use octolib::octo_types::*;
-use octolib::octo_agent::{agent_constr_create};
+use octolib::helper::printer::*;
+use octolib::octo_agent::*;
+
+const parnum: i32 = 2;
+static mut globCounter: [i32; parnum as usize] = [-1; parnum as usize];
 
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 
-    const parnum: usize = 2;
-    let globCounter: [i32; parnum];
+    print_text("main ilet!\n");
+    let initialClaim: agentclaim_t = agent_claim_get_initial(claim);
+    unsafe { printf("** Invading %d Claims for Stresstest:\n\0".as_ptr(), parnum) }
 
-    let stressConstraints: constraints_t = agent_constr_create();
+    let dummy = agent_constr_create();
+    let mut myConstr: [constraints_t; parnum as usize] = [dummy; parnum as usize];
+    let mut myClaim: [agentclaim_t; parnum as usize];
 
-    //agent_constr_set_quantity(stressConstraints, 1, 1+rand()%15, 0);
-    //agent_constr_set_tile_shareable(stressConstraints, 1);
-    //agent_constr_set_appnumber(stressConstraints, (int)parm);
+    // TODO Loops
+    // Currently loops are broken :(
 
-    // creates an agentclaim_t object!
-    //let stressClaim: agentclaim_t = agent_claim_invade(NULL, stressConstraints);
+    let mut i = 0;
 
-    //if (!stressClaim) {
-    //    fprintf(stderr, "Invade operation unsuccessful.");
+    unsafe {
+        //globCounter[i] = 0;
+    }
+    myConstr[i] = agent_constr_create();
+    agent_constr_set_quantity(myConstr[i], 1, 1, 0);   // min 2, max 5, type 0
+    //agent_constr_set_tile_shareable(myConstr[i], 1);
+    //agent_constr_set_appnumber(myConstr[i], i as i32);
+    //myClaim[i] = agent_claim_invade(NULL, myConstr[i]);
+
+    //if !myClaim[i] {
+    //    printf("Invade operation unsuccessful.\0");
     //    abort();
     //}
 
+    //printf("* Returned Claim %d of Size %d\n\0", i, agent_claim_get_pecount(myClaim[i]));
 
 }
 
