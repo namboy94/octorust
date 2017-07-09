@@ -17,4 +17,5 @@ pub mod octo_agent;
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
 #[lang = "eh_unwind_resume"] extern fn eh_unwind_resume() {}
-#[lang = "panic_fmt"]#[no_mangle]  fn panic_fmt() -> ! { loop {} } // Must not be mangled!
+#[lang = "panic_fmt"]#[no_mangle]  fn panic_fmt() -> ! { loop {} }
+#[no_mangle] pub extern "C" fn _Unwind_Resume(_ex_obj: *mut ()) { }

@@ -22,7 +22,7 @@ def link_app(config: Config, link_targets: List[str]):
     command += [  # Shared arguments for all architectures
         "-L" + config.irtss_lib,
         "-nostdlib",
-        "-Wl,-T," + config.irtss_sections_x,
+        "-Wl,-T," + config.irtss_sections_x + ",--gc-sections",
         config.crti_o,
         config.crtbegin_o]
 
