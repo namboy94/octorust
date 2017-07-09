@@ -7,7 +7,7 @@
 #include "octo_agent.h"
 
 const int parnum=2;
-int globCounter[parnum];
+int globCounter[2];
 
 void StressILet(void* parm) {
 
@@ -41,7 +41,7 @@ void StressILet(void* parm) {
 }
 
 
-extern "C" void main_ilet(claim_t claim) {
+void main_ilet(claim_t claim) {
     printf("main ilet\n");
 
     agentclaim_t initialClaim = agent_claim_get_initial(claim);
@@ -69,7 +69,8 @@ extern "C" void main_ilet(claim_t claim) {
 
     for (int i=0; i<parnum; i++) {
         for (int tile=0; tile < get_tile_count(); tile++) {
-            if (int pes=agent_claim_get_pecount_tile_type(myClaim[i],  tile, 0)) {	// Type = 0 ^= RISC
+            int pes=agent_claim_get_pecount_tile_type(myClaim[i],  tile, 0);
+            if (pes) {	// Type = 0 ^= RISC
                 proxy_claim_t pClaim = agent_claim_get_proxyclaim_tile_type(myClaim[i], tile, 0);
                 printf("* Got Proxy Claim %p\n", pClaim);
 

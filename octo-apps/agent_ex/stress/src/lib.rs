@@ -29,7 +29,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
         agent_constr_set_quantity(myConstr[i], 1, 1, 0);   // min 2, max 5, type 0
         agent_constr_set_tile_shareable(myConstr[i], 1);
         agent_constr_set_appnumber(myConstr[i], i as i32);
-        myClaim[i] = agent_claim_invade(ptr::null_mut(), myConstr[i]);
+        // myClaim[i] = agent_claim_invade(ptr::null_mut(), myConstr[i]);
 
 
 
