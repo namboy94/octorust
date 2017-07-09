@@ -11,8 +11,8 @@ extern crate octolib;
 
 // Tells rust which octolib functions should be accessible from this file.
 use octolib::helper::printer::*;
-use octolib::octo_guest::guest_shutdown;
-use octolib::octo_tile::get_tile_id;
+use octolib::octo_guest::*;
+use octolib::octo_tile::*;
 
 // main_rust_ilet() is the main entry point of the program.
 // The application is started directly after bootup and runs on a single claim
