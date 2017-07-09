@@ -13,6 +13,7 @@ pub mod octo_tile;
 pub mod octo_guest;
 pub mod octo_types;
 pub mod octo_agent;
+pub mod octo_proxy_claim;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}

@@ -9,10 +9,18 @@
 // Tells rust to include the octolib dependency
 extern crate octolib;
 
+// TODO integrate in octolib
+extern {
+    fn abort();
+}
+
 // Tells rust which octolib functions should be accessible from this file.
 use octolib::helper::printer::*;
 use octolib::octo_guest::*;
 use octolib::octo_tile::*;
+use octolib::octo_proxy_claim::*;
+use octolib::octo_types::*;
+use core::ptr;
 
 // main_rust_ilet() is the main entry point of the program.
 // The application is started directly after bootup and runs on a single claim
@@ -20,7 +28,7 @@ use octolib::octo_tile::*;
 // Note the 'extern "C"' and #[no_mangle] declaration, which are
 // necessary in Rust to prevent the compiler from mangling the symbol name.
 #[no_mangle]
-pub extern "C" fn main_rust_ilet(claim: u8) {
+pub extern "C" fn rust_main_ilet(claim: u8) {
 
     // Be friendly and greet the user.
     // Currently, this is a bit hacky since Rust's own println
@@ -32,25 +40,26 @@ pub extern "C" fn main_rust_ilet(claim: u8) {
     // Now let's invade three cores on tile 1.
 	// The proxy_invade() call works asynchronously - we can continue doing
 	// stuff while the request is being processed.
-	// TODO implement invade_future, proxy_invade, abort
-	// let future: invade_future;
-	// if proxy_invade(1, &future, 3) != 0 {
-	//     print_text("proxy_invade failed - does tile 1 even exist?\n\0");
-	//	   abort();
-	// }
+    // In rust, you can't just initialize a variable, it needs to have a value.
+    // So we initialize a dummy invade_future.
+    let mut dummy_future = invade_future { padding: ['a'; 64] };
+    let future: *mut invade_future = &mut dummy_future;
+	if proxy_invade(1, future, 3) != 0 {
+	    print_text("proxy_invade failed - does tile 1 even exist?\n\0");
+		unsafe { abort(); }
+	}
 
 	// In theory, we could do arbitrary stuff between proxy_invade() and
 	// invade_future_force(). In this sample application, we don't.
 
 	// Now let's go see if the invasion worked. If it did, we get a proxy claim
 	// to which we can send i-lets to be executed on tile 1.
-	// TODO Implement proxy_claim_t, invade_future_force
-	// let pc: proxy_claim_t = invade_future_force(&future);
-	// if pc == 0 {
-	//	   print_text("invade_future_force failed - looks like 3 free cores are \
-	//	               not available on tile 1.\n");
-	//	   abort();
-	// }
+	let pc: proxy_claim_t = invade_future_force(future);
+	if pc == ptr::null_mut() as *mut c_void {
+	    print_text("invade_future_force failed - looks like 3 free cores are \
+	                not available on tile 1.\n");
+	    unsafe { abort(); }
+    }
 
 	// We will send an i-let to tile 1 and then want to wait until that i-let
 	// has finished executing. For this purpose, we use a signalling primitive.
@@ -64,19 +73,19 @@ pub extern "C" fn main_rust_ilet(claim: u8) {
 	// TODO implement simple_signal, simple_signal_init
 	// Create a signal and initialise its counter with 1.
 	// Note that the signal lies on the i-let's stack, in our own TLM.
-	let signal: simple_signal;
-	simple_signal_init(&signal, 1);
+	//let signal: simple_signal;
+	//simple_signal_init(&signal, 1);
 
 	// TODO implement simple_ilet, simple_ilet_init, proxy_infect
 	// Create the i-let we want to execute on tile 1, and pass a pointer to the
 	// signal as argument.
-	let iLet: simple_ilet ;
-	simple_ilet_init(&iLet, remoteILetFunc, &signal);
-	proxy_infect(pc, &iLet, 1);
+	//let iLet: simple_ilet ;
+	//simple_ilet_init(&iLet, remoteILetFunc, &signal);
+	//proxy_infect(pc, &iLet, 1);
 
 	// TODO implement simple_signal_wait
 	// Now wait until the remote i-let has notified us of its completion.
-	simple_signal_wait(&signal);
+	//simple_signal_wait(&signal);
 
     // Shut down the system.
 	// If we don't do this, the system will keep running forever. Simply
@@ -87,12 +96,12 @@ pub extern "C" fn main_rust_ilet(claim: u8) {
 
 
 // This is the function we execute on tile 1.
-fn remoteILetFunc(arg: c_void) {
+//fn remoteILetFunc(arg: c_void) {
 
 	// Be friendly and greet the user.
-	print_text("Hello from tile \0");
-    print_u32(get_tile_id());
-    print_text("!\n\0");
+	//print_text("Hello from tile \0");
+    //print_u32(get_tile_id());
+    //print_text("!\n\0");
 
 	// TODO implement simple_ilet, simple_ilet_init, dispatch_claim_send_reply
 	// We want to tell main_ilet() that we have finished doing what we wanted to
@@ -102,14 +111,14 @@ fn remoteILetFunc(arg: c_void) {
 	// we have no coherent view!
 	// So we need to create another i-let, send that i-let back to the tile
 	// where we came from, and let it care of doing the signalling for us.
-	let reply: simple_ilet;
-	simple_ilet_init(&reply, doSignal, arg);
-	dispatch_claim_send_reply(&reply);
-}
+	//let reply: simple_ilet;
+	//simple_ilet_init(&reply, doSignal, arg);
+	//dispatch_claim_send_reply(&reply);
+//}
 
 // This is the i-let that notifies main_ilet() that the execution on tile 1 has
 // finished.
-fn doSignal(arg: c_void) {
+//fn doSignal(arg: c_void) {
 	// TODO figure this out, Implement simple_signal_signal
-	simple_signal_signal(static_cast<simple_signal *>(arg));
-}
+	//simple_signal_signal(static_cast<simple_signal *>(arg));
+//}

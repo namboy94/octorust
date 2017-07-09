@@ -1,6 +1,9 @@
 use libc::c_void as __c_void;
+use libc::c_char as c_char;
 
+// C Types
 pub type c_void = __c_void;
+
 pub type claim_t = u8;
 pub type tile_id_t = u8;
 pub type tile_quantity_t = u8;
@@ -38,7 +41,8 @@ pub type constraints_t = *mut c_void;
 /// So a agent_t must be castable to a os::agent::AgentInstance* via static cast.
 pub type agent_t = *mut c_void;
 
-// Originally in octo_proxy_claim.h
+/// struct proxy_claim
+/// ProxyClaims are system data structures: Hence, only a Pointer is needed.
 pub type proxy_claim_t = *mut c_void;
 
 /*
