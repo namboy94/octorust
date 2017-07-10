@@ -24,6 +24,7 @@ pub mod octo_syscall_future;
 pub mod octo_dispatch_claim;
 pub mod octo_leon;
 pub mod octo_app;
+pub mod octo_cilk_support;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
