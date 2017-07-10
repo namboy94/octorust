@@ -1,18 +1,3 @@
-#ifndef _OCTO_PULL_DMA_H_
-#define _OCTO_PULL_DMA_H_
-
-#include "octo_dispatch_claim.h"
-#include "octo_proxy_claim.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * \addtogroup infect_grp
- * @{
- */
-
 /**
  * \brief Setup a PullDMA transfer: DMA descriptor is forwarded to source tile
  * to setup a PushDMA
@@ -25,15 +10,12 @@ extern "C" {
  * style addresses) and \b local_dst, although pointing to local tile, has to
  * be in global address format (0x40000000 style addresses)
  *
- * \param claim DispatchClaim/ProxyClaim describing dispatchable resources on
- * the remote source tile
+ * \param claim DispatchClaim/ProxyClaim describing dispatchable resources on the remote source tile
  * \param remote_src Pointer into TLM of remote tile in local address format
  * \param local_dst Pointer into local TLM in global address format
  * \param size size of the remote/local buffers in bytes
- * \param src_iLet ilet that gets submitted at the source side of the
- * transfer (local tile) once the DMA operation is finished
- * \param dst_iLet ilet that gets submitted at the destination side of the
- * transfer (remote tile) once the DMA operation is finished
+ * \param src_iLet ilet that gets submitted at the source side of the transfer (local tile) once the DMA operation is finished
+ * \param dst_iLet ilet that gets submitted at the destination side of the transfer (remote tile) once the DMA operation is finished
  * \return Returns 0 on success; On error -1 is returned: Checks consistency
  * between \b local_dst and TID of tile function is executed on
  */
@@ -44,11 +26,3 @@ int dispatch_claim_pull_dma(dispatch_claim_t claim, const void* remote_src, void
  * \copydoc dispatch_claim_pull_dma
  */
 int proxy_claim_pull_dma(proxy_claim_t claim, const void* remote_src, void* local_dst, buf_size_t size, simple_ilet* src_iLet, simple_ilet* dst_iLet);
-
-/** @} */ // End addtogroup infect_grp
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
