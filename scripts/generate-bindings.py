@@ -37,7 +37,7 @@ def convert(content: List[str]) -> str:
             processed += line + "\n"
         processed += "\n"
 
-    dependencies = "use octo_bindings::octo_types::*;\n\n"
+    dependencies = "use octo_types::*;\n\n"
     extern_block = generate_extern_block()
     return dependencies + extern_block + processed
 

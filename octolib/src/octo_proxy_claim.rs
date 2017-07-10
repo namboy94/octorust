@@ -1,7 +1,8 @@
 use octo_types::*;
+use octo_ilet::*;
+use constants::*;
 
 //TODO remove type shims
-pub type simple_ilet = u32;
 pub type dispatch_claim_t = u32;
 
 /// struct invade_future
@@ -10,7 +11,7 @@ pub type dispatch_claim_t = u32;
 /// This type is used to allocate invade_future "objects" with the right size.
 #[repr(C)]
 pub struct invade_future {
-    pub padding: [char; 64usize],
+    pub padding: [c_char; INVADE_FUTURE_SIZE],
 }
 pub type invade_future_t = invade_future;
 
@@ -20,13 +21,13 @@ pub type invade_future_t = invade_future;
 /// This type is used to allocate reinvade_future "objects" with the right size.
 #[repr(C)]
 pub struct reinvade_future {
-    pub padding: [char; 64usize],
+    pub padding: [c_char; REINVADE_FUTURE_SIZE],
 }
 pub type reinvade_future_t = reinvade_future;
 
 #[repr(C)]
 pub struct retreat_future {
-    pub padding: [char; 64usize],
+    pub padding: [c_char; RETREAT_FUTURE_SIZE],
 }
 pub type retreat_future_t = retreat_future;
 

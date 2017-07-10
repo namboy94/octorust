@@ -17,13 +17,13 @@ extern {
     fn __agent_claim_invade(parentagent: agent_t, constr: constraints_t) -> agentclaim_t;
 
     #[link_name="agent_claim_invade_with_name"]
-    fn __agent_claim_invade_with_name(parentagent: agent_t, constr: constraints_t, agent_name: *const char) -> agentclaim_t;
+    fn __agent_claim_invade_with_name(parentagent: agent_t, constr: constraints_t, agent_name: *const c_char) -> agentclaim_t;
 
     #[link_name="set_agent_name"]
-    fn __set_agent_name(claim: agentclaim_t, agent_name: *const char);
+    fn __set_agent_name(claim: agentclaim_t, agent_name: *const c_char);
 
     #[link_name="get_agent_name"]
-    fn __get_agent_name(claim: agentclaim_t, buffer: *mut char, size: usize) -> i32;
+    fn __get_agent_name(claim: agentclaim_t, buffer: *mut c_char, size: usize) -> i32;
 
     #[link_name="agent_get_downey_sigma"]
     fn __agent_get_downey_sigma(constr: constraints_t) -> i32;
@@ -38,7 +38,7 @@ extern {
     fn __agent_claim_get_initial(octoclaim: claim_t) -> agentclaim_t;
 
     #[link_name="agent_claim_get_initial_with_name"]
-    fn __agent_claim_get_initial_with_name(octoclaim: claim_t, agent_name: *const char) -> agentclaim_t;
+    fn __agent_claim_get_initial_with_name(octoclaim: claim_t, agent_name: *const c_char) -> agentclaim_t;
 
     #[link_name="agent_claim_retreat"]
     fn __agent_claim_retreat(claim: agentclaim_t);
@@ -261,7 +261,7 @@ pub fn agent_claim_invade(parentagent: agent_t, constr: constraints_t) -> agentc
 ///
 /// AbstractAgentOctoClaim handle (which is castable to AgentOctoClaim* via asAOC()) if the invade operation was successful, NULL otherwise.
 ///
-pub fn agent_claim_invade_with_name(parentagent: agent_t, constr: constraints_t, agent_name: *const char) -> agentclaim_t {
+pub fn agent_claim_invade_with_name(parentagent: agent_t, constr: constraints_t, agent_name: *const c_char) -> agentclaim_t {
     unsafe {
         __agent_claim_invade_with_name(parentagent, constr, agent_name)
     }
@@ -277,7 +277,7 @@ pub fn agent_claim_invade_with_name(parentagent: agent_t, constr: constraints_t,
 /// * `agent_name` - If parentagent is NULL, newly created Agent will be assigned this name.
 ///
 /// \return
-pub fn set_agent_name(claim: agentclaim_t, agent_name: *const char) {
+pub fn set_agent_name(claim: agentclaim_t, agent_name: *const c_char) {
     unsafe {
         __set_agent_name(claim, agent_name)
     }
@@ -295,7 +295,7 @@ pub fn set_agent_name(claim: agentclaim_t, agent_name: *const char) {
 ///
 /// C-string of the name.
 ///
-pub fn get_agent_name(claim: agentclaim_t, buffer: *mut char, size: usize) -> i32 {
+pub fn get_agent_name(claim: agentclaim_t, buffer: *mut c_char, size: usize) -> i32 {
     unsafe {
         __get_agent_name(claim, buffer, size)
     }
@@ -421,7 +421,7 @@ pub fn agent_claim_get_initial(octoclaim: claim_t) -> agentclaim_t {
 ///
 /// AbstractAgentOctoClaim handle (which is castable to AgentOctoClaim* via asAOC())
 ///
-pub fn agent_claim_get_initial_with_name(octoclaim: claim_t, agent_name: *const char) -> agentclaim_t {
+pub fn agent_claim_get_initial_with_name(octoclaim: claim_t, agent_name: *const c_char) -> agentclaim_t {
     unsafe {
         __agent_claim_get_initial_with_name(octoclaim, agent_name)
     }

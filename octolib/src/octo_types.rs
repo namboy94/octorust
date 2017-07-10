@@ -1,8 +1,9 @@
 use libc::c_void as __c_void;
-use libc::c_char as c_char;
+use libc::wchar_t;
 
 // C Types
 pub type c_void = __c_void;
+pub type c_char = wchar_t;
 
 pub type claim_t = u8;
 pub type tile_id_t = u8;
