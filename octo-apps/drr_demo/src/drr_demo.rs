@@ -42,7 +42,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	// stuff while the request is being processed.
     // In rust, you can't just initialize a variable, it needs to have a value.
     // So we initialize a dummy invade_future.
-    let mut dummy_future = invade_future { padding: ['a'; 64] };
+    let mut dummy_future = invade_future { padding: [0; 64] };
     let future: *mut invade_future = &mut dummy_future;
 	if proxy_invade(1, future, 3) != 0 {
 	    print_text("proxy_invade failed - does tile 1 even exist?\n\0");
