@@ -27,6 +27,7 @@ pub mod octo_app;
 pub mod octo_cilk_support;
 pub mod octo_claim;
 pub mod octo_clock;
+pub mod octo_debug;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
