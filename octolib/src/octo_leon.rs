@@ -1,8 +1,6 @@
 /// Functions only meaningful in LEON version
 /// LEON specific functions for platforms with APBUART
 
-use octo_types::*;
-
 extern {
     #[link_name="leon_set_bus_frequency"]
     fn __leon_set_bus_frequency(f: u32);
