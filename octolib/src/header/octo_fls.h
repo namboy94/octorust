@@ -1,29 +1,4 @@
 /**
- * \file  octo_fls.h
- * \brief Fibre-local-storage functions.
- *
- * "Fibre" is another name for an i-let in execution. Fibre-local storage
- * enables the programmer to store small amounts of data (usually pointers) in a
- * memory area whose lifespan is identical to the lifespan of the fibre. The
- * values are preserved across blocking operations.
- *
- * The programming interface is very similar to the Windows API.
- *
- * Fibre-local storage supersedes the old "i-let-local data" interface, which
- * has imprecise semantics and is awkward to use by more than one program
- * component.
- */
-
-#ifndef _OCTO_FLS_H_
-#define _OCTO_FLS_H_
-
-#include <inttypes.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
  * \brief Allocates a fibre-local-storage index.
  *
  * Any fibre on this tile can subsequently use the returned index to store and
@@ -58,9 +33,3 @@ int fls_set(uintptr_t index, void *value);
  *        uninitialised, NULL is returned.
  */
 void *fls_get(uintptr_t index);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // _OCTO_FLS_H_
