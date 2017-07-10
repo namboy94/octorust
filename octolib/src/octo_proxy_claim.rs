@@ -1,9 +1,7 @@
 use octo_types::*;
 use octo_ilet::*;
+use octo_dispatch_claim::*;
 use constants::*;
-
-//TODO remove type shims
-pub type dispatch_claim_t = u32;
 
 /// struct invade_future
 /// Opaque type for invade_future
