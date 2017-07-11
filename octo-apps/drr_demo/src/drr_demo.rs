@@ -20,6 +20,8 @@ use octolib::octo_guest::*;
 use octolib::octo_tile::*;
 use octolib::octo_proxy_claim::*;
 use octolib::octo_types::*;
+use octolib::octo_signal::*;
+use octolib::octo_ilet::*;
 use core::ptr;
 
 // main_rust_ilet() is the main entry point of the program.
@@ -40,11 +42,8 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
     // Now let's invade three cores on tile 1.
 	// The proxy_invade() call works asynchronously - we can continue doing
 	// stuff while the request is being processed.
-    // In rust, you can't just initialize a variable, it needs to have a value.
-    // So we initialize a dummy invade_future.
-    let mut dummy_future = invade_future { padding: [0; 64] };
-    let future: *mut invade_future = &mut dummy_future;
-	if proxy_invade(1, future, 3) != 0 {
+    let mut future = invade_future { padding: [0; 64] };
+	if proxy_invade(1, &mut future, 3) != 0 {
 	    print_text("proxy_invade failed - does tile 1 even exist?\n\0");
 		unsafe { abort(); }
 	}
@@ -54,7 +53,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 	// Now let's go see if the invasion worked. If it did, we get a proxy claim
 	// to which we can send i-lets to be executed on tile 1.
-	let pc: proxy_claim_t = invade_future_force(future);
+	let pc: proxy_claim_t = invade_future_force(&mut future);
 	if pc == ptr::null_mut() as *mut c_void {
 	    print_text("invade_future_force failed - looks like 3 free cores are \
 	                not available on tile 1.\n");
@@ -70,22 +69,21 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	// * simple_signal_signal() decrements the counter. If the counter reaches
 	//   zero, the suspended i-let is woken up.
 
-	// TODO implement simple_signal, simple_signal_init
 	// Create a signal and initialise its counter with 1.
 	// Note that the signal lies on the i-let's stack, in our own TLM.
-	//let signal: simple_signal;
-	//simple_signal_init(&signal, 1);
+	let mut signal = simple_signal { padding: [0; 64] };
+	simple_signal_init(&mut signal, 1);
 
 	// TODO implement simple_ilet, simple_ilet_init, proxy_infect
 	// Create the i-let we want to execute on tile 1, and pass a pointer to the
 	// signal as argument.
-	//let iLet: simple_ilet ;
-	//simple_ilet_init(&iLet, remoteILetFunc, &signal);
-	//proxy_infect(pc, &iLet, 1);
+	let mut iLet: simple_ilet = simple_ilet { padding: [0; 64] };
+	simple_ilet_init(&mut iLet, remoteILetFunc, &mut signal as *mut c_void);
+	proxy_infect(pc, &mut iLet, 1);
 
 	// TODO implement simple_signal_wait
 	// Now wait until the remote i-let has notified us of its completion.
-	//simple_signal_wait(&signal);
+	// simple_signal_wait(&signal);
 
     // Shut down the system.
 	// If we don't do this, the system will keep running forever. Simply
@@ -96,7 +94,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 
 // This is the function we execute on tile 1.
-//fn remoteILetFunc(arg: c_void) {
+fn remoteILetFunc(arg: c_void) {
 
 	// Be friendly and greet the user.
 	//print_text("Hello from tile \0");
@@ -114,7 +112,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	//let reply: simple_ilet;
 	//simple_ilet_init(&reply, doSignal, arg);
 	//dispatch_claim_send_reply(&reply);
-//}
+}
 
 // This is the i-let that notifies main_ilet() that the execution on tile 1 has
 // finished.
