@@ -31,6 +31,7 @@ pub mod octo_debug;
 pub mod octo_vga;
 pub mod octo_pull_dma;
 pub mod octo_fls;
+pub mod octo_signal;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
