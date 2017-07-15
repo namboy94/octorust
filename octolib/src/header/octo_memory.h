@@ -1,41 +1,3 @@
-#ifndef _OCTO_MEMORY_H_
-#define _OCTO_MEMORY_H_
-
-#include <stdint.h>
-#include "cfAttribs.h"
-
-/**
- * \file octo_memory.h
- *
- * \brief Functions for dynamic memory allocation
- */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/** \brief Memory types. */
-enum {
-	MEM_TLM_LOCAL = 0, /**< Tile-local memory from this tile's local address space. */
-	MEM_TLM_GLOBAL = 1, /**< Tile-local memory somewhere in the range of the tile's shared address space. */
-	MEM_SHM = 2,  /**< Shared (global) memory. */
-	MEM_ICM = 3, /**< iCore memory. */
-	MEM_TYPES_SIZE = 4,  /* this is the number of valid MEM_types*/
-	MEM_INVALID = -1  /**< Invalid memory region. */
-};
-
-/**
- * OCTO_LIBC_MEM_TYPE defines the memory type for malloc, realloc, free,
- * posix_memalign, aligned_alloc and memalign
- */ 
-#if defined(cf_OCTO_LIBC_ALLOC_TLM)
-	#define OCTO_LIBC_MEM_TYPE MEM_TLM_LOCAL
-#elif defined(cf_OCTO_LIBC_ALLOC_SHM)
-	#define OCTO_LIBC_MEM_TYPE MEM_SHM
-#else
-	#define OCTO_LIBC_MEM_TYPE MEM_TLM_LOCAL
-#endif
-
 /**
  * \brief Allocates uninitialised memory, which is suitably aligned for any
  *        built-in type and DMAs.
@@ -43,8 +5,7 @@ enum {
  * \param size Size of the chunk to be allocated (in bytes).
  * \return Pointer to the allocated chunk on success, NULL on error.
  */
-void *mem_allocate(int type, uintptr_t size)
-	__attribute__((warn_unused_result, malloc));
+void *mem_allocate(int type, uintptr_t size);
 
 /**
  * \brief Allocates uninitialised memory with at least the given alignment.
@@ -54,8 +15,7 @@ void *mem_allocate(int type, uintptr_t size)
  *                  power of two.
  * \return Pointer to the allocated memory on success, NULL on error.
  */
-void *mem_allocate_aligned(int type, uintptr_t alignment, uintptr_t size)
-	__attribute__((warn_unused_result, malloc));
+void *mem_allocate_aligned(int type, uintptr_t alignment, uintptr_t size);
 
 /**
  * \brief Resizes memory, preserving its contents but not
@@ -71,8 +31,7 @@ void *mem_allocate_aligned(int type, uintptr_t alignment, uintptr_t size)
  * \return Pointer to the resized chunk on success, NULL on error. In the
  *         latter case, the original chunk is left untouched.
  */
-void *mem_reallocate(int type, void *p, uintptr_t new_size)
-	__attribute__((warn_unused_result));
+void *mem_reallocate(int type, void *p, uintptr_t new_size);
 
 /**
  * \brief Releases an allocated chunk of memory.
@@ -81,8 +40,6 @@ void *mem_reallocate(int type, void *p, uintptr_t new_size)
  *          previously allocated chunk, a trap is triggered.
  */
 void mem_free(void *p);
-
-
 
 /** \brief Determines the memory type for a given address. */
 int mem_get_type(const void *p);
@@ -106,8 +63,7 @@ intptr_t mem_get_total_page_count(int type);
  * \return Pointer to the allocated memory on success, NULL on error. This
  *         pointer will be aligned at a page boundary.
  */
-void *mem_map(int type, uintptr_t size)
-	__attribute__((warn_unused_result, malloc));
+void *mem_map(int type, uintptr_t size);
 
 /**
  * \brief Allocates memory pages with at least the given alignment.
@@ -117,8 +73,7 @@ void *mem_map(int type, uintptr_t size)
  *        multiple of the page size.
  * \return Pointer to the allocated memory on success, NULL on error.
  */
-void *mem_map_aligned(int type, uintptr_t alignment, uintptr_t size)
-	__attribute__((warn_unused_result, malloc));
+void *mem_map_aligned(int type, uintptr_t alignment, uintptr_t size);
 
 /**
  * \brief If possible, allocates memory pages after the region specified by the
@@ -134,8 +89,7 @@ void *mem_map_aligned(int type, uintptr_t alignment, uintptr_t size)
  * \return 0 on success, -1 if the memory region could not be expanded or
  *         any parameter was invalid
  */
-int mem_map_grow(void *p, uintptr_t size, uintptr_t newsize)
-	__attribute__((warn_unused_result));
+int mem_map_grow(void *p, uintptr_t size, uintptr_t newsize);
 
 /**
  * \brief Releases a number of contiguous allocated memory pages.
@@ -155,9 +109,3 @@ int mem_unmap(void *p, uintptr_t size);
  * \return      A pointer to the allocated memory.
  */
 void* safe_malloc(uintptr_t size);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _OCTO_MEMORY_H_ */

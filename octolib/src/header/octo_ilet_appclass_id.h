@@ -1,12 +1,3 @@
-#ifndef _OCTO_ILET_APPCLASS_ID_H_
-#define _OCTO_ILET_APPCLASS_ID_H_
-
-#include "octo_ilet.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  *  \brief Initialise simple ilet(one parameter form) including id and applclass
  *  \param ilet Pointer to ilet instance
@@ -36,9 +27,3 @@ void dual_ilet_init_appclass(simple_ilet* ilet, dual_ilet_func code, void* param
  *  \return 0 on success, -1 on failure
  */
 int program_application_class(uint32_t class_index, uint32_t class_weights);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
