@@ -4,8 +4,8 @@
 use octo_types::*;
 use constants::*;
 
-pub type ilet_func = Option<unsafe extern "C" fn(arg1: *mut c_void)>;
-pub type dual_ilet_func = Option<unsafe extern "C" fn(arg1: *mut c_void, arg2: *mut c_void)>;
+pub type ilet_func = extern fn(arg1: *mut c_void);
+pub type dual_ilet_func = extern fn(arg1: *mut c_void, arg2: *mut c_void);
 
 /// struct simple_ilet
 /// Opaque type for simple_ilet

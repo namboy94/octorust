@@ -22,6 +22,7 @@ use octolib::octo_proxy_claim::*;
 use octolib::octo_types::*;
 use octolib::octo_signal::*;
 use octolib::octo_ilet::*;
+use octolib::octo_dispatch_claim::*;
 use core::ptr;
 
 // main_rust_ilet() is the main entry point of the program.
@@ -74,16 +75,14 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let mut signal = simple_signal { padding: [0; 64] };
 	simple_signal_init(&mut signal, 1);
 
-	// TODO implement simple_ilet, simple_ilet_init, proxy_infect
 	// Create the i-let we want to execute on tile 1, and pass a pointer to the
 	// signal as argument.
-	let mut iLet: simple_ilet = simple_ilet { padding: [0; 64] };
-	simple_ilet_init(&mut iLet, remoteILetFunc, &mut signal as *mut c_void);
+	let mut iLet: simple_ilet = simple_ilet { padding: [0; 32] };
+	simple_ilet_init(&mut iLet, remoteILetFunc, &mut signal as *mut _ as *mut c_void);
 	proxy_infect(pc, &mut iLet, 1);
 
-	// TODO implement simple_signal_wait
 	// Now wait until the remote i-let has notified us of its completion.
-	// simple_signal_wait(&signal);
+	simple_signal_wait(&mut signal);
 
     // Shut down the system.
 	// If we don't do this, the system will keep running forever. Simply
@@ -94,14 +93,13 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 
 // This is the function we execute on tile 1.
-fn remoteILetFunc(arg: c_void) {
+extern "C" fn remoteILetFunc(arg: *mut c_void) {
 
 	// Be friendly and greet the user.
-	//print_text("Hello from tile \0");
-    //print_u32(get_tile_id());
-    //print_text("!\n\0");
+	print_text("Hello from tile \0");
+    print_u32(get_tile_id());
+    print_text("!\n\0");
 
-	// TODO implement simple_ilet, simple_ilet_init, dispatch_claim_send_reply
 	// We want to tell main_ilet() that we have finished doing what we wanted to
 	// do. For that purpose, we have been given a pointer to a simple_signal
 	// structure (arg). But - and this is the tricky part - we cannot access
@@ -109,14 +107,14 @@ fn remoteILetFunc(arg: c_void) {
 	// we have no coherent view!
 	// So we need to create another i-let, send that i-let back to the tile
 	// where we came from, and let it care of doing the signalling for us.
-	//let reply: simple_ilet;
-	//simple_ilet_init(&reply, doSignal, arg);
-	//dispatch_claim_send_reply(&reply);
+	let mut reply: simple_ilet = simple_ilet { padding: [0; 32] };
+	simple_ilet_init(&mut reply, doSignal, arg);
+	dispatch_claim_send_reply(&mut reply);
 }
 
 // This is the i-let that notifies main_ilet() that the execution on tile 1 has
 // finished.
-//fn doSignal(arg: c_void) {
-	// TODO figure this out, Implement simple_signal_signal
-	//simple_signal_signal(static_cast<simple_signal *>(arg));
-//}
+extern "C" fn doSignal(arg: *mut c_void) {
+
+	simple_signal_signal(arg as *mut simple_signal);
+}
