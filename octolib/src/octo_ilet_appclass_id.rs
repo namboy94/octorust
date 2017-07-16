@@ -1,11 +1,12 @@
 use octo_types::*;
+use octo_ilet::*;
 
 extern {
     #[link_name="simple_ilet_init_appclass"]
-    fn __simple_ilet_init_appclass(ilet: *simple_ilet, code: ilet_func, param: *void, id: u32, appl_class: u32);
+    fn __simple_ilet_init_appclass(ilet: *mut simple_ilet, code: ilet_func, param: *mut c_void, id: u32, appl_class: u32);
 
     #[link_name="dual_ilet_init_appclass"]
-    fn __dual_ilet_init_appclass(ilet: *simple_ilet, code: dual_ilet_func, param1: *void, param2: *void, id: u32, appl_class: u32);
+    fn __dual_ilet_init_appclass(ilet: *mut simple_ilet, code: dual_ilet_func, param1: *mut c_void, param2: *mut c_void, id: u32, appl_class: u32);
 
     #[link_name="program_application_class"]
     fn __program_application_class(class_index: u32, class_weights: u32) -> i32;
@@ -21,7 +22,7 @@ extern {
 /// * `param` - parameter for function
 /// * `id` - id to be written into ilet
 /// * `appl_class` - application clas to be written into ilet
-pub fn simple_ilet_init_appclass(ilet: *simple_ilet, code: ilet_func, param: *void, id: u32, appl_class: u32) {
+pub fn simple_ilet_init_appclass(ilet: *mut simple_ilet, code: ilet_func, param: *mut c_void, id: u32, appl_class: u32) {
     unsafe {
         __simple_ilet_init_appclass(ilet, code, param, id, appl_class)
     }
@@ -37,7 +38,7 @@ pub fn simple_ilet_init_appclass(ilet: *simple_ilet, code: ilet_func, param: *vo
 /// * `param2` - second parameter for function
 /// * `id` - id to be written into ilet
 /// * `appl_class` - application clas to be written into ilet
-pub fn dual_ilet_init_appclass(ilet: *simple_ilet, code: dual_ilet_func, param1: *void, param2: *void, id: u32, appl_class: u32) {
+pub fn dual_ilet_init_appclass(ilet: *mut simple_ilet, code: dual_ilet_func, param1: *mut c_void, param2: *mut c_void, id: u32, appl_class: u32) {
     unsafe {
         __dual_ilet_init_appclass(ilet, code, param1, param2, id, appl_class)
     }

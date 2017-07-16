@@ -1,6 +1,7 @@
 /// Ethernet-communication functions.
 
 use octo_types::*;
+use octo_ilet::*;
 
 pub type eth_channel_t = *mut c_void;
 
@@ -22,8 +23,6 @@ static inline uint32_t IP(uint8_t a, uint8_t b, uint8_t c, uint8_t d) {
 }
 */
 
-use octo_types::*;
-
 extern {
     #[link_name="eth_set_ip_address"]
     fn __eth_set_ip_address(address: u32) -> i32;
@@ -38,10 +37,10 @@ extern {
     fn __eth_close(channel: eth_channel_t) -> i32;
 
     #[link_name="eth_receive"]
-    fn __eth_receive(channel: eth_channel_t, buffer: *void, size: buf_size_t, iLet: *simple_ilet) -> i32;
+    fn __eth_receive(channel: eth_channel_t, buffer: *mut c_void, size: buf_size_t, iLet: *mut simple_ilet) -> i32;
 
     #[link_name="eth_send"]
-    fn __eth_send(channel: eth_channel_t, buffer: *const void, size: buf_size_t, iLet: *simple_ilet) -> i32;
+    fn __eth_send(channel: eth_channel_t, buffer: *const c_void, size: buf_size_t, iLet: *mut simple_ilet) -> i32;
 
 }
 
@@ -124,7 +123,7 @@ pub fn eth_close(channel: eth_channel_t) -> i32 {
 ///  The destination buffer must be located in TLM. Moreover, on the
 ///  x86guest platform, it cannot be located on the stack for architectural
 ///  reasons.
-pub fn eth_receive(channel: eth_channel_t, buffer: *void, size: buf_size_t, iLet: *simple_ilet) -> i32 {
+pub fn eth_receive(channel: eth_channel_t, buffer: *mut c_void, size: buf_size_t, iLet: *mut simple_ilet) -> i32 {
     unsafe {
         __eth_receive(channel, buffer, size, iLet)
     }
@@ -148,7 +147,7 @@ pub fn eth_receive(channel: eth_channel_t, buffer: *void, size: buf_size_t, iLet
 /// # Note
 ///
 ///  The source buffer must be located in TLM.
-pub fn eth_send(channel: eth_channel_t, buffer: *const void, size: buf_size_t, iLet: *simple_ilet) -> i32 {
+pub fn eth_send(channel: eth_channel_t, buffer: *const c_void, size: buf_size_t, iLet: *mut simple_ilet) -> i32 {
     unsafe {
         __eth_send(channel, buffer, size, iLet)
     }

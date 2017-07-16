@@ -9,8 +9,9 @@ extern {
     #[link_name="gc_start_world"]
     fn __gc_start_world() -> i32;
 
-    #[link_name="gc_iterate_all_stacks"]
-    fn __gc_iterate_all_stacks(*: void (*callback)(const void, *): const void) -> i32;
+    // TODO Figure out how to port
+    // #[link_name="gc_iterate_all_stacks"]
+    // fn __gc_iterate_all_stacks(*: void (*callback)(const void, *): const void) -> i32;
 
     #[link_name="gc_stop_world_on_tile"]
     fn __gc_stop_world_on_tile(tid: tile_id_t);
@@ -38,6 +39,7 @@ pub fn gc_start_world() -> i32 {
     }
 }
 
+/*  TODO Figure out how to port
 /// Invokes a callback function for every active stack.
 ///
 /// # Arguments
@@ -52,6 +54,7 @@ pub fn gc_iterate_all_stacks(*: void (*callback)(const void, *): const void) -> 
         __gc_iterate_all_stacks(*, *))
     }
 }
+*/
 
 /// This is just for debugging purposes!
 pub fn gc_stop_world_on_tile(tid: tile_id_t) {

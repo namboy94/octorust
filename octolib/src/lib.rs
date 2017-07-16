@@ -32,14 +32,13 @@ pub mod octo_vga;
 pub mod octo_pull_dma;
 pub mod octo_fls;
 pub mod octo_signal;
-
-// pub mod octo_eth;
-// pub mod octo_event;
-// pub mod octo_gc_support;
-// pub mod octo_ilet_appclass_id;
-// pub mod octo_memory;
-// pub mod octo_spinlock;
-// pub mod octo_tcpa;
+pub mod octo_eth;
+pub mod octo_event;
+pub mod octo_gc_support;
+pub mod octo_ilet_appclass_id;
+pub mod octo_memory;
+pub mod octo_spinlock;
+pub mod octo_tcpa;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}

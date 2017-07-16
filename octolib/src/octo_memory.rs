@@ -2,52 +2,52 @@
 
 /// Memory types.
 enum MEMTYPES {
-	MEM_TLM_LOCAL = 0, /**< Tile-local memory from this tile's local address space. */
-	MEM_TLM_GLOBAL = 1, /**< Tile-local memory somewhere in the range of the tile's shared address space. */
-	MEM_SHM = 2,  /**< Shared (global) memory. */
-	MEM_ICM = 3, /**< iCore memory. */
-	MEM_TYPES_SIZE = 4,  /* this is the number of valid MEM_types*/
-	MEM_INVALID = -1  /**< Invalid memory region. */
+	MEM_TLM_LOCAL = 0, // Tile-local memory from this tile's local address space.
+	MEM_TLM_GLOBAL = 1, // Tile-local memory somewhere in the range of the tile's shared address space.
+	MEM_SHM = 2,  // Shared (global) memory.
+	MEM_ICM = 3, // iCore memory.
+	MEM_TYPES_SIZE = 4,  // this is the number of valid MEM_types
+	MEM_INVALID = -1,  // < Invalid memory region.
 }
 
 use octo_types::*;
 
 extern {
     #[link_name="*mem_allocate"]
-    fn __*mem_allocate(_type: i32, size: uintptr_t);
+    fn __mem_allocate(_type: i32, size: usize) -> *mut c_void;
 
     #[link_name="*mem_allocate_aligned"]
-    fn __*mem_allocate_aligned(_type: i32, alignment: uintptr_t, size: uintptr_t);
+    fn __mem_allocate_aligned(_type: i32, alignment: usize, size: usize) -> *mut c_void;
 
     #[link_name="*mem_reallocate"]
-    fn __*mem_reallocate(_type: i32, *p: void, new_size: uintptr_t);
+    fn __mem_reallocate(_type: i32, p: *mut c_void, new_size: usize) -> *mut c_void;
 
     #[link_name="mem_free"]
-    fn __mem_free(*p: void);
+    fn __mem_free(p: *mut c_void);
 
     #[link_name="mem_get_type"]
-    fn __mem_get_type(*p: const void) -> i32;
+    fn __mem_get_type(p: *const c_void) -> i32;
 
     #[link_name="mem_get_page_size"]
-    fn __mem_get_page_size(__attribute__((const): )) -> uintptr_t;
+    fn __mem_get_page_size() -> usize;
 
     #[link_name="mem_get_total_page_count"]
-    fn __mem_get_total_page_count(_type: i32) -> intptr_t;
+    fn __mem_get_total_page_count(_type: i32) -> isize;
 
     #[link_name="*mem_map"]
-    fn __*mem_map(_type: i32, size: uintptr_t);
+    fn __mem_map(_type: i32, size: usize) -> *mut c_void;
 
     #[link_name="*mem_map_aligned"]
-    fn __*mem_map_aligned(_type: i32, alignment: uintptr_t, size: uintptr_t);
+    fn __mem_map_aligned(_type: i32, alignment: usize, size: usize) -> *mut c_void;
 
     #[link_name="mem_map_grow"]
-    fn __mem_map_grow(*p: void, size: uintptr_t, newsize: uintptr_t) -> i32;
+    fn __mem_map_grow(p: *mut c_void, size: usize, newsize: usize) -> i32;
 
     #[link_name="mem_unmap"]
-    fn __mem_unmap(*p: void, size: uintptr_t) -> i32;
+    fn __mem_unmap(p: *mut c_void, size: usize) -> i32;
 
     #[link_name="safe_malloc"]
-    fn __safe_malloc(size: uintptr_t) -> *void;
+    fn __safe_malloc(size: usize) -> *mut c_void;
 
 }
 
@@ -62,9 +62,9 @@ extern {
 /// # Return Value
 ///
 /// Pointer to the allocated chunk on success, NULL on error.
-pub fn *mem_allocate(_type: i32, size: uintptr_t) {
+pub fn mem_allocate(_type: i32, size: usize) -> *mut c_void {
     unsafe {
-        __*mem_allocate(_type, size)
+        __mem_allocate(_type, size)
     }
 }
 
@@ -79,9 +79,9 @@ pub fn *mem_allocate(_type: i32, size: uintptr_t) {
 /// # Return Value
 ///
 /// Pointer to the allocated memory on success, NULL on error.
-pub fn *mem_allocate_aligned(_type: i32, alignment: uintptr_t, size: uintptr_t) {
+pub fn mem_allocate_aligned(_type: i32, alignment: usize, size: usize) -> *mut c_void {
     unsafe {
-        __*mem_allocate_aligned(_type, alignment, size)
+        __mem_allocate_aligned(_type, alignment, size)
     }
 }
 
@@ -103,9 +103,9 @@ pub fn *mem_allocate_aligned(_type: i32, alignment: uintptr_t, size: uintptr_t) 
 ///
 /// Pointer to the resized chunk on success, NULL on error. In the
 /// latter case, the original chunk is left untouched.
-pub fn *mem_reallocate(_type: i32, *p: void, new_size: uintptr_t) {
+pub fn mem_reallocate(_type: i32, p: *mut c_void, new_size: usize) -> *mut c_void {
     unsafe {
-        __*mem_reallocate(_type, *p, new_size)
+        __mem_reallocate(_type, p, new_size)
     }
 }
 
@@ -116,23 +116,23 @@ pub fn *mem_reallocate(_type: i32, *p: void, new_size: uintptr_t) {
 /// * `p` - Pointer to the memory chunk to be released. If p is NULL, no
 ///         action is performed. Otherwise, if it does not point to a
 ///         previously allocated chunk, a trap is triggered.
-pub fn mem_free(*p: void) {
+pub fn mem_free(p: *mut c_void) {
     unsafe {
-        __mem_free(*p)
+        __mem_free(p)
     }
 }
 
 /// Determines the memory type for a given address.///
-pub fn mem_get_type(*p: const void) -> i32 {
+pub fn mem_get_type(p: *const c_void) -> i32 {
     unsafe {
-        __mem_get_type(*p)
+        __mem_get_type(p)
     }
 }
 
 /// Returns the page size of the system.///
-pub fn mem_get_page_size(__attribute__((const): )) -> uintptr_t {
+pub fn mem_get_page_size() -> usize {
     unsafe {
-        __mem_get_page_size(__attribute__((const))
+        __mem_get_page_size()
     }
 }
 
@@ -146,7 +146,7 @@ pub fn mem_get_page_size(__attribute__((const): )) -> uintptr_t {
 /// # Return Value
 ///
 /// Number of pages managed, or -1 if type is invalid.
-pub fn mem_get_total_page_count(_type: i32) -> intptr_t {
+pub fn mem_get_total_page_count(_type: i32) -> isize {
     unsafe {
         __mem_get_total_page_count(_type)
     }
@@ -163,9 +163,9 @@ pub fn mem_get_total_page_count(_type: i32) -> intptr_t {
 ///
 /// Pointer to the allocated memory on success, NULL on error. This
 /// pointer will be aligned at a page boundary.
-pub fn *mem_map(_type: i32, size: uintptr_t) {
+pub fn mem_map(_type: i32, size: usize) -> *mut c_void {
     unsafe {
-        __*mem_map(_type, size)
+        __mem_map(_type, size)
     }
 }
 
@@ -181,9 +181,9 @@ pub fn *mem_map(_type: i32, size: uintptr_t) {
 /// # Return Value
 ///
 /// Pointer to the allocated memory on success, NULL on error.
-pub fn *mem_map_aligned(_type: i32, alignment: uintptr_t, size: uintptr_t) {
+pub fn mem_map_aligned(_type: i32, alignment: usize, size: usize) -> *mut c_void {
     unsafe {
-        __*mem_map_aligned(_type, alignment, size)
+        __mem_map_aligned(_type, alignment, size)
     }
 }
 
@@ -205,9 +205,9 @@ pub fn *mem_map_aligned(_type: i32, alignment: uintptr_t, size: uintptr_t) {
 ///
 /// 0 on success, -1 if the memory region could not be expanded or
 /// any parameter was invalid
-pub fn mem_map_grow(*p: void, size: uintptr_t, newsize: uintptr_t) -> i32 {
+pub fn mem_map_grow(p: *mut c_void, size: usize, newsize: usize) -> i32 {
     unsafe {
-        __mem_map_grow(*p, size, newsize)
+        __mem_map_grow(p, size, newsize)
     }
 }
 
@@ -224,9 +224,9 @@ pub fn mem_map_grow(*p: void, size: uintptr_t, newsize: uintptr_t) -> i32 {
 /// # Return Value
 ///
 ///  0 on success, -1 on error.
-pub fn mem_unmap(*p: void, size: uintptr_t) -> i32 {
+pub fn mem_unmap(p: *mut c_void, size: usize) -> i32 {
     unsafe {
-        __mem_unmap(*p, size)
+        __mem_unmap(p, size)
     }
 }
 
@@ -239,7 +239,7 @@ pub fn mem_unmap(*p: void, size: uintptr_t) -> i32 {
 /// # Return Value
 ///
 ///  A pointer to the allocated memory.
-pub fn safe_malloc(size: uintptr_t) -> *void {
+pub fn safe_malloc(size: usize) -> *mut c_void {
     unsafe {
         __safe_malloc(size)
     }
