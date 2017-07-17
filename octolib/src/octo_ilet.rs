@@ -2,20 +2,7 @@
 /// An iLet is the basic abstraction of an user control flow in OctoPOS.
 
 use octo_types::*;
-use constants::*;
-
-pub type ilet_func = extern fn(arg1: *mut c_void);
-pub type dual_ilet_func = extern fn(arg1: *mut c_void, arg2: *mut c_void);
-
-/// struct simple_ilet
-/// Opaque type for simple_ilet
-///
-/// This type is used to allocate simple_ilet "objects" with the right size.
-/// To initialise a variable of this type see function simple_ilet_init().
-#[repr(C)]
-pub struct simple_ilet {
-    pub padding: [c_char; SIMPLE_ILET_SIZE],
-}
+use octo_structs::*;
 
 extern {
     #[link_name="simple_ilet_init"]

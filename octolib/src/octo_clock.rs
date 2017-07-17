@@ -1,6 +1,6 @@
 /// Provides clock() function to measure wall time.
 
-pub type clock_t = u64;
+use octo_types::*;
 
 extern {
     #![link_name="clock"]

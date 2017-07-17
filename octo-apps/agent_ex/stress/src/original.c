@@ -40,7 +40,6 @@ void StressILet(void* parm) {
     infect_self_single(&ILet);
 }
 
-
 void main_ilet(claim_t claim) {
     printf("main ilet\n");
 
@@ -67,6 +66,8 @@ void main_ilet(claim_t claim) {
         printf("* Returned Claim %d of Size %d\n", i, agent_claim_get_pecount(myClaim[i]));
     }
 
+    return;
+
     for (int i=0; i<parnum; i++) {
         for (int tile=0; tile < get_tile_count(); tile++) {
             int pes=agent_claim_get_pecount_tile_type(myClaim[i],  tile, 0);
@@ -84,7 +85,5 @@ void main_ilet(claim_t claim) {
             }
         }
     }
-
-
     return;
 }

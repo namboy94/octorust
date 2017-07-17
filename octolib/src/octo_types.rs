@@ -5,16 +5,13 @@ use libc::wchar_t;
 pub type c_void = __c_void;
 pub type c_char = wchar_t;
 
+// Types
 pub type claim_t = u8;
 pub type tile_id_t = u8;
 pub type tile_quantity_t = u8;
 pub type pe_quantity_t = u32;
 pub type pe_quantity_delta_t = i32;
 pub type team_size_t = u32;
-
-/** Agent Types */
-enum ResType {RISC=0, iCore=1, TCPA=2, none=3, TYPE_ALL=4}
-pub type res_type_t = u8;
 
 /// Represents a os::agent::AbstractAgentOctoClaim* in the C interface. So an agentclaim_t must be
 /// castable to a os::agent::AbstractAgentOctoClaim* via static cast.
@@ -54,13 +51,53 @@ pub type gain_t = *mut c_void;
 pub type loss_t = *mut c_void;
 pub type resize_env_t = *mut c_void;
 
-pub type resize_handler_t = Option<unsafe extern "C" fn(arg1: agentclaim_t,
-                                                        arg2: usize,
-                                                        arg3: usize,
-                                                        arg4: gain_t,
-                                                        arg5: loss_t,
-                                                        arg6: resize_env_t)>;
-pub type reinvade_handler_t = Option<unsafe extern "C" fn()>;
-
 /// Size type for DMA buffers.
 pub type buf_size_t = u32;
+
+/** Agent Types */
+enum ResType {RISC=0, iCore=1, TCPA=2, none=3, TYPE_ALL=4}
+pub type res_type_t = u8;
+
+// Handlers
+pub type resize_handler_t = extern "C" fn(arg1: agentclaim_t,
+                                          arg2: usize,
+                                          arg3: usize,
+                                          arg4: gain_t,
+                                          arg5: loss_t,
+                                          arg6: resize_env_t);
+pub type reinvade_handler_t = extern "C" fn();
+
+
+// Types originally in other files
+pub type clock_t = u64;
+pub type eth_channel_t = *mut c_void;
+pub type ilet_func = extern fn(arg1: *mut c_void);
+pub type dual_ilet_func = extern fn(arg1: *mut c_void, arg2: *mut c_void);
+pub type tcpa_proxy_claim_t = *mut c_void;
+pub type tcpa_infect_response_t = *mut c_void;
+pub type tcpa_output_transfer_confirm_t = *mut c_void;
+
+
+// Enums
+enum ETH_MODE {
+	ETH_MODE_READ  = 0x1,
+	ETH_MODE_WRITE = 0x2
+}
+
+enum ETH_TRANS {
+	ETH_TRANS_CHUNKS  = 1,
+	ETH_TRANS_CONTROL = 2
+}
+
+/// Memory types.
+enum MEMTYPES {
+	MEM_TLM_LOCAL = 0, // Tile-local memory from this tile's local address space.
+	MEM_TLM_GLOBAL = 1, // Tile-local memory somewhere in the range of the tile's shared address space.
+	MEM_SHM = 2,  // Shared (global) memory.
+	MEM_ICM = 3, // iCore memory.
+	MEM_TYPES_SIZE = 4,  // this is the number of valid MEM_types
+	MEM_INVALID = -1,  // < Invalid memory region.
+}
+
+
+

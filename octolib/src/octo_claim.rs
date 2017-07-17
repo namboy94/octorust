@@ -1,7 +1,7 @@
 /// Functions operating on a tile-local claim
 
 use octo_types::*;
-use octo_ilet::*;
+use octo_structs::*;
 
 extern {
     #[link_name="claim_construct"]

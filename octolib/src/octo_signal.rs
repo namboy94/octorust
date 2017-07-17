@@ -5,39 +5,7 @@
 /// events. Depending on the Signal variant the current i-let can block until the
 /// events arrived or spawn a new i-let on arrival.
 
-use constants::*;
-use octo_types::*;
-use octo_ilet::*;
-
-/// struct simple_signal
-/// Opaque type for simple_signal.
-///
-/// This type is used to allocate simple_signal "objects" with the right size.
-/// To initialise a variable of this type, see function simple_signal_init().
-#[repr(C)]
-pub struct simple_signal {
-    pub padding: [c_char; SIMPLE_SIGNAL_SIZE],
-}
-
-/// struct infect_signal
-/// Opaque type for infect_signal.
-///
-/// This type is used to allocate infect_signal "objects" with the right size.
-/// To initialise a variable of this type, see function infect_signal_init().
-#[repr(C)]
-pub struct infect_signal {
-    pub padding: [c_char; INFECT_SIGNAL_SIZE],
-}
-
-/// struct binary_signal
-/// Opaque type for binary_signal.
-///
-/// This type is used to allocate binary_signal "objects" with the right size.
-/// To initialise a variable of this type, see function binary_signal_init().
-#[repr(C)]
-pub struct binary_signal {
-    pub padding: [c_char; BINARY_SIGNAL_SIZE],
-}
+use octo_structs::*;
 
 // TODO Implement these functions:
 

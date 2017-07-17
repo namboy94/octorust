@@ -11,10 +11,11 @@ extern crate libc;
 
 // link the project's submodules
 pub mod helper;
-pub mod constants;
+pub mod octo_structs;
+pub mod octo_types;
+
 pub mod octo_tile;
 pub mod octo_guest;
-pub mod octo_types;
 pub mod octo_agent;
 pub mod octo_proxy_claim;
 pub mod octo_ilet;

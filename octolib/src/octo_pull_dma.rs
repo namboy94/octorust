@@ -1,6 +1,5 @@
 use octo_types::*;
-use octo_ilet::*;
-use octo_dispatch_claim::*;
+use octo_structs::*;
 
 extern {
     #[link_name="dispatch_claim_pull_dma"]

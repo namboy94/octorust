@@ -11,18 +11,7 @@
 /// infect calls)
 
 use octo_types::*;
-use constants::*;
-use octo_ilet::*;
-
-/// struct dispatch_claim
-/// Opaque type for dispatch_claim
-///
-/// This type is used to allocate dispatch_claim "objects" with the right size.
-#[repr(C)]
-pub struct dispatch_claim {
-    pub padding: [c_char; DISPATCH_CLAIM_SIZE],
-}
-pub type dispatch_claim_t = dispatch_claim;
+use octo_structs::*;
 
 extern {
     #[link_name="get_parent_dispatch_claim"]

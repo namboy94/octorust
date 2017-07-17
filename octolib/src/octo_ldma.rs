@@ -1,8 +1,7 @@
 // Local DMA engine.
 
 use octo_types::*;
-use octo_ilet::*;
-use octo_syscall_future::*;
+use octo_structs::*;
 
 extern {
     #[link_name="sync_dma_transfer"]

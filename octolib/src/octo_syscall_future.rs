@@ -1,11 +1,5 @@
-use constants::*;
 use octo_types::*;
-use octo_ilet::*;
-
-#[repr(C)]
-pub struct syscall_future {
-    pub padding: [c_char; SYSCALL_FUTURE_SIZE],
-}
+use octo_structs::*;
 
 extern {
     #[link_name="syscall_future_init"]

@@ -1,5 +1,5 @@
 use octo_types::*;
-use octo_ilet::*;
+use octo_structs::*;
 
 extern {
     #[link_name="simple_ilet_init_appclass"]
