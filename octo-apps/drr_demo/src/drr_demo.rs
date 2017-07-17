@@ -23,6 +23,8 @@ use octolib::octo_types::*;
 use octolib::octo_signal::*;
 use octolib::octo_ilet::*;
 use octolib::octo_dispatch_claim::*;
+use octolib::octo_structs::*;
+use octolib::octo_improvements::*;
 use core::ptr;
 
 // main_rust_ilet() is the main entry point of the program.
@@ -43,8 +45,10 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
     // Now let's invade three cores on tile 1.
 	// The proxy_invade() call works asynchronously - we can continue doing
 	// stuff while the request is being processed.
-    let mut future = invade_future { padding: [0; 64] };
-	if proxy_invade(1, &mut future, 3) != 0 {
+	let invade_result = initialize_proxy_invade(1, 3);
+	let mut future = invade_result.0;
+
+	if !invade_result.1 {
 	    print_text("proxy_invade failed - does tile 1 even exist?\n\0");
 		unsafe { abort(); }
 	}

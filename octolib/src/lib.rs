@@ -14,6 +14,7 @@ pub mod helper;
 pub mod octo_structs;
 pub mod octo_types;
 
+// Raw C API
 pub mod octo_tile;
 pub mod octo_guest;
 pub mod octo_agent;
@@ -40,6 +41,9 @@ pub mod octo_ilet_appclass_id;
 pub mod octo_memory;
 pub mod octo_spinlock;
 pub mod octo_tcpa;
+
+// Improvements
+pub mod octo_improvements;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
