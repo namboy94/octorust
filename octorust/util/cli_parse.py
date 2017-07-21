@@ -31,7 +31,11 @@ def generate_config() -> Config:
     mode = determine_mode(source, args.fetch_irtss, args.run)
     output = determine_output_path(args.output, source, mode)
 
-    return Config(arch, variant, source, output, mode, args.keep)
+    build_version = "current" if args.irtss_build_version is None\
+        else args.irtss_build_version
+
+    return Config(
+        arch, variant, source, output, mode, args.keep, build_version)
 
 
 def parse_args() -> argparse.Namespace:
@@ -63,6 +67,8 @@ def parse_args() -> argparse.Namespace:
                         help="Executes the application after compilation")
     parser.add_argument("-k", "--keep", action="store_true",
                         help="Keeps the produced files. Helpful for debugging")
+    parser.add_argument("-i", "--irtss-build-version",
+                        help="Optionally sets the irtss build version")
 
     return parser.parse_args()
 

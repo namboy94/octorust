@@ -40,7 +40,9 @@ def link_app(config: Config, link_targets: List[str]):
         "-static"
     ]
 
-    print(command)
+    for part in command:
+        print(part, end=" ")
+    print()
     Popen(command).wait()
 
     if not os.path.isfile(config.output):

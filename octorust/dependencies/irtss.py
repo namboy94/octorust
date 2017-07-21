@@ -3,11 +3,13 @@ import shutil
 from subprocess import check_output, Popen
 
 
-def get_irtss_release(release_path: str, arch: str, variant: str):
+def get_irtss_release(
+        release_path: str, build_version: str, arch: str, variant: str):
     """
     Downloads an IRTSS release and stores it in the local .octorust
     directory.
     :param release_path: The path to the locally stored irtss release directory
+    :param build_version: The version to fetch
     :param arch: The architecture for which to fetch a release
     :param variant: The variant for which to fetch a release
     :return: None
@@ -16,7 +18,7 @@ def get_irtss_release(release_path: str, arch: str, variant: str):
     # Only fetch release if it doesn't exist yet
     if not os.path.isdir(release_path):
 
-        release = download_irtss_release(arch, variant)
+        release = download_irtss_release(build_version, arch, variant)
 
         parent_dir = os.path.dirname(release_path)
         if not os.path.isdir(parent_dir):
@@ -30,7 +32,7 @@ def get_irtss_release(release_path: str, arch: str, variant: str):
         print("IRTSS release already exists.")
 
 
-def download_irtss_release(arch: str, variant: str) -> str:
+def download_irtss_release(build_version: str, arch: str, variant: str) -> str:
     """
     Retrieves an irtss release from the invasic release site
     This requires a .netrc file in the user's home directory with the
@@ -41,6 +43,7 @@ def download_irtss_release(arch: str, variant: str) -> str:
     password <password>
 
     Of course, valid login credentials are required
+    :param build_version: The version of IRTSS to fetch
     :param arch: The architecture for which to download the release
     :param variant: The variant for which to download the release
     :return: The release directory path
@@ -48,12 +51,19 @@ def download_irtss_release(arch: str, variant: str) -> str:
     snap = os.listdir(".")
 
     base_url = "https://www4.cs.fau.de/invasic/octopos/"
-    filename = "release." + arch + "." + variant + ".current.txt"
-    url = base_url + filename
 
-    filename = str(check_output(
-        ["wget", "-nv", "--no-check-certificate", "-O", "-", url]
-    )).split("b'", 1)[1].rsplit("\\n'", 1)[0]
+    if build_version == "current":
+
+        filename = "release." + arch + "." + variant + ".current.txt"
+        url = base_url + filename
+
+        filename = str(check_output(
+            ["wget", "-nv", "--no-check-certificate", "-O", "-", url]
+        )).split("b'", 1)[1].rsplit("\\n'", 1)[0]
+
+    else:
+        filename = "release." + arch + "." + variant + \
+                   "." + build_version + ".tar.bz2"
 
     url = base_url + filename
 

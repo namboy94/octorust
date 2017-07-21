@@ -3,6 +3,8 @@
 Author: Hermann Krumrey <hermann@krumreyh.com> (2017)
 """
 
+import os
+import sys
 from octorust.util.runner import run_executable
 from octorust.util.cli_parse import generate_config
 from octorust.dependencies.irtss import get_irtss_release
@@ -20,8 +22,13 @@ def main():
     config = generate_config()
 
     if "fetch_irtss" in config.mode:
-        get_irtss_release(config.irtss_release_path,
+        get_irtss_release(config.irtss_release_path, config.build_version,
                           config.arch, config.variant)
+
+    if not os.path.isdir(config.irtss_release_path):
+        print("No matching IRTSS release installed. Please use the " +
+              "--fetch-irtss option to download the release.")
+        sys.exit(1)
 
     if "compile_rustc" in config.mode:
         compile_using_rustc(config)

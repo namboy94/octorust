@@ -27,7 +27,7 @@ void main_ilet(claim_t claim) {
         agent_constr_set_quantity(myConstr[i], 1, 1, 0);   // min 2, max 5, type 0
         agent_constr_set_tile_shareable(myConstr[i], 1);
         agent_constr_set_appnumber(myConstr[i], i);
-        myClaim[i] = agent_claim_invade(NULL, myConstr[i]);
+        myClaim[i] = agent_claim_invade(3, myConstr[i]);
 
         if (!myClaim[i]) {
             fprintf(stderr, "Invade operation unsuccessful.");

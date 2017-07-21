@@ -16,7 +16,7 @@ class Config(object):
     """
 
     def __init__(self, arch: str, variant: str, source: str, output: str,
-                 mode: List[str], keep: bool):
+                 mode: List[str], keep: bool, build_version: str = ""):
         """
         Creates a new Config object
         :param arch: The target architecture
@@ -25,6 +25,7 @@ class Config(object):
         :param output: The output file
         :param mode: The mode in which to run this program
         :param keep: Specifies if generated files should be deleted or not
+        :param build_version: The IRTSS build version
         """
         self.arch = arch
         self.variant = variant
@@ -32,6 +33,7 @@ class Config(object):
         self.output = output
         self.mode = mode
         self.keep = keep
+        self.build_version = build_version
 
         # Paths to dependencies locally installed by setup.py
         self.dependency_dir = os.path.join(
@@ -41,8 +43,11 @@ class Config(object):
         self.libc = os.path.join(self.octolib, "deps", "libc")
 
         # IRTSS paths
-        self.irtss_release_path = os.path.join(
-            self.dependency_dir, "irtss", self.arch, self.variant)
+        self.irtss_release_path = os.path.join(self.dependency_dir,
+                                               "irtss/" + self.build_version,
+                                               self.arch,
+                                               self.variant)
+
         self.irtss_include = os.path.join(self.irtss_release_path, "include")
         self.irtss_lib = os.path.join(self.irtss_release_path, "lib")
         self.irtss_sections_x = os.path.join(self.irtss_lib, "sections.x")

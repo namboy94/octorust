@@ -32,7 +32,7 @@ def compile_c_object(config: Config, target: str) -> str:
 
     if config.arch == "x86guest":
 
-        command += ["-mfpmath=sse", "-msse2", "-m32"]
+        command += ["-mfpmath=sse", "-msse2", "-m32", "-O3"]
 
     elif config.arch == "x64native":
 
@@ -62,7 +62,9 @@ def compile_c_object(config: Config, target: str) -> str:
         "-c", target, "-o", object_file
     ]
 
-    print(command)
+    for part in command:
+        print(part, end=" ")
+    print()
     Popen(command).wait()
 
     if not os.path.isfile(object_file):
