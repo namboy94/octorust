@@ -43,7 +43,7 @@ pub mod octo_spinlock;
 pub mod octo_tcpa;
 
 // Improvements
-pub mod octo_improvements;
+pub mod improvements;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
