@@ -1,41 +1,106 @@
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+
+// Import printf for printing methods
+extern { fn printf(s: *const u8, ...); }
+
+// Imports
 use core::ptr;
-use improvements::constraints::Constraint;
-use octo_agent::{agent_claim_invade};
+use improvements::constraints::Constraints;
+use octo_agent::{agent_claim_invade, agent_claim_retreat, agent_claim_reinvade,
+                 agent_claim_reinvade_constraints, agent_claim_get_pecount_tile_type,
+                 agent_claim_get_proxyclaim_tile_type, agent_claim_get_pecount};
+use octo_types::{agentclaim_t, ilet_func};
+use octo_structs::{simple_ilet};
+use octo_ilet::{simple_ilet_init};
+use octo_proxy_claim::{proxy_infect};
+use octo_tile::{get_tile_count};
 
-pub struct Claim {
-    constraint: Constraint
+/// The AgentClaim struct wraps around an agentclaim_t object to offer
+/// a simplified interface to methods associated with an agent claim, implementing
+/// an invade, infect, reinvade and implicit retreat methods.
+///
+/// # Members
+///
+/// * `claim` - The agentclaim_t struct that this struct wraps around
+pub struct AgentClaim {
+    claim: agentclaim_t
 }
 
-impl Claim {
+/// Implementation of the AgentClaim struct
+impl AgentClaim {
 
-    pub fn new(constraint: Constraint) -> Claim {
-        Claim {constraint: constraint}
+    /// Constructor for the AgentClaim struct. Automatically invades
+    /// using the specified constraints
+    ///
+    /// # Arguments
+    ///
+    /// * `constraints` - The constraints of this claim
+    pub fn new(constraints: Constraints) -> AgentClaim {
+        let constraints = constraints.to_constraints_t();
+        let claim = agent_claim_invade(ptr::null_mut(), constraints);
+        AgentClaim {claim: claim}
     }
 
-    pub fn invade(&self) {
-        agent_claim_invade(ptr::null_mut(), self.constraint.to_contraints_t());
+    /// An alias for the constructor
+    ///
+    /// # Arguments
+    ///
+    /// * `constraints` - The constraints of this claim
+    pub fn invade(constraints: Constraints) -> AgentClaim {
+        AgentClaim::new(constraints)
     }
 
-    pub fn reinvade(constraint: Option<Constraint>) {
+    /// Executes an ilet on the claim
+    ///
+    /// # Arguments
+    ///
+    /// * `ilet` - The ilet to execute
+    pub fn infect(&self, ilet: ilet_func) {
 
+        let mut ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
+        simple_ilet_init(&mut ilet_struct, ilet, ptr::null_mut());
+
+        for tile in 0..get_tile_count() {
+
+            let pes = agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
+
+            if pes != 0 {
+                let proxy_claim = agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
+                proxy_infect(proxy_claim, &mut ilet_struct, pes as u32);
+            }
+        }
     }
 
-    pub fn infect(ilet: fn ()) {
-
+    /// Reinvades reusing the previous constraints
+    pub fn reinvade(&self) {
+        agent_claim_reinvade(self.claim);
     }
+
+    /// Reinvades using new constraints
+    ///
+    /// # Arguments
+    ///
+    /// * `constraints` - The constraints with which to reinvade
+    pub fn reinvade_with_constraints(&self, constraints: Constraints) {
+        agent_claim_reinvade_constraints(self.claim, constraints.to_constraints_t());
+    }
+
+    /// Prints the Current Claim's size
+    pub fn print_size(&self) {
+        unsafe {
+            printf("* Claim has size of %d\n\0".as_ptr(), agent_claim_get_pecount(self.claim));
+        }
+    }
+
+
 }
 
+/// Implements the Drop trait for the AgentClaim struct.
+impl Drop for AgentClaim {
 
-/* Returns a claim fulfilling the constraint or throws a NotEnoughResources exception */
-/*
-    public static def invade(c:Constraint):Claim {
-        val ac = create_constr();
-        c.toAgentConstr(ac);
-        val clm = invade(Pointer.NULL, ac);
-        if (clm == Pointer.NULL)
-          throw new NotEnoughResources("iRTSS returned NULL");
-        val ret = new AgentClaim(clm);
-        ret.setAgentConstr(ac);
-        return ret;
+    /// Implicitly retreats when the AgentClaim struct goes out of scope
+    fn drop(&mut self) {
+        agent_claim_retreat(self.claim);
     }
-*/
+}
