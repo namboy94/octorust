@@ -24,7 +24,8 @@ use octo_tile::{get_tile_count};
 ///
 /// * `claim` - The agentclaim_t struct that this struct wraps around
 pub struct AgentClaim {
-    claim: agentclaim_t
+    claim: agentclaim_t,
+    verbose: bool
 }
 
 /// Implementation of the AgentClaim struct
@@ -39,7 +40,7 @@ impl AgentClaim {
     pub fn new(constraints: Constraints) -> AgentClaim {
         let constraints = constraints.to_constraints_t();
         let claim = agent_claim_invade(ptr::null_mut(), constraints);
-        AgentClaim {claim: claim}
+        AgentClaim {claim: claim, verbose: false}
     }
 
     /// An alias for the constructor
@@ -67,6 +68,13 @@ impl AgentClaim {
 
             if pes != 0 {
                 let proxy_claim = agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
+
+                if self.verbose {
+                    unsafe {
+                        printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim);
+                    }
+                }
+
                 proxy_infect(proxy_claim, &mut ilet_struct, pes as u32);
             }
         }
@@ -93,6 +101,10 @@ impl AgentClaim {
         }
     }
 
+    pub fn set_verbose(&mut self, verbose: bool) {
+        self.verbose = verbose;
+    }
+
 
 }
 
@@ -101,6 +113,12 @@ impl Drop for AgentClaim {
 
     /// Implicitly retreats when the AgentClaim struct goes out of scope
     fn drop(&mut self) {
+
+        if self.verbose {
+            unsafe { printf("* Retreating\n\0".as_ptr()); }
+        }
+
         agent_claim_retreat(self.claim);
+
     }
 }
