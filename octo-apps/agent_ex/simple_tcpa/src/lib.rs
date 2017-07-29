@@ -60,8 +60,6 @@ fn improved() {
     constraints.set_pe_quantity(1, 1);
 
     let mut claim = AgentClaim::new(constraints);
-    claim.set_verbose(true);
-
     claim.print_size();
     claim.infect(hello_world_ilet);
 

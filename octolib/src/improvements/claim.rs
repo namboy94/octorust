@@ -104,8 +104,6 @@ impl AgentClaim {
     pub fn set_verbose(&mut self, verbose: bool) {
         self.verbose = verbose;
     }
-
-
 }
 
 /// Implements the Drop trait for the AgentClaim struct.
