@@ -101,6 +101,11 @@ impl AgentClaim {
         }
     }
 
+    /// Enables or Disables printing of messages when the claim infects, retreats, etc.
+    ///
+    /// # Arguments
+    ///
+    /// * `verbose` - Sets the verbosity of the claim
     pub fn set_verbose(&mut self, verbose: bool) {
         self.verbose = verbose;
     }
