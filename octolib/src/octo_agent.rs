@@ -901,16 +901,11 @@ pub fn agent_constr_set_tile_shareable(constr: constraints_t, is_tile_shareable:
 /// * `constr` - Constraints handle for which this constraint should be set.
 /// * `malleable_boolean` - Turns the constraint off if 0, on otherwise.
 /// * `resize_handler` - A pointer to the function that will be called on resizes.
-///
-///                       Must be non-NULL if malleable_boolean is not 0, otherwise
-///                       it is ignored.
-///
-/// # Arguments
-///
+///                      Must be non-NULL if malleable_boolean is not 0, otherwise
+///                      it is ignored.
 /// * `resize_env` - A pointer to random data, application-specific. The agent
-///
-///                   system will not access this data. Is ignored if
-///                   malleable_boolean is 0.
+///                  system will not access this data. Is ignored if
+///                  malleable_boolean is 0.
 pub fn agent_constr_set_malleable(constr: constraints_t, malleable_boolean: u8, resize_handler: resize_handler_t, resize_env: resize_env_t) {
     unsafe {
         __agent_constr_set_malleable(constr, malleable_boolean, resize_handler, resize_env)
