@@ -6,15 +6,17 @@ extern { fn printf(s: *const u8, ...); }
 
 // Imports
 use core::ptr;
+use helper::printer::print_text;
 use improvements::constraints::Constraints;
 use octo_agent::{agent_claim_invade, agent_claim_retreat, agent_claim_reinvade,
                  agent_claim_reinvade_constraints, agent_claim_get_pecount_tile_type,
                  agent_claim_get_proxyclaim_tile_type, agent_claim_get_pecount};
-use octo_types::{agentclaim_t, ilet_func};
-use octo_structs::{simple_ilet};
+use octo_types::{agentclaim_t, ilet_func, c_void};
+use octo_structs::{simple_ilet, simple_signal};
 use octo_ilet::{simple_ilet_init};
 use octo_proxy_claim::{proxy_infect};
 use octo_tile::{get_tile_count};
+use octo_signal::{simple_signal_wait, simple_signal_init};
 
 /// The AgentClaim struct wraps around an agentclaim_t object to offer
 /// a simplified interface to methods associated with an agent claim, implementing
@@ -59,6 +61,8 @@ impl AgentClaim {
     /// * `ilet` - The ilet to execute
     pub fn infect(&self, ilet: ilet_func) {
 
+        print_text("* Invading...\n\0");
+
         let mut ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
         simple_ilet_init(&mut ilet_struct, ilet, ptr::null_mut());
 
@@ -66,13 +70,11 @@ impl AgentClaim {
 
             let pes = agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
 
-            if pes != 0 {
+            if pes != 0 {  // Type = 0 ^= RISC
                 let proxy_claim = agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
 
                 if self.verbose {
-                    unsafe {
-                        printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim);
-                    }
+                    unsafe { printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim); }
                 }
 
                 proxy_infect(proxy_claim, &mut ilet_struct, pes as u32);
@@ -80,9 +82,65 @@ impl AgentClaim {
         }
     }
 
+    pub fn infect_signal(&self, ilet: ilet_func) -> simple_signal {
+
+        let mut sync = simple_signal { padding: [0; 64] };
+	    simple_signal_init(&mut sync, agent_claim_get_pecount(self.claim) as usize);
+
+        for tile in 0..get_tile_count() {
+
+            let pes = agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
+
+            if pes != 0 {  // Type = 0 ^= RISC
+
+                let proxy_claim = agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
+
+                if self.verbose {
+                    unsafe { printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim); }
+                }
+
+                let mut initial_ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
+                simple_ilet_init(&mut initial_ilet_struct, ilet, &mut sync as *mut _ as *mut c_void);
+
+                for _ in 1..pes {
+                    let mut additional_ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
+                    simple_ilet_init(&mut additional_ilet_struct, ilet, &mut sync as *mut _ as *mut c_void);
+                }
+
+                proxy_infect(proxy_claim, &mut initial_ilet_struct, pes as u32);
+
+                if self.verbose {
+                    unsafe { printf("Infecting %d Ilets on Tile %d\n\0".as_ptr(), pes, tile); }
+                }
+            }
+        }
+        return sync;
+    }
+
+    pub fn infect_signal_wait(&self, ilet: ilet_func) {
+
+        let mut sync = self.infect_signal(ilet);
+
+        if self.verbose {
+            unsafe { printf("Waiting on Signal %p...\n\0".as_ptr(), &mut sync); }
+        }
+
+        simple_signal_wait(&mut sync);
+
+        if self.verbose {
+            print_text("All Signals received!\n\0");
+        }
+
+    }
+
     /// Reinvades reusing the previous constraints
-    pub fn reinvade(&self) {
-        agent_claim_reinvade(self.claim);
+    pub fn reinvade(&mut self) {
+        let status = agent_claim_reinvade(self.claim);
+        if status == -1 {
+            unsafe { printf("* Reinvade Failed\n\0".as_ptr()); }
+        } else {
+            unsafe { printf("* Reinvade Successful\n\0".as_ptr()); }
+        }
     }
 
     /// Reinvades using new constraints
@@ -90,7 +148,7 @@ impl AgentClaim {
     /// # Arguments
     ///
     /// * `constraints` - The constraints with which to reinvade
-    pub fn reinvade_with_constraints(&self, constraints: Constraints) {
+    pub fn reinvade_with_constraints(&mut self, constraints: Constraints) {
         agent_claim_reinvade_constraints(self.claim, constraints.to_constraints_t());
     }
 

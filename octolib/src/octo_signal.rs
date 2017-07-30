@@ -7,45 +7,6 @@
 
 use octo_structs::*;
 
-// TODO Implement these functions:
-
-/*
-/// Signal the arrival of an event and exit the current i-let.
-///
-/// When the last event is signaled, the function binary_signal_wait() will
-/// return.
-///
-/// @param instance Pointer to an existing binary_signal instance
-/// @note This function will perform a more efficient wakeup than
-///       binary_signal_signal() by doing a direct context switch to the woken
-///       i-let (provided that i-let belongs to the same claim as the calling
-///       i-let).
-void binary_signal_signal_and_exit(binary_signal* instance)
-__attribute__ ((noreturn));
-
-/// Signal the arrival of an event and exit the current i-let.
-///
-/// When the last event is signaled, the function simple_signal_wait() will
-/// return.
-///
-/// @param instance Pointer to an existing SimpleSignal instance
-/// @note This function will perform a more efficient wakeup than
-///       simple_signal_signal() by doing a direct context switch to the woken
-///       i-let (provided that i-let belongs to the same claim as the calling
-///       i-let).
-void simple_signal_signal_and_exit(simple_signal* instance)
-__attribute__ ((noreturn));
-
-/// Signal the arrival of an event and exit the current i-let.
-///
-/// When the last event is signaled, the i-let provided to infect_signal_init()
-/// is scheduled.
-///
-/// @param instance Pointer to an existing InfectSignal instance
-void infect_signal_signal_and_exit(infect_signal* instance)
-__attribute__ ((noreturn));
-*/
-
 extern {
     #[link_name="simple_signal_init"]
     fn __simple_signal_init(instance: *mut simple_signal, wait_for_ilet_count: usize) -> i32;
@@ -82,6 +43,15 @@ extern {
 
     #[link_name="binary_signal_signal"]
     fn __binary_signal_signal(instance: *mut binary_signal);
+
+    #[link_name="binary_signal_signal_and_exit"]
+    fn __binary_signal_signal_and_exit(instance: *mut binary_signal);
+
+    #[link_name="simple_signal_signal_and_exit"]
+    fn __simple_signal_signal_and_exit(instance: *mut simple_signal);
+
+    #[link_name="infect_signal_signal_and_exit"]
+    fn __infect_signal_signal_and_exit(instance: *mut infect_signal);
 
 }
 
@@ -276,5 +246,49 @@ pub fn binary_signal_wait(instance: *mut binary_signal) {
 pub fn binary_signal_signal(instance: *mut binary_signal) {
     unsafe {
         __binary_signal_signal(instance)
+    }
+}
+
+/// Signal the arrival of an event and exit the current i-let.
+///
+/// When the last event is signaled, the function binary_signal_wait() will
+/// return.
+///
+/// @param instance Pointer to an existing binary_signal instance
+/// @note This function will perform a more efficient wakeup than
+///       binary_signal_signal() by doing a direct context switch to the woken
+///       i-let (provided that i-let belongs to the same claim as the calling
+///       i-let).
+pub fn binary_signal_signal_and_exit(instance: *mut binary_signal) {
+    unsafe {
+        __binary_signal_signal_and_exit(instance)
+    }
+}
+
+/// Signal the arrival of an event and exit the current i-let.
+///
+/// When the last event is signaled, the function simple_signal_wait() will
+/// return.
+///
+/// @param instance Pointer to an existing SimpleSignal instance
+/// @note This function will perform a more efficient wakeup than
+///       simple_signal_signal() by doing a direct context switch to the woken
+///       i-let (provided that i-let belongs to the same claim as the calling
+///       i-let).
+pub fn simple_signal_signal_and_exit(instance: *mut simple_signal) {
+    unsafe {
+        __simple_signal_signal_and_exit(instance)
+    }
+}
+
+/// Signal the arrival of an event and exit the current i-let.
+///
+/// When the last event is signaled, the i-let provided to infect_signal_init()
+/// is scheduled.
+///
+/// @param instance Pointer to an existing InfectSignal instance
+pub fn infect_signal_signal_and_exit(instance: *mut infect_signal) {
+    unsafe {
+        __infect_signal_signal_and_exit(instance)
     }
 }
