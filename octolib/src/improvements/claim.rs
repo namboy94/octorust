@@ -106,8 +106,20 @@ impl AgentClaim {
 
                 for i in 0..pes as isize {
                     sync = match sync {
-                        Some(mut s) => { simple_ilet_init(ilets.offset(i), ilet, &mut s as *mut _ as *mut c_void); Some(s)},
-                        None => { simple_ilet_init(ilets.offset(i), ilet, ptr::null_mut()); None}
+
+                        Some(mut s) => {
+                            if self.verbose {
+                                printf("* Creating ilet %d with signal %p\n\0".as_ptr(), i, &mut s);
+                            }
+                            simple_ilet_init(ilets.offset(i), ilet, &mut s as *mut _ as *mut c_void);
+                            Some(s)},
+
+                        None => {
+                            if self.verbose {
+                                printf("* Creating ilet %d without signal\n\0".as_ptr(), i);
+                            }
+                            simple_ilet_init(ilets.offset(i), ilet, ptr::null_mut()); None
+                        }
                     }
                 }
 
