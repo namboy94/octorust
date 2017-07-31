@@ -30,6 +30,8 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
     constraints.set_tile_shareable(true);
 
 	let mut agent = AgentClaim::new(constraints);
+	agent.set_verbose(true);
+	agent.reinvade();
 	agent.infect_signal_wait(ILetFunc);
 	shutdown(0);
 
@@ -37,16 +39,14 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 pub extern "C" fn ILetFunc(signal: *mut c_void) {
 
-	unsafe {
-		printf("iLet on tile %u running on cpu %u with parameter %p\n\0".as_ptr(), get_tile_id(), get_cpu_id(), signal);
-	}
+	unsafe { printf("Getting Signal %p\n\0".as_ptr(), signal); }
+
+	unsafe { printf("iLet on tile %u running on cpu %u with parameter %p\n\0".as_ptr(), get_tile_id(), get_cpu_id(), signal); }
 
 	let mut answer: simple_ilet = simple_ilet { padding: [0; 32] };
 	simple_ilet_init(&mut answer, signaler, signal);
 
-	unsafe {
-		printf("Sending reply...\n\0".as_ptr());
-	}
+	unsafe { printf("Sending reply...\n\0".as_ptr()); }
 
     dispatch_claim_send_reply(&mut answer);
 }

@@ -109,10 +109,10 @@ impl AgentClaim {
                         Some(mut s) => { simple_ilet_init(ilets.offset(i), ilet, &mut s as *mut _ as *mut c_void); Some(s)},
                         None => { simple_ilet_init(ilets.offset(i), ilet, ptr::null_mut()); None}
                     }
-
                 }
 
                 proxy_infect(proxy_claim, ilets, pes as u32);
+                libc::free(ilets as *mut _ as *mut c_void);
 
                 if self.verbose { printf("Infecting %d Ilets on Tile %d\n\0".as_ptr(), pes, tile); }
             }
