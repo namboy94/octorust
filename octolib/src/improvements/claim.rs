@@ -5,7 +5,9 @@
 extern { fn printf(s: *const u8, ...); }
 
 // Imports
+use libc;
 use core::ptr;
+use core::mem;
 use helper::printer::print_text;
 use improvements::constraints::Constraints;
 use octo_agent::{agent_claim_invade, agent_claim_retreat, agent_claim_reinvade,
@@ -54,70 +56,77 @@ impl AgentClaim {
         AgentClaim::new(constraints)
     }
 
-    /// Executes an ilet on the claim
+    /// Executes an ilet on the claim without using signals
     ///
     /// # Arguments
     ///
-    /// * `ilet` - The ilet to execute
-    pub fn infect(&self, ilet: ilet_func) {
-
-        print_text("* Invading...\n\0");
-
-        let mut ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
-        simple_ilet_init(&mut ilet_struct, ilet, ptr::null_mut());
-
-        for tile in 0..get_tile_count() {
-
-            let pes = agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
-
-            if pes != 0 {  // Type = 0 ^= RISC
-                let proxy_claim = agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
-
-                if self.verbose {
-                    unsafe { printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim); }
-                }
-
-                proxy_infect(proxy_claim, &mut ilet_struct, pes as u32);
-            }
-        }
+    /// * `ilet` - The ilet function to execute
+    pub fn infect(&mut self, ilet: ilet_func) {
+        unsafe { self.initialize_proxy_infect(ilet, None); };
     }
 
-    pub fn infect_signal(&self, ilet: ilet_func) -> simple_signal {
+
+    /// Executes an ilet on the claim using signals
+    ///
+    /// # Arguments
+    ///
+    /// * `ilet` - The ilet function to execute
+    ///
+    /// # Return Value
+    ///
+    /// The signal used while initialising the ilets
+    pub fn infect_signal(&mut self, ilet: ilet_func) -> simple_signal {
 
         let mut sync = simple_signal { padding: [0; 64] };
 	    simple_signal_init(&mut sync, agent_claim_get_pecount(self.claim) as usize);
 
+        unsafe { sync = self.initialize_proxy_infect(ilet, Some(sync)).unwrap() }
+        return sync;
+    }
+
+    /// Instanciates simple_ilet structs for every PE on the claim and infects with them
+    /// using a proxy claim
+    ///
+    /// # Arguments
+    ///
+    /// * `ilet` - The ILet function
+    /// * `sync` - The signal with which to instanciate the simple_ilets
+    unsafe fn initialize_proxy_infect(&mut self, ilet: ilet_func, mut sync: Option<simple_signal>) -> Option<simple_signal> {
+
         for tile in 0..get_tile_count() {
-
             let pes = agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
-
             if pes != 0 {  // Type = 0 ^= RISC
 
                 let proxy_claim = agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
 
-                if self.verbose {
-                    unsafe { printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim); }
+                if self.verbose { printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim); }
+
+                let array_size = mem::size_of::<simple_ilet>() * pes as usize;
+                let ilets: *mut simple_ilet = libc::malloc(array_size) as *mut simple_ilet;
+
+                for i in 0..pes as isize {
+                    sync = match sync {
+                        Some(mut s) => { simple_ilet_init(ilets.offset(i), ilet, &mut s as *mut _ as *mut c_void); Some(s)},
+                        None => { simple_ilet_init(ilets.offset(i), ilet, ptr::null_mut()); None}
+                    }
+
                 }
 
-                let mut initial_ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
-                simple_ilet_init(&mut initial_ilet_struct, ilet, &mut sync as *mut _ as *mut c_void);
+                proxy_infect(proxy_claim, ilets, pes as u32);
 
-                for _ in 1..pes {
-                    let mut additional_ilet_struct: simple_ilet = simple_ilet { padding: [0; 32] };
-                    simple_ilet_init(&mut additional_ilet_struct, ilet, &mut sync as *mut _ as *mut c_void);
-                }
-
-                proxy_infect(proxy_claim, &mut initial_ilet_struct, pes as u32);
-
-                if self.verbose {
-                    unsafe { printf("Infecting %d Ilets on Tile %d\n\0".as_ptr(), pes, tile); }
-                }
+                if self.verbose { printf("Infecting %d Ilets on Tile %d\n\0".as_ptr(), pes, tile); }
             }
         }
         return sync;
     }
 
-    pub fn infect_signal_wait(&self, ilet: ilet_func) {
+
+    /// Executes an ilet on the claim using signals and waits for their completion
+    ///
+    /// # Arguments
+    ///
+    /// * `ilet` - The ilet function to execute
+    pub fn infect_signal_wait(&mut self, ilet: ilet_func) {
 
         let mut sync = self.infect_signal(ilet);
 

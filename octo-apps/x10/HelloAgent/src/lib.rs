@@ -17,8 +17,8 @@ use octolib::octo_signal::simple_signal_signal_and_exit;
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 
-	//normal_infect();
-	signal_infect()
+	normal_infect();
+	//signal_infect()
 
 }
 
@@ -44,7 +44,7 @@ fn normal_infect() {
 
 	let mut constraints = Constraints::new();
 	constraints.set_pe_quantity(1, 1);
-	// constraints.set_pe_quantity(3, 4);
+	// constraints.set_pe_quantity(3, 4);  Tile 1 died with signal SIGSEGV
     constraints.set_tile_shareable(true);
 
 	let mut claim = AgentClaim::new(constraints);
@@ -60,7 +60,7 @@ fn normal_infect() {
 
 	let mut new_constraints = Constraints::new();
 	new_constraints.set_pe_quantity(1, 1);
-	// new_constraints.set_pe_quantity(6, 7);
+	// new_constraints.set_pe_quantity(6, 7);  Tile 1 died with signal SIGSEGV
 	new_constraints.set_tile_shareable(true);
 
 	// claim.reinvade_with_constraints(new_constraints);  Segmentation fault (core dumped)
