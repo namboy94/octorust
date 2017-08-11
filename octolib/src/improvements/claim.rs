@@ -1,6 +1,11 @@
 /// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
 /// Karlsruher Institut für Technologie, Matriculation number 1789804
 
+// TODO Kopieren 2-fachen Destruktor beachten
+// Rekursiv - Quicksort x10
+// Baumartige Struktur
+
+
 // Import printf for printing methods
 extern { fn printf(s: *const u8, ...); }
 

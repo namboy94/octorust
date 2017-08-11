@@ -20,8 +20,6 @@ use octolib::octo_proxy_claim::*;
 use octolib::octo_agent::*;
 
 
-
-
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 

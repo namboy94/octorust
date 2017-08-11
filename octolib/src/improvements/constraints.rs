@@ -51,7 +51,6 @@ impl Constraints {
     }
 
     // Thin wrappers around agent_constr_set... functions
-
     pub fn set_downey_speedup_curve(&mut self, a: i32, sigma: i32) {
         agent_constr_set_downey_speedup_curve(self.constraints, a, sigma);
     }

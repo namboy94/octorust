@@ -51,7 +51,7 @@ fn signal_infect() {
 fn normal_infect() {
 
 	let mut constraints = Constraints::new();
-	constraints.set_pe_quantity(1, 2);
+	constraints.set_pe_quantity(1, 1);
 	// constraints.set_pe_quantity(3, 4);  Tile 1 died with signal SIGSEGV
     constraints.set_tile_shareable(true);
 
@@ -60,10 +60,10 @@ fn normal_infect() {
 	claim.set_verbose(true);
 
 	claim.infect(ilet_function);
-	// claim.reinvade();
+	claim.reinvade();
 	claim.infect(ilet_function);
 
-	// claim.reinvade();
+	claim.reinvade();
 
 	let mut new_constraints = Constraints::new();
 	new_constraints.set_pe_quantity(1, 1);
