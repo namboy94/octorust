@@ -12,18 +12,22 @@ static void die(const char message[]) {
 }
 
 void signaler(void* sig) {
+/*
     simple_signal* s = (simple_signal*)(sig);
     printf("Signalling Signal %p\n",s);
     simple_signal_signal_and_exit(s);
+    */
 }
 
 void ILetFunc(void *signal) {
+/*
     printf("iLet on tile %u running on cpu %u with parameter %p\n", get_tile_id(), get_cpu_id(), signal);
 
     simple_ilet answer;
     simple_ilet_init(&answer, signaler, signal);
     printf("Sending reply...\n");
     dispatch_claim_send_reply(&answer);
+    */
 }
 
 void main_ilet(claim_t claim) {
@@ -86,6 +90,8 @@ void main_ilet(claim_t claim) {
         simple_signal_wait(&sync);
         printf("All Signals received!\n");
     }
+
+    return;
 
     printf("* Changing Constraints\n");
     agent_constr_set_quantity(myConstr, 2, 6, 0);   // min 2, max 6, type 0

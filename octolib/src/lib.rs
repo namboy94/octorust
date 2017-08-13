@@ -14,6 +14,9 @@ pub mod helper;
 pub mod octo_structs;
 pub mod octo_types;
 
+// LibC
+pub mod _libc;
+
 // Raw C API
 pub mod octo_tile;
 pub mod octo_guest;
