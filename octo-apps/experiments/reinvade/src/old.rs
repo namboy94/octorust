@@ -33,26 +33,34 @@ use octolib::octo_agent::*;
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 
-	unsafe {printf("main ilet\n* Creating Constraints\n\0".as_ptr());}
 	let mut constraints = Constraints::new();
-
-	unsafe{ printf("* Setting Constraints\n\0".as_ptr()); }
 	constraints.set_pe_quantity(2, 5);
 	constraints.set_tile_shareable(true);
 
-	unsafe {printf("* Run: Invading with new Agent\n\0".as_ptr());}
-	let mut claim = AgentClaim::new(constraints);
-	claim.set_verbose(true);
+	let mut claim = AgentClaim::new(constraints)
 
-	for i in 0..0 {  // TODO change to 0..10 in due time
-		unsafe{printf("* Reinvading:\n\0".as_ptr());}
-        claim.reinvade();
+
+	unsafe {printf("main ilet\n* Creating Constraints\n\0".as_ptr());}
+    let mut myConstr = agent_constr_create();
+
+    unsafe{ printf("* Setting Constraints\n\0".as_ptr()); }
+    agent_constr_set_quantity(myConstr, 2, 5, 0);   // min 2, max 5, type 0
+    agent_constr_set_tile_shareable(myConstr, 1);
+    //agent_constr_set_notontile(myConstr, 0);
+
+    let i = 0;
+
+    unsafe {printf("* Run %d: Invading with new Agent C=%p\n\0".as_ptr(), i, myConstr);}
+    let mut myClaim = agent_claim_invade(ptr::null_mut(), myConstr);
+
+    if myClaim.is_null() {
+        unsafe{printf("Invade operation unsuccessful.\n\0".as_ptr())}
+		shutdown(1);
     }
 
-	claim.infect_signal_wait(ILetFunc);
+	unsafe {printf("* Returned Claim:\n\0".as_ptr())};
+    agent_claim_print(myClaim);
 
-	/*
-	This works :|
 	for i in 0..10 {
         unsafe{printf("* Reinvading:\n\0".as_ptr());}
 
@@ -66,7 +74,28 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
         unsafe{printf("* Returned Claim:\n\0".as_ptr());}
         agent_claim_print(myClaim);
     }
-    */
+
+	let mut sync = simple_signal {padding: [0; 64]};
+	simple_signal_init(&mut sync, agent_claim_get_pecount(myClaim) as usize);
+
+	unsafe {
+		for tile in 0..get_tile_count() {
+			let pes = agent_claim_get_pecount_tile_type(myClaim, tile as u8, 0);
+			if pes != 0 {
+				// Type = 0 ^= RISC
+
+				let mut pClaim = agent_claim_get_proxyclaim_tile_type(myClaim, tile as i32, 0);
+				printf("* Got Proxy Claim %p\n\0".as_ptr(), pClaim);
+
+				proxy_infect_with_ilet(pClaim, ILetFunc, pes, &mut sync as *mut _ as *mut c_void);
+				printf("Infecting %d Ilets on Tile %d\n\0".as_ptr(), pes, tile);
+			}
+		}
+	}
+
+	unsafe { printf("Waiting on Signal %p...\n\0".as_ptr(), &sync);}
+	simple_signal_wait(&mut sync);
+	unsafe{printf("All Signals received!\n\0".as_ptr());}
 
 
 }

@@ -12,22 +12,18 @@ static void die(const char message[]) {
 }
 
 void signaler(void* sig) {
-/*
     simple_signal* s = (simple_signal*)(sig);
     printf("Signalling Signal %p\n",s);
     simple_signal_signal_and_exit(s);
-    */
 }
 
 void ILetFunc(void *signal) {
-/*
     printf("iLet on tile %u running on cpu %u with parameter %p\n", get_tile_id(), get_cpu_id(), signal);
 
     simple_ilet answer;
     simple_ilet_init(&answer, signaler, signal);
     printf("Sending reply...\n");
     dispatch_claim_send_reply(&answer);
-    */
 }
 
 void main_ilet(claim_t claim) {
@@ -76,13 +72,20 @@ void main_ilet(claim_t claim) {
                 proxy_claim_t pClaim = agent_claim_get_proxyclaim_tile_type(myClaim, tile, 0);
                 printf("* Got Proxy Claim %p\n", pClaim);
 
+                proxy_infect_with_ilet(pClaim, ILetFunc, pes, &sync);
+                printf("Infecting %d Ilets on Tile %d\n", pes, tile);
+
+                // Replaced with new function!
+                /*
                 simple_ilet ILet[pes];
                 for (int i = 0; i < pes; ++i) {
-                    simple_ilet_init(&ILet[i], ILetFunc, &sync);
+                    simple_ilet_init(&ILet[i], ILetFunc, sync);
                 }
+
 
                 printf("Infecting %d Ilets on Tile %d\n", pes, tile);
                 proxy_infect(pClaim, &ILet[0], pes);
+                */
             }
         }
 
@@ -90,8 +93,6 @@ void main_ilet(claim_t claim) {
         simple_signal_wait(&sync);
         printf("All Signals received!\n");
     }
-
-    return;
 
     printf("* Changing Constraints\n");
     agent_constr_set_quantity(myConstr, 2, 6, 0);   // min 2, max 6, type 0

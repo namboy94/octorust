@@ -7,7 +7,10 @@
 
 
 // Import printf for printing methods
-extern { fn printf(s: *const u8, ...); }
+extern {
+    fn printf(s: *const u8, ...);
+    fn proxy_infect_with_ilet(claim: agentclaim_t, ilet_func: extern fn(arg1: *mut c_void), pes: i32, param: *mut c_void);
+}
 
 // Imports
 use libc;
@@ -109,24 +112,22 @@ impl AgentClaim {
                 let array_size = mem::size_of::<simple_ilet>() * pes as usize;
                 let ilets: *mut simple_ilet = libc::malloc(array_size) as *mut simple_ilet;
 
-                for i in 0..pes as isize {
-                    sync = match sync {
-
-                        Some(mut s) => {
-                            if self.verbose {
-                                printf("* Creating ilet %d with signal %p\n\0".as_ptr(), i, &mut s);
-                            }
-                            simple_ilet_init(ilets.offset(i), ilet, &mut s as *mut _ as *mut c_void);
-                            Some(s)},
-
-                        None => {
-                            if self.verbose {
-                                printf("* Creating ilet %d without signal\n\0".as_ptr(), i);
-                            }
-                            simple_ilet_init(ilets.offset(i), ilet, ptr::null_mut()); None
+                sync = match sync {
+                    Some(mut s) => {
+                        if self.verbose {
+                            printf("* Creating ilets with signal %p\n\0".as_ptr(), &mut s);
                         }
+                        proxy_infect_with_ilet(proxy_claim, ilet, pes, &mut s as *mut _ as *mut c_void);
+                        Some(s)},
+
+                    None => {
+                        if self.verbose {
+                            printf("* Creating ilet without signal\n\0".as_ptr());
+                        }
+                        proxy_infect_with_ilet(proxy_claim, ilet, pes, ptr::null_mut());
+                        None
                     }
-                }
+                };
 
                 proxy_infect(proxy_claim, ilets, pes as u32);
                 libc::free(ilets as *mut _ as *mut c_void);
