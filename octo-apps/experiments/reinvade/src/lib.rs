@@ -44,15 +44,29 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let mut claim = AgentClaim::new(constraints);
 	claim.set_verbose(true);
 
-	for i in 0..0 {  // TODO change to 0..10 in due time
+	for i in 0..10 {  // TODO change to 0..10 in due time
 		unsafe{printf("* Reinvading:\n\0".as_ptr());}
         claim.reinvade();
     }
 
 	claim.infect_signal_wait(ILetFunc);
 
+	for i in 0..0 {  // TODO change to 0..10 in due time
+		unsafe{printf("* Reinvading:\n\0".as_ptr());}
+        claim.reinvade();
+    }
+
+	shutdown(0);
+
 	/*
 	This works :|
+
+
+	let mut myConstr = agent_constr_create();
+	agent_constr_set_quantity(myConstr, 2, 5, 0);
+    agent_constr_set_tile_shareable(myConstr, 1);
+	let mut myClaim = agent_claim_invade(ptr::null_mut(), myConstr);
+
 	for i in 0..10 {
         unsafe{printf("* Reinvading:\n\0".as_ptr());}
 
@@ -66,7 +80,9 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
         unsafe{printf("* Returned Claim:\n\0".as_ptr());}
         agent_claim_print(myClaim);
     }
-    */
+
+
+	// */
 
 
 }

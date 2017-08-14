@@ -25,24 +25,35 @@ use octolib::octo_ilet::simple_ilet_init;
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 
-	normal_infect();
-	//signal_infect()
+	// normal_infect();
+	signal_infect()
 
 }
 
 fn signal_infect() {
 
 	let mut constraints = Constraints::new();
-	constraints.set_pe_quantity(1, 1);
+	constraints.set_pe_quantity(3, 4);
     constraints.set_tile_shareable(true);
 
 	let mut claim = AgentClaim::new(constraints);
 	claim.print_size();
 	claim.set_verbose(true);
 
-	let signal = claim.infect_signal_wait(signal_ilet);
-	// claim.reinvade();
-	// claim.infect(ilet_function);
+	claim.infect_signal_wait(signal_ilet);
+	claim.reinvade();
+	claim.infect_signal_wait(signal_ilet);
+	claim.reinvade();
+	claim.infect_signal_wait(signal_ilet);
+
+	/*
+	let mut new_constraints = Constraints::new();
+	new_constraints.set_pe_quantity(6, 7);
+    new_constraints.set_tile_shareable(true);
+
+	claim.reinvade_with_constraints(new_constraints);
+	claim.infect_signal_wait(signal_ilet);
+	*/
 
 	shutdown(0);
 

@@ -10,6 +10,8 @@
 extern {
     fn printf(s: *const u8, ...);
     fn proxy_infect_with_ilet(claim: agentclaim_t, ilet_func: extern fn(arg1: *mut c_void), pes: i32, param: *mut c_void);
+    fn proxy_infect_with_ilet_and_signal(claim: agentclaim_t, ilet_func: extern fn(arg1: *mut c_void));
+    fn reinvade_helper(claim: agentclaim_t);
 }
 
 // Imports
@@ -18,10 +20,11 @@ use core::ptr;
 use core::mem;
 use helper::printer::print_text;
 use improvements::constraints::Constraints;
-use octo_agent::{agent_claim_invade, agent_claim_retreat, agent_claim_reinvade,
-                 agent_claim_reinvade_constraints, agent_claim_get_pecount_tile_type,
-                 agent_claim_get_proxyclaim_tile_type, agent_claim_get_pecount};
-use octo_types::{agentclaim_t, ilet_func, c_void};
+//use octo_agent::{agent_claim_invade, agent_claim_retreat, agent_claim_reinvade,
+//                 agent_claim_reinvade_constraints, agent_claim_get_pecount_tile_type,
+//                 agent_claim_get_proxyclaim_tile_type, agent_claim_get_pecount};
+use octo_agent::*;
+use octo_types::{agentclaim_t, ilet_func, c_void, constraints_t};
 use octo_structs::{simple_ilet, simple_signal};
 use octo_ilet::{simple_ilet_init};
 use octo_proxy_claim::{proxy_infect};
@@ -37,6 +40,7 @@ use octo_signal::{simple_signal_wait, simple_signal_init};
 /// * `claim` - The agentclaim_t struct that this struct wraps around
 pub struct AgentClaim {
     claim: agentclaim_t,
+    constraints: constraints_t,
     verbose: bool
 }
 
@@ -48,11 +52,11 @@ impl AgentClaim {
     ///
     /// # Arguments
     ///
-    /// * `constraints` - The constraints of this claim
+    /// * `constraints` - The constraints of this claim. Is consumed by this method
     pub fn new(constraints: Constraints) -> AgentClaim {
-        let constraints = constraints.to_constraints_t();
-        let claim = agent_claim_invade(ptr::null_mut(), constraints);
-        AgentClaim {claim: claim, verbose: false}
+        let mut claim_constraints = constraints.to_constraints_t();
+        let mut claim = agent_claim_invade(ptr::null_mut(), claim_constraints);
+        AgentClaim {claim: claim, constraints: claim_constraints, verbose: false}
     }
 
     /// An alias for the constructor
@@ -146,6 +150,9 @@ impl AgentClaim {
     /// * `ilet` - The ilet function to execute
     pub fn infect_signal_wait(&mut self, ilet: ilet_func) {
 
+        unsafe{proxy_infect_with_ilet_and_signal(self.claim, ilet);}
+        return;
+
         let mut sync = self.infect_signal(ilet);
 
         if self.verbose {
@@ -162,6 +169,10 @@ impl AgentClaim {
 
     /// Reinvades reusing the previous constraints
     pub fn reinvade(&mut self) {
+
+        agent_constr_create();
+        let mut constr = self.constraints; // I don't know why, but reinvades only work
+                                           // when this line is included. TODO investigate
         let status = agent_claim_reinvade(self.claim);
         if status == -1 {
             unsafe { printf("* Reinvade Failed\n\0".as_ptr()); }
