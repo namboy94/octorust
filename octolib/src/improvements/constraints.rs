@@ -9,6 +9,7 @@ use octo_agent::{agent_constr_create, agent_constr_set_quantity, agent_constr_se
                  agent_constr_set_stickyclaim, agent_constr_set_vipg, agent_constr_set_appclass,
                  agent_constr_set_appnumber, agent_constr_set_malleable,
                  agent_constr_get_reinvade_handler, agent_constr_set_reinvade_handler};
+use helper::printer::*;
 
 /// Struct modelling the constraints for a claim. Makes use of a constraints_t struct
 /// to do so.
@@ -111,6 +112,7 @@ impl Drop for Constraints {
     /// Destructor for the Constraints struct. Uses agent_constr_create to delete the
     /// internat constraints container to avoid memory leaks
     fn drop(&mut self) {
+        print_text("Deleting Constraint");
         agent_constr_delete(self.constraints);
     }
 

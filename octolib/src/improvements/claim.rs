@@ -40,7 +40,7 @@ use octo_signal::{simple_signal_wait, simple_signal_init};
 /// * `claim` - The agentclaim_t struct that this struct wraps around
 pub struct AgentClaim {
     claim: agentclaim_t,
-    constraints: constraints_t,
+    constraints: Constraints,
     verbose: bool
 }
 
@@ -54,9 +54,9 @@ impl AgentClaim {
     ///
     /// * `constraints` - The constraints of this claim. Is consumed by this method
     pub fn new(constraints: Constraints) -> AgentClaim {
-        let mut claim_constraints = constraints.to_constraints_t();
+        let mut claim_constraints = constraints.to_constraints_t(); // is deleted by destructor
         let mut claim = agent_claim_invade(ptr::null_mut(), claim_constraints);
-        AgentClaim {claim: claim, constraints: claim_constraints, verbose: false}
+        AgentClaim {claim: claim, constraints: constraints, verbose: false}
     }
 
     /// An alias for the constructor
@@ -170,9 +170,6 @@ impl AgentClaim {
     /// Reinvades reusing the previous constraints
     pub fn reinvade(&mut self) {
 
-        agent_constr_create();
-        let mut constr = self.constraints; // I don't know why, but reinvades only work
-                                           // when this line is included. TODO investigate
         let status = agent_claim_reinvade(self.claim);
         if status == -1 {
             unsafe { printf("* Reinvade Failed\n\0".as_ptr()); }
