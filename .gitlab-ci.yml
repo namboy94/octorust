@@ -1,7 +1,6 @@
 stages:
   - lint
   - install
-  - build
   - test
 
 python_lint:
@@ -9,7 +8,7 @@ python_lint:
   tags:
     - linux-buildserver
   script:
-    - pep8 .
+    - pep8 octorust
 
 install_octorust:
   stage: install
@@ -18,86 +17,16 @@ install_octorust:
   script:
     - python setup.py install --user
     - echo $NETRC_CREDENTIALS > ~/.netrc
-    - octorust -a x86guest --fetch-irtss
-    - octorust -a x64native --fetch-irtss
-    - octorust -a leon --fetch-irtss
+    - octorust -a x86guest --fetch-irtss -i 2017-06-07
+    - octorust -a x64native --fetch-irtss -i 2017-06-07
+    - octorust -a leon --fetch-irtss -i 2017-06-07
     - rm ~/.netrc
 
-build_cargo_x86_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/cargo_sample
-    - ./cargo_sample
-
-build_rustc_x86_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/rustc_sample/rustc_sample.rs
-    - ./rustc_sample
-
-build_c_x86_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/c_sample/c_sample.c
-    - ./c_sample
-
-build_cargo_x64_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/cargo_sample --architecture x64native
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel cargo_sample
-
-build_rustc_x64_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/rustc_sample/rustc_sample.rs --architecture x64native
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel rustc_sample
-
-build_c_x64_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/c_sample/c_sample.c --architecture x64native
-    - qemu-system-x86_64 -serial stdio -smp 8 -numa node -numa node -m 1G -no-reboot -display none -kernel c_sample
-
-build_cargo_leon_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/cargo_sample --architecture leon
-#    - qemu-sparc cargo_sample
-
-build_cargo_leon_sample:
-  stage: build
-  tags:
-    - linux-buildserver
-  script:
-    - octorust samples/c_sample/c_sample.c --architecture leon
-#    - qemu-sparc c_sample
-
-#build_rustc_leon_sample:
-#  stage: build
-#  tags:
-#    - linux-buildserver
-#  script:
-#    - octorust samples/rustc_sample/rustc_sample.rs --architecture leon
-#    - qemu-sparc rustc_sample
-
-test_bindings:
+run_applications:
   stage: test
   tags:
     - linux-buildserver
   script:
-    - octorust test/bindings_test -r
+    - octorust -r -i 2017-06-07 octo-apps/x10_ports/HelloAgent
+    - octorust -r -i 2017-06-07 octo-apps/x10_ports/MapReduce
+    - octorust -r -i 2017-06-07 octo-apps/experiments/reinvade

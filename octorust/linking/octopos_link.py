@@ -6,8 +6,8 @@ import os
 import sys
 from typing import List
 from subprocess import Popen
+from octorust.recipes.c_obj import compile_c_object
 from octorust.util.config import Config
-#from octorust.recipes.c import compile_c_object
 
 
 def link_app(config: Config, link_targets: List[str]):
@@ -71,7 +71,7 @@ def link_app(config: Config, link_targets: List[str]):
 def compile_c_helper_lib(config: Config) -> List[str]:
     """
     Compiles the C Helper Library
-    
+
     :param config: The configuration
     :return: A list of object file locations generated while compiling the
              helper library
@@ -86,61 +86,3 @@ def compile_c_helper_lib(config: Config) -> List[str]:
         objects.append(compile_c_object(config, c_file_path))
 
     return objects
-
-
-# TODO Remove this, this is code duplication!
-def compile_c_object(config: Config, target: str) -> str:
-    """
-    Compiles a C object file which can be linked to OctoPOS
-    :param config: The configuration to use while compiling
-    :param target: The target file to compile
-    :return: The path to the generated object file
-    """
-
-    gnu_std = "99" if config.arch == "leon" else "11"
-    object_file = target.rsplit(".c", 1)[0] + ".o"
-
-    command = [config.gcc]
-
-    if config.arch == "x86guest":
-
-        command += ["-mfpmath=sse", "-msse2", "-m32", "-O3"]
-
-    elif config.arch == "x64native":
-
-        command += [
-            "-m64",
-            "-fno-stack-protector",
-            "-mno-red-zone",
-            "-nodefaultlibs",
-            "-nostdlib",
-            "-mcx16",
-            "-D__STDC_LIMIT_MACROS",
-            "-O3"
-        ]
-
-    elif config.arch == "leon":
-        command += ["-mcpu=v8", "-O3"]
-
-    command += [  # Same for all architectures
-        "-nostdinc",
-        "-fno-asynchronous-unwind-tables",
-        "-fno-stack-protector",
-        "-I" + config.irtss_include,
-        "-isystem",
-        config.gcc_include,
-        "-D__OCTOPOS__",
-        "-std=gnu" + gnu_std,
-        "-c", target, "-o", object_file
-    ]
-
-    for part in command:
-        print(part, end=" ")
-    print()
-    Popen(command).wait()
-
-    if not os.path.isfile(object_file):
-        print("C Object did not compile. Can not continue.")
-        sys.exit(1)
-
-    return object_file

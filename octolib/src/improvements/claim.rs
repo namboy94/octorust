@@ -150,6 +150,7 @@ impl AgentClaim {
     /// * `ilet` - The ilet function to execute
     pub fn infect_signal_wait(&mut self, ilet: ilet_func) {
 
+        // TODO port to rust
         unsafe{proxy_infect_with_ilet_and_signal(self.claim, ilet);}
         return;
 
