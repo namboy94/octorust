@@ -41,6 +41,7 @@ use octo_signal::{simple_signal_wait, simple_signal_init};
 pub struct AgentClaim {
     claim: agentclaim_t,
     constraints: Constraints,
+    claim_constraints: constraints_t,
     verbose: bool
 }
 
@@ -56,7 +57,7 @@ impl AgentClaim {
     pub fn new(constraints: Constraints) -> AgentClaim {
         let mut claim_constraints = constraints.to_constraints_t(); // is deleted by destructor
         let mut claim = agent_claim_invade(ptr::null_mut(), claim_constraints);
-        AgentClaim {claim: claim, constraints: constraints, verbose: false}
+        AgentClaim {claim: claim, constraints: constraints, claim_constraints, verbose: false}
     }
 
     /// An alias for the constructor
@@ -96,7 +97,7 @@ impl AgentClaim {
         return sync;
     }
 
-    /// Instanciates simple_ilet structs for every PE on the claim and infects with them
+    /// Instantiates simple_ilet structs for every PE on the claim and infects with them
     /// using a proxy claim
     ///
     /// # Arguments
@@ -215,7 +216,7 @@ impl Drop for AgentClaim {
             unsafe { printf("* Retreating\n\0".as_ptr()); }
         }
 
-        agent_claim_retreat(self.claim);
+        // agent_claim_retreat(self.claim);
 
     }
 }

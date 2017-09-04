@@ -112,8 +112,8 @@ impl Drop for Constraints {
     /// Destructor for the Constraints struct. Uses agent_constr_create to delete the
     /// internat constraints container to avoid memory leaks
     fn drop(&mut self) {
-        print_text("Deleting Constraint");
-        agent_constr_delete(self.constraints);
+        print_text("* Deleting Constraint\n\0");
+        // agent_constr_delete(self.constraints);
     }
 
 }

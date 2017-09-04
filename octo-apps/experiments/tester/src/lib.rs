@@ -1,21 +1,12 @@
 // Author: Hermann Krumrey 2017 <hermann@krumreyh.com>
 #![no_std]
 
-// TODO
-// OK, seems like sizes of the structs are a problem with malloc
-// Idea: Make own improvements to octolib in C and import that!
-
 extern crate octolib;
 
 extern {
 	fn printf(s: *const u8, ...);
 	fn proxy_infect_with_ilet(claim: agentclaim_t, ilet_func: extern fn(arg1: *mut c_void), pes: i32, param: *mut c_void);
 }
-
-use core::mem;
-use core::ptr;
-
-use octolib::_libc::{free, malloc};
 
 use octolib::helper::printer::*;
 use octolib::octo_types::*;
@@ -29,61 +20,24 @@ use octolib::octo_dispatch_claim::*;
 use octolib::octo_ilet::*;
 use octolib::octo_proxy_claim::*;
 use octolib::octo_agent::*;
+use core::ptr;
 
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
-
-	unsafe {printf("main ilet\n* Creating Constraints\n\0".as_ptr());}
-	let mut constraints = Constraints::new();
-
-	unsafe{ printf("* Setting Constraints\n\0".as_ptr()); }
-	constraints.set_pe_quantity(1, 1);
-	constraints.set_tile_shareable(true);
-
-	unsafe {printf("* Run: Invading with new Agent\n\0".as_ptr());}
-	let mut claim = AgentClaim::new(constraints);
-	claim.set_verbose(true);
-
-	for i in 0..10 {  // TODO change to 0..10 in due time
-		unsafe{printf("* Reinvading:\n\0".as_ptr());}
-        claim.reinvade();
-    }
-
-	claim.infect_signal_wait(ILetFunc);
-
-	for i in 0..0 {  // TODO change to 0..10 in due time
-		unsafe{printf("* Reinvading:\n\0".as_ptr());}
-        claim.reinvade();
-    }
-
-	shutdown(0);
-
-	/*
-	This works :|
-
 
 	let mut myConstr = agent_constr_create();
 	agent_constr_set_quantity(myConstr, 2, 5, 0);
     agent_constr_set_tile_shareable(myConstr, 1);
 	let mut myClaim = agent_claim_invade(ptr::null_mut(), myConstr);
-
-	for i in 0..10 {
-        unsafe{printf("* Reinvading:\n\0".as_ptr());}
-
-        let ret = agent_claim_reinvade(myClaim);
-
-        if ret == -1 {
-            unsafe{printf("Reinvade operation unsuccessful.\n\0".as_ptr());}
-			shutdown(1);
-        }
-
-        unsafe{printf("* Returned Claim:\n\0".as_ptr());}
-        agent_claim_print(myClaim);
-    }
+	unsafe {printf("%d\n\0".as_ptr(), agent_claim_reinvade(myClaim)) };
+	// shutdown(0);
 
 
-	// */
-
+	let mut constr = Constraints::new();
+	constr.set_pe_quantity(1, 1);
+	let mut agent = AgentClaim::new(constr);
+	agent.set_verbose(true);
+	agent.reinvade()
 
 }
 
