@@ -23,12 +23,27 @@ fn test_prototypes() {
 
 	unsafe {
 		let constr = ConstraintsPrototype::new(1, 4);
-		let agent = ClaimPrototype::new(constr);
+		let mut agent = ClaimPrototype::new(constr);
 
 		for i in 0..10 {
 			agent.reinvade(); // Reinvade 10 times
 		}
 		agent.infect(ilet);
+		for i in 0..10 {
+			agent.reinvade(); // Reinvade 10 times
+		}
+		agent.infect(ilet);
+		agent.reinvade_with_constraints(ConstraintsPrototype::new(4, 6));
+		agent.infect(ilet);
+		agent.reinvade_with_constraints(ConstraintsPrototype::new(4, 6));
+		agent.infect(ilet);
+
+
+		for i in 0..10 {
+			agent.reinvade_with_constraints(ConstraintsPrototype::new(i, i + 1));
+		}
+		agent.infect(ilet);
+
 		shutdown(0);
 	}
 

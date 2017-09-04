@@ -44,6 +44,9 @@ extern {
     fn proxy_infect_with_ilet(claim: agentclaim_t, ilet: ilet_func, pes: i32, param: *mut libc::c_void);
     fn dispatch_claim_send_reply(ilet: *mut simple_ilet);
     fn proxy_infect(claim: proxy_claim_t, team: *mut simple_ilet, count: team_size_t);
+    fn agent_claim_retreat(claim: agentclaim_t);
+    fn agent_constr_delete(constr: constraints_t);
+    fn agent_claim_reinvade_constraints(claim: agentclaim_t, constr: constraints_t) -> i32;
 }
 
 
@@ -80,9 +83,11 @@ impl ClaimPrototype {
         unsafe {
             let constraints = proto_constraints.get_constraints();
             let agent = agent_claim_invade(ptr::null_mut(), constraints);
-            return ClaimPrototype { claim: agent, constraints: constraints }
+            return ClaimPrototype {
+                claim: agent,
+                constraints: constraints
+            }
         }
-
     }
 
     pub fn reinvade(&self) {
@@ -97,7 +102,20 @@ impl ClaimPrototype {
         }
     }
 
-    pub fn infect(&self, ilet: ilet_func) {
+    pub fn reinvade_with_constraints(&mut self, constraints: ConstraintsPrototype) {
+
+        unsafe {
+            self.constraints = constraints.get_constraints();
+            let status = agent_claim_reinvade_constraints(self.claim, self.constraints);
+            if status == -1 {
+                printf("* Reinvade Failed\n\0".as_ptr());
+            } else {
+                printf("* Reinvade Successful\n\0".as_ptr());
+            }
+        }
+    }
+
+    pub fn infect(&self, ilet: ilet_func, args: *mut libc::c_void) {
 
         unsafe {
 
@@ -144,5 +162,16 @@ pub fn reply_signal(signal: *mut libc::c_void) {
         printf("Answering Signal %p\n\0".as_ptr(), signal);
 	    simple_ilet_init(&mut answer, inner, signal);
         dispatch_claim_send_reply(&mut answer);
+    }
+}
+
+impl Drop for ClaimPrototype {
+    fn drop(&mut self) {
+        unsafe {
+            printf("* Deleting constraints %p\n\0".as_ptr(), self.constraints);
+            agent_constr_delete(self.constraints);
+            printf("* Retreating claim %p\n\0".as_ptr(), self.claim);
+            agent_claim_retreat(self.claim);
+        }
     }
 }
