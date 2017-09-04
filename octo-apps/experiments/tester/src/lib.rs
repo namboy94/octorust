@@ -20,7 +20,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 fn test() {
 
-	let constr = Constraints::new(4);
+	let constr = Constraints::new(3);
 	let mut agent = AgentClaim::new(constr);
 	agent.set_verbose(true);
 
@@ -34,12 +34,12 @@ fn test() {
 		agent.reinvade(); // Reinvade 10 times
 	}
 	agent.infect(ilet);
-	agent.reinvade_with_constraints(Constraints::new(6));
+	agent.reinvade_with_constraints(Constraints::new(2));
 	agent.infect(ilet);
-	agent.reinvade_with_constraints(Constraints::new(8));
+	agent.reinvade_with_constraints(Constraints::new(4));
 	agent.infect(ilet);
 
-	for i in 1..10 {
+	for i in 1..5 {
 		agent.reinvade_with_constraints(Constraints::new(i));
 	}
 	agent.infect(ilet);
