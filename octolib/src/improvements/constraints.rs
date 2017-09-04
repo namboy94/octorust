@@ -27,9 +27,14 @@ impl Constraints {
 
     /// Constructor for the Constraints struct. Creates a new constraints_t
     /// using the `agent_constr_create` function
-    pub fn new() -> Constraints {
-        let stressConstraints = agent_constr_create();
-        Constraints {constraints: stressConstraints}
+    pub fn new(pes: usize) -> Constraints {
+        let constraints = agent_constr_create();
+
+        // Set defaults
+        agent_constr_set_quantity(constraints, pes as i32, pes as i32, 0);
+        agent_constr_set_tile_shareable(constraints, 1);
+
+        Constraints {constraints: constraints}
     }
 
     /// Merges another Constraints struct with this one

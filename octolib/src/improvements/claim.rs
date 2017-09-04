@@ -170,7 +170,7 @@ impl AgentClaim {
     }
 
     /// Reinvades reusing the previous constraints
-    pub fn reinvade(&mut self) {
+    pub fn reinvade(&self) {
 
         let status = agent_claim_reinvade(self.claim);
         if status == -1 {
