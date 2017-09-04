@@ -9,54 +9,42 @@ extern {
 }
 
 use octolib::octo_types::c_void;
-use octolib::improvements::prototypes::*;
-use octolib::improvements::claim::*;
-use octolib::improvements::constraints::*;
+use octolib::improvements::functions::reply_signal;
+use octolib::improvements::claim::AgentClaim;
+use octolib::improvements::constraints::Constraints;
 
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
-	// test_prod();
-	test_prototypes();
+	test();
 }
 
-fn test_prototypes() {
+fn test() {
 
-	unsafe {
-		let constr = ConstraintsPrototype::new(1, 4);
-		let mut agent = ClaimPrototype::new(constr);
-
-		for i in 0..10 {
-			agent.reinvade(); // Reinvade 10 times
-		}
-		agent.infect(ilet);
-		for i in 0..10 {
-			agent.reinvade(); // Reinvade 10 times
-		}
-		agent.infect(ilet);
-		agent.reinvade_with_constraints(ConstraintsPrototype::new(4, 6));
-		agent.infect(ilet);
-		agent.reinvade_with_constraints(ConstraintsPrototype::new(4, 6));
-		agent.infect(ilet);
+	let constr = Constraints::new(4);
+	let mut agent = AgentClaim::new(constr);
+	agent.set_verbose(true);
 
 
-		for i in 0..10 {
-			agent.reinvade_with_constraints(ConstraintsPrototype::new(i, i + 1));
-		}
-		agent.infect(ilet);
-
-		shutdown(0);
-	}
-
-}
-
-fn test_prod() {
-
-	let constr = Constraints::new(3);
-	let agent = AgentClaim::new(constr);
-
+	agent.infect(ilet);
 	for i in 0..10 {
 		agent.reinvade(); // Reinvade 10 times
 	}
+	agent.infect(ilet);
+	for i in 0..10 {
+		agent.reinvade(); // Reinvade 10 times
+	}
+	agent.infect(ilet);
+	agent.reinvade_with_constraints(Constraints::new(6));
+	agent.infect(ilet);
+	agent.reinvade_with_constraints(Constraints::new(8));
+	agent.infect(ilet);
+
+	for i in 1..10 {
+		agent.reinvade_with_constraints(Constraints::new(i));
+	}
+	agent.infect(ilet);
+
+	unsafe{shutdown(0)};
 }
 
 extern "C" fn ilet(data: *mut c_void) {
