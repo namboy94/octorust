@@ -22,11 +22,16 @@ impl Constraints {
     /// Constructor for the Constraints struct. Creates a new constraints_t
     /// using the `agent_constr_create` function. Sets a default minimum/maximum amount
     /// of processing elements and sets the tile as shareable
-    pub fn new(pes: i32) -> Constraints {
+    ///
+    /// # Arguments
+    ///
+    /// * `min_pes` - The minimum amount of processing elements
+    /// * `max_pes` - The maximum amount of processing elements
+    pub fn new(min_pes: i32, max_pes: i32) -> Constraints {
         let constraints = octo_agent::agent_constr_create();
 
         // Set defaults
-        octo_agent::agent_constr_set_quantity(constraints, pes, pes, 0);
+        octo_agent::agent_constr_set_quantity(constraints, min_pes, max_pes, 0);
         octo_agent::agent_constr_set_tile_shareable(constraints, 1);
         Constraints {constraints: constraints}
     }
