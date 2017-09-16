@@ -13,7 +13,13 @@ use octo_proxy_claim;
 use octo_tile;
 use octo_signal;
 use improvements::constraints:: Constraints;
-extern { fn printf(s: *const u8, ...); }
+extern {
+    fn printf(s: *const u8, ...);
+    fn simple_ilet_init(ilet:
+                        *mut octo_structs::simple_ilet,
+                        code: octo_types::rust_ilet_func,
+                        param: *mut octo_types::c_void);  // To allow rust fns to be used
+}
 
 /// The AgentClaim struct wraps around an agentclaim_t object to offer
 /// a simplified interface to methods associated with an agent claim, implementing
@@ -94,7 +100,7 @@ impl AgentClaim {
     /// # Arguments
     ///
     /// `ilet` - The ilet function to execute
-    pub fn infect(&self, ilet: octo_types::ilet_func) {
+    pub fn infect(&self, ilet: octo_types::rust_ilet_func) {  // TODO Params with dual_ilet
 
         let mut sync = octo_structs::simple_signal { padding: [0; 64] };
         let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
@@ -120,7 +126,7 @@ impl AgentClaim {
                         libc::malloc(arraysize) as *mut octo_structs::simple_ilet;
 
                     for i in 0..pes as isize {
-                        octo_ilet::simple_ilet_init(
+                        simple_ilet_init(  //octo_ilet::simple_ilet_init(
                             ilets.offset(i), ilet, &mut sync as *mut _ as *mut libc::c_void)
                     }
                     octo_proxy_claim::proxy_infect(proxy_claim, ilets.offset(0), pes as u32);

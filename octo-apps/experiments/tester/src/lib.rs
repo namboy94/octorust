@@ -2,12 +2,13 @@
 #![no_std]
 
 extern crate octolib;
+pub type ilet_func = fn(arg1: *mut c_void);
 
 extern {
 	fn printf(s: *const u8, ...);
 	fn shutdown(code: usize);
+	fn handle_closure(func: ilet_func);
 }
-
 use octolib::octo_types::c_void;
 use octolib::improvements::functions::reply_signal;
 use octolib::improvements::claim::AgentClaim;
@@ -15,36 +16,11 @@ use octolib::improvements::constraints::Constraints;
 
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
-	test();
-}
-
-fn test() {
-
-	let constr = Constraints::new(3, 4);
-	let mut agent = AgentClaim::new(constr);
-	agent.set_verbose(true);
-
-
-	agent.infect(ilet);
-	for i in 0..10 {
-		agent.reinvade(); // Reinvade 10 times
+	unsafe {
+		let clos = |x: *mut c_void| { printf("HELLO WORLD!\n\0".as_ptr()); };
+		handle_closure(clos);
+		handle_closure(ilet);
 	}
-	agent.infect(ilet);
-	for i in 0..10 {
-		agent.reinvade(); // Reinvade 10 times
-	}
-	agent.infect(ilet);
-	agent.reinvade_with_constraints(Constraints::new(2, 3));
-	agent.infect(ilet);
-	agent.reinvade_with_constraints(Constraints::new(1, 3));
-	agent.infect(ilet);
-
-	for i in 1..5 {
-		agent.reinvade_with_constraints(Constraints::new(i, i + 1));
-	}
-	agent.infect(ilet);
-
-	unsafe{shutdown(0)};
 }
 
 extern "C" fn ilet(data: *mut c_void) {
