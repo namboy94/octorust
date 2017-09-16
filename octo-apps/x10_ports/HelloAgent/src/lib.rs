@@ -22,6 +22,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let constr = Constraints::new(3, 4);
 
 	let mut claim = AgentClaim::new(constr);
+	claim.set_verbose(true);
 	claim.infect(ilet);
 	claim.reinvade();
 
@@ -30,6 +31,5 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 	claim.infect(ilet);
 	// Implicit retreat
-
-	shutdown(0);
+	// Shutdown handled by octorust
 }

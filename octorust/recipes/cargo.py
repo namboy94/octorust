@@ -109,10 +109,14 @@ def generate_c_dummy() -> str:
     while os.path.isfile(destination):
         destination = "_" + destination
 
+    # C Dummy file content
     data = "#include <stdint.h>\n" \
            "#include <octopos.h>\n" \
            "void rust_main_ilet(uint8_t claim_t);\n" \
-           "void main_ilet(uint8_t claim_t) { rust_main_ilet(claim_t); }"
+           "void main_ilet(uint8_t claim_t) { \n" \
+           "    rust_main_ilet(claim_t);\n" \
+           "    shutdown(0);\n" \
+           "}"
 
     with open(destination, 'w') as dummy:
         dummy.write(data)
