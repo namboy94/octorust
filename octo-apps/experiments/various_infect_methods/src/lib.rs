@@ -18,7 +18,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let mut claim = AgentClaim::new(constr);
 
 	fn function(params: *mut c_void) {
-		unsafe { printf("Hello World (fn)%d\n\0".as_ptr(), params) }
+		unsafe { printf("Hello World (fn)\n\0".as_ptr()) }
 	}
 
 	let closure = |params: *mut c_void| {
@@ -31,9 +31,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 		unsafe { printf("Hello World (closure:%d)\n\0".as_ptr(), x) }
 	};
 
-	let data = [ptr::null_mut(), 1000 as *mut c_void, ptr::null_mut(), ptr::null_mut()];
-
-	claim.infect(function, Some(&data));
+	claim.infect(function, None);
 	claim.infect(closure, None);
 	claim.infect(modifying_closure, None);
 

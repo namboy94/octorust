@@ -139,7 +139,7 @@ impl AgentClaim {
                             &None => ptr::null_mut()
                         };
 
-                        octo_ilet::dual_ilet_init(ilets.offset(i), closure_handler, closure_ptr, param)
+                        octo_ilet::dual_ilet_init(ilets.offset(i), closure_handler, closure_ptr, param as *mut libc::c_void)
                     }
                     octo_proxy_claim::proxy_infect(proxy_claim, ilets.offset(0), pes as u32);
                     libc::free(ilets as *mut _ as *mut libc::c_void);

@@ -18,17 +18,15 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let constr = Constraints::new(3, 4);
 	let mut claim = AgentClaim::new(constr);
 
-	let closure = |params: *mut c_void| {
-		unsafe { printf("%s\n\0".as_ptr(), params) }
-	};
-
-	let data = [
+	let strings = [
 		"Hello\0".as_ptr() as *mut c_void,
 		"World\0".as_ptr() as *mut c_void,
 		"Hallo\0".as_ptr() as *mut c_void,
 		"Welt\0".as_ptr() as *mut c_void];
 
-	claim.infect(closure, Some(&data));
+	claim.infect(|params: *mut c_void| {
+		unsafe { printf("%s\n\0".as_ptr(), params) }
+	}, Some(&strings));
 
 	let arrays = [
 		[1,2,3,4,5].as_mut_ptr() as *mut c_void,
@@ -47,7 +45,6 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 			printf("%d+%d+%d+%d+%d = %d\n\0".as_ptr(), slice[0], slice[1], slice[2], slice[3], slice[4], result);
 		}
 	};
-
 
 	claim.infect(sum, Some(&arrays));
 
