@@ -20,7 +20,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	}
 
 	let closure = |params: *mut c_void| {
-		unsafe { printf("Hello World\n\0".as_ptr()) }
+		unsafe { printf("Hello World\n\0".as_ptr()) };
 		reply_signal(params);
 	};
 
@@ -35,6 +35,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	claim.reinvade(Some(Constraints::new(6, 7)));
 
 	claim.infect(ilet);
+
 	// Implicit retreat
 	// Shutdown handled by octorust
 }

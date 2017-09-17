@@ -13,6 +13,7 @@ use octo_proxy_claim;
 use octo_tile;
 use octo_signal;
 use improvements::constraints::Constraints;
+use improvements::closure_wrapper;
 extern {
     fn printf(s: *const u8, ...);
     fn simple_ilet_init(ilet: *mut octo_structs::simple_ilet,
@@ -90,18 +91,21 @@ impl AgentClaim {
     /// # Arguments
     ///
     /// `ilet` - The ilet function to execute
-    pub fn infect(&self, ilet: octo_types::rust_ilet_func) {
-        // TODO Params with dual_ilet
+    pub fn infect<F>(&self, mut ilet: F) where F: FnMut(*mut octo_types::c_void) {
 
         let mut sync = octo_structs::simple_signal { padding: [0; 64] };
         let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
         octo_signal::simple_signal_init(&mut sync, pe_count);
 
+        // Convert closure to raw data
+        let mut callback: &mut FnMut(*mut octo_types::c_void) = &mut ilet;
+        let ctx = &mut callback as *mut &mut FnMut(*mut octo_types::c_void) as *mut octo_types::c_void;
+        let closure_data: &mut &mut FnMut(*mut octo_types::c_void) = unsafe { mem::transmute(ctx) };
+
         for tile in 0..octo_tile::get_tile_count() {
             let pes = octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
 
-            if pes != 0 {
-                // Type = 0 ^= RISC
+            if pes != 0 { // Type = 0 ^= RISC
 
                 let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(
                     self.claim, tile as i32, 0);
@@ -118,41 +122,16 @@ impl AgentClaim {
                         libc::malloc(arraysize) as *mut octo_structs::simple_ilet;
 
                     for i in 0..pes as isize {
-                        simple_ilet_init(//octo_ilet::simple_ilet_init(
-                                         ilets.offset(i), ilet, &mut sync as *mut _ as *mut libc::c_void)
+                        octo_ilet::dual_ilet_init(
+                            ilets.offset(i),
+                            closure_wrapper::closure_handler,
+                            closure_data as *mut _ as *mut octo_types::c_void,
+                            &mut sync as *mut _ as *mut libc::c_void)
                     }
                     octo_proxy_claim::proxy_infect(proxy_claim, ilets.offset(0), pes as u32);
                     libc::free(ilets as *mut _ as *mut libc::c_void);
                 }
             }
-        }
-
-        if self.verbose {
-            unsafe { printf("Waiting on Signal %p...\n\0".as_ptr(), &mut sync); }
-        }
-        octo_signal::simple_signal_wait(&mut sync);
-        if self.verbose {
-            unsafe { printf("All Signals received!\n\0".as_ptr()); }
-        }
-    }
-
-    // TODO reduce duplication
-    pub fn infect_closure<F>(&self, mut ilet: F) where F: FnMut(*mut octo_types::c_void) {
-
-        let mut sync = octo_structs::simple_signal { padding: [0; 64] };
-        let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
-        octo_signal::simple_signal_init(&mut sync, pe_count);
-
-        extern "C" fn closure_handler(closure_data: *mut octo_types::c_void, params: *mut octo_types::c_void) {
-            let closure: &mut &mut FnMut(*mut octo_types::c_void) = unsafe { mem::transmute(closure_data) };
-            closure(params);
-        }
-        let mut cb: &mut FnMut(*mut octo_types::c_void) = &mut ilet;
-        let ctx = &mut cb as *mut &mut FnMut(*mut octo_types::c_void) as *mut octo_types::c_void;
-        let closure: &mut &mut FnMut(*mut octo_types::c_void) = unsafe { mem::transmute(ctx) };
-
-        unsafe {
-            closure_infect(self.claim, closure_handler, closure as *mut _ as *mut octo_types::c_void, &mut sync as *mut _ as *mut libc::c_void);
         }
 
         if self.verbose {
