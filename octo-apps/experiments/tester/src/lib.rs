@@ -20,7 +20,11 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let mut x = 0;
 	let closure = |p: *mut c_void| { x = x + 1; unsafe { printf("%d\n\0".as_ptr(), x) }; reply_signal(p) };
 
-	claim.infect_closure(closure);
+	fn f(p: *mut c_void) {
+		unsafe { printf("Hello World!\n\0".as_ptr()) }; reply_signal(p)
+	}
+
+	claim.infect_closure(f);
 
 	/*
 	claim.set_verbose(true);
