@@ -27,7 +27,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	claim.reinvade(None);
 
 	claim.infect(ilet);
-	claim.reinvade(Some(Constraints::new(6, 7)));
+	claim.reinvade(Some(Constraints::new(6, 7)), false);
 
 	claim.infect(ilet);
 
