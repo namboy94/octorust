@@ -12,7 +12,8 @@ use octo_ilet;
 use octo_proxy_claim;
 use octo_tile;
 use octo_signal;
-use improvements::constraints:: Constraints;
+use improvements::constraints::Constraints;
+use improvements::closure_wrapper::closure_infect;
 extern {
     fn printf(s: *const u8, ...);
     fn simple_ilet_init(ilet:
@@ -131,6 +132,45 @@ impl AgentClaim {
                     }
                     octo_proxy_claim::proxy_infect(proxy_claim, ilets.offset(0), pes as u32);
                     libc::free(ilets as *mut _ as *mut libc::c_void);
+                }
+            }
+        }
+
+        if self.verbose {
+            unsafe { printf("Waiting on Signal %p...\n\0".as_ptr(), &mut sync); }
+        }
+        octo_signal::simple_signal_wait(&mut sync);
+        if self.verbose {
+            unsafe { printf("All Signals received!\n\0".as_ptr()); }
+        }
+    }
+
+    // TODO Reduce duplication
+    /// Executes an Ilet
+    ///
+    /// # Arguments
+    ///
+    /// `ilet` - The ilet function to execute
+    pub fn infect_with_closure<F>(&self, ilet: F) where F: FnMut(*mut octo_types::c_void) {  // TODO Params with dual_ilet
+
+        let mut sync = octo_structs::simple_signal { padding: [0; 64] };
+        let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
+        octo_signal::simple_signal_init(&mut sync, pe_count);
+
+        for tile in 0..octo_tile::get_tile_count() {
+            let pes = octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
+
+            if pes != 0 { // Type = 0 ^= RISC
+
+                let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(
+                    self.claim, tile as i32, 0);
+
+                unsafe {
+                    if self.verbose {
+                        printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim);
+                        printf("* Starting Infecting\n\0".as_ptr());
+                    }
+                    closure_infect(pes as usize, proxy_claim, ilet, &mut sync as *mut _ as *mut libc::c_void);
                 }
             }
         }
