@@ -1,5 +1,15 @@
-typedef void (*ilet_func) (void*);
+#include <stdio.h>
 
-void handle_closure(ilet_func function, void* args) {
+typedef void (*ilet_func) (void*);
+typedef int (*dosom) (int, void*);
+
+/*
+void handle_closure(int function, void* args) {
     function(args);
+}*/
+
+void do_something(dosom func, void* param) {
+    printf("START");
+    printf("%d", func(0, param));
+    printf("END");
 }

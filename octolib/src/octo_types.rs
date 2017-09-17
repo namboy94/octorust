@@ -1,9 +1,9 @@
-use libc::c_void as __c_void;
-use libc::wchar_t;
+use libc;
 
 // C Types
-pub type c_void = __c_void;
-pub type c_char = wchar_t;
+pub type c_int = libc::c_int;
+pub type c_void = libc::c_void;
+pub type c_char = libc::wchar_t;
 
 // Types
 pub type claim_t = u8;
