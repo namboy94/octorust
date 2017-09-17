@@ -14,21 +14,16 @@ use octolib::improvements::constraints::Constraints;
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 
+	let constr = Constraints::new(3, 4);
+	let mut claim = AgentClaim::new(constr);
+	claim.set_verbose(true);
+
 	fn ilet(params: *mut c_void) {
 		unsafe { printf("Hello World\n\0".as_ptr()) }
 		reply_signal(params);
 	}
 
-	let closure = |params: *mut c_void| {
-		unsafe { printf("Hello World\n\0".as_ptr()) };
-		reply_signal(params);
-	};
-
-	let constr = Constraints::new(3, 4);
-
-	let mut claim = AgentClaim::new(constr);
-	claim.set_verbose(true);
-	claim.infect(closure);
+	claim.infect(ilet);
 	claim.reinvade(None);
 
 	claim.infect(ilet);
@@ -36,6 +31,4 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 	claim.infect(ilet);
 
-	// Implicit retreat
-	// Shutdown handled by octorust
 }
