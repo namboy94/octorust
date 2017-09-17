@@ -9,10 +9,12 @@ void c_closure_infect(
     void* closure_data,
     void* params
 ) {
-    simple_ilet ilets[];
+/*
+    simple_ilet ilets[pes];
     for (int i = 0; i < pes; i++) {
         dual_ilet_init(simple_ilet[i], ilet, closure_data, params);
     }
-    proxy_infect(proxy_claim, ilets[0], pes);
+    proxy_infect(claim, ilets[0], pes);
+    */
 }
 

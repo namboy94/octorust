@@ -41,7 +41,6 @@ pub struct AgentClaim {
 
 /// Implementation of the AgentClaim struct
 impl AgentClaim {
-
     /// Constructor for the AgentClaim struct. Automatically invades
     /// using the specified constraints
     ///
@@ -52,7 +51,7 @@ impl AgentClaim {
         // TODO Maybe find a way to NOT consume the constraints object
         let constr = constraints.to_constraints_t();
         let claim = octo_agent::agent_claim_invade(ptr::null_mut(), constr);
-        AgentClaim {claim: claim, constraints: constr, verbose: false}
+        AgentClaim { claim: claim, constraints: constr, verbose: false }
     }
 
     /// Enables or Disables printing of messages when the claim infects, retreats, etc.
@@ -65,28 +64,19 @@ impl AgentClaim {
     }
 
     /// Reinvades using the existing constraints
-    pub fn reinvade(&self) {
-        let status = octo_agent::agent_claim_reinvade(self.claim);
-        self.evaluate_reinvade_result(status);
-    }
+    pub fn reinvade(&mut self, constraints: Option<Constraints>) {
 
-    /// Reinvades using new constraints
-    ///
-    /// # Arguments
-    ///
-    /// * `constraints` - The new constraints
-    pub fn reinvade_with_constraints(&mut self, constraints: Constraints) {
-        self.constraints = constraints.to_constraints_t();
-        let status = octo_agent::agent_claim_reinvade_constraints(self.claim, self.constraints);
-        self.evaluate_reinvade_result(status);
-    }
+        let mut status;
+        match constraints {
+            Some(c) => {
+                self.constraints = c.to_constraints_t();
+                status = octo_agent::agent_claim_reinvade_constraints(self.claim, self.constraints);
+            }
+            None => {
+                status = octo_agent::agent_claim_reinvade(self.claim);
+            }
+        };
 
-    /// Prints the result of a reinvade
-    ///
-    /// # Arguments
-    ///
-    /// * `status` - The resulting status code of the reinvade operation
-    fn evaluate_reinvade_result(&self, status: i32) {
         if self.verbose {
             if status == -1 {
                 unsafe { printf("* Reinvade Failed\n\0".as_ptr()); }
@@ -101,7 +91,8 @@ impl AgentClaim {
     /// # Arguments
     ///
     /// `ilet` - The ilet function to execute
-    pub fn infect(&self, ilet: octo_types::rust_ilet_func) {  // TODO Params with dual_ilet
+    pub fn infect(&self, ilet: octo_types::rust_ilet_func) {
+        // TODO Params with dual_ilet
 
         let mut sync = octo_structs::simple_signal { padding: [0; 64] };
         let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
@@ -110,7 +101,8 @@ impl AgentClaim {
         for tile in 0..octo_tile::get_tile_count() {
             let pes = octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
 
-            if pes != 0 { // Type = 0 ^= RISC
+            if pes != 0 {
+                // Type = 0 ^= RISC
 
                 let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(
                     self.claim, tile as i32, 0);
@@ -127,50 +119,11 @@ impl AgentClaim {
                         libc::malloc(arraysize) as *mut octo_structs::simple_ilet;
 
                     for i in 0..pes as isize {
-                        simple_ilet_init(  //octo_ilet::simple_ilet_init(
-                            ilets.offset(i), ilet, &mut sync as *mut _ as *mut libc::c_void)
+                        simple_ilet_init(//octo_ilet::simple_ilet_init(
+                                         ilets.offset(i), ilet, &mut sync as *mut _ as *mut libc::c_void)
                     }
                     octo_proxy_claim::proxy_infect(proxy_claim, ilets.offset(0), pes as u32);
                     libc::free(ilets as *mut _ as *mut libc::c_void);
-                }
-            }
-        }
-
-        if self.verbose {
-            unsafe { printf("Waiting on Signal %p...\n\0".as_ptr(), &mut sync); }
-        }
-        octo_signal::simple_signal_wait(&mut sync);
-        if self.verbose {
-            unsafe { printf("All Signals received!\n\0".as_ptr()); }
-        }
-    }
-
-    // TODO Reduce duplication
-    /// Executes an Ilet
-    ///
-    /// # Arguments
-    ///
-    /// `ilet` - The ilet function to execute
-    pub fn infect_with_closure<F>(&self, ilet: F) where F: FnMut(*mut octo_types::c_void) {  // TODO Params with dual_ilet
-
-        let mut sync = octo_structs::simple_signal { padding: [0; 64] };
-        let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
-        octo_signal::simple_signal_init(&mut sync, pe_count);
-
-        for tile in 0..octo_tile::get_tile_count() {
-            let pes = octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
-
-            if pes != 0 { // Type = 0 ^= RISC
-
-                let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(
-                    self.claim, tile as i32, 0);
-
-                unsafe {
-                    if self.verbose {
-                        printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim);
-                        printf("* Starting Infecting\n\0".as_ptr());
-                    }
-                    closure_infect(pes as usize, proxy_claim, ilet, &mut sync as *mut _ as *mut libc::c_void);
                 }
             }
         }

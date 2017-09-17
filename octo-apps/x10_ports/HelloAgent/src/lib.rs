@@ -29,10 +29,10 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 	let mut claim = AgentClaim::new(constr);
 	claim.set_verbose(true);
 	claim.infect(closure);
-	claim.reinvade();
+	claim.reinvade(None);
 
 	claim.infect(ilet);
-	claim.reinvade_with_constraints(Constraints::new(6, 7));
+	claim.reinvade(Some(Constraints::new(6, 7)));
 
 	claim.infect(ilet);
 	// Implicit retreat
