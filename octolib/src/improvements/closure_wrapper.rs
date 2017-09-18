@@ -4,14 +4,14 @@
 use core::mem;
 use octo_types::c_void;
 
+/// Extern C function that executes a closure by converting the closure data from
+/// a void pointer back to a function and executing it.
+///
+/// # Arguments
+///
+/// `closure_data` - The closure data
+/// `params` - Parameter for the closure function
 pub extern "C" fn closure_handler(closure_data: *mut c_void, params: *mut c_void) {
     let closure: &mut &mut FnMut(*mut c_void) = unsafe { mem::transmute(closure_data) };
     closure(params);
-}
-
-pub fn convert_closure<F>(mut closure: F) -> *mut c_void where F: FnMut(*mut c_void) {
-    let mut callback: &mut FnMut(*mut c_void) = &mut closure;
-    let ctx = &mut callback as *mut &mut FnMut(*mut c_void) as *mut c_void;
-    let closure_data: &mut &mut FnMut(*mut c_void) = unsafe { mem::transmute(ctx) };
-    return closure_data as *mut _ as *mut c_void
 }

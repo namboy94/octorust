@@ -1,3 +1,7 @@
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+/// This fle is based on the IRTSS octo_dispatch_claim.h file
+
 /// Dispatch claims wrap the dispatch information of claims.
 ///
 /// Dispatch information is needed every time that an iLet is submitted to the

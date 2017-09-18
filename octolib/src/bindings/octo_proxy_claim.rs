@@ -1,7 +1,9 @@
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+/// This fle is based on the IRTSS octo_proxy_claim.h file
+
 use octo_types::*;
 use octo_structs::*;
-
-
 
 extern {
     #[link_name="invade_future_force"]

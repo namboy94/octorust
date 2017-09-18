@@ -1,3 +1,7 @@
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+/// This fle is based on the IRTSS octo_leon.h file
+
 /// Functions only meaningful in LEON version
 /// LEON specific functions for platforms with APBUART
 

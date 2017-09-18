@@ -2,25 +2,25 @@
 /// Karlsruher Institut für Technologie, Matriculation number 1789804
 
 // Imports
-use libc;
+use octo_types;
 use octo_structs;
-use octo_signal;
-use octo_ilet;
-use octo_dispatch_claim;
+use bindings::octo_signal;
+use bindings::octo_ilet;
+use bindings::octo_dispatch_claim;
 
 /// A helper function that streamlines signalling reply to the agent claim using signals
 ///
 /// # Arguments
 ///
 /// `signal` - The signal to reply to
-pub fn reply_signal(signal: *mut libc::c_void) {
+pub fn reply_signal(signal: *mut octo_types::c_void) {
 
     /// Internal function used to actually reply to the signal
     ///
     /// # Arguments
     ///
     /// `sig` - The signal to reply to
-    extern "C" fn inner(sig: *mut libc::c_void) {
+    extern "C" fn inner(sig: *mut octo_types::c_void) {
         octo_signal::simple_signal_signal_and_exit(sig as *mut octo_structs::simple_signal);
     }
 

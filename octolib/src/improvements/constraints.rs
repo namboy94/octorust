@@ -3,7 +3,7 @@
 
 // Imports
 use octo_types;
-use octo_agent;
+use bindings::octo_agent;
 
 /// Struct modelling the constraints for a claim. Makes use of a constraints_t struct
 /// to do so.
@@ -14,7 +14,6 @@ use octo_agent;
 pub struct Constraints {
     constraints: octo_types::constraints_t
 }
-
 
 /// Implements the methods for the Constraints Struct
 impl Constraints {

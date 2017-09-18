@@ -1,3 +1,7 @@
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+/// This fle is based on the IRTSS octo_signal.h file
+
 /// Functions to deal with various signal data types
 /// A Signal is one of the basic synchronisation construct in OctoPOS.
 ///

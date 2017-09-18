@@ -1,6 +1,9 @@
-use libc;
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+/// This fle is based on the IRTSS octo_types.h file
 
 // C Types
+use libc;
 pub type c_int = libc::c_int;
 pub type c_void = libc::c_void;
 pub type c_char = libc::wchar_t;
@@ -72,9 +75,7 @@ pub type reinvade_handler_t = extern "C" fn();
 pub type clock_t = u64;
 pub type eth_channel_t = *mut c_void;
 pub type ilet_func = extern fn(arg1: *mut c_void);
-pub type rust_ilet_func = fn(arg1: *mut c_void);
 pub type dual_ilet_func = extern fn(arg1: *mut c_void, arg2: *mut c_void);
-pub type rust_dual_ilet_func = fn(arg1: *mut c_void, arg2: *mut c_void);
 pub type tcpa_proxy_claim_t = *mut c_void;
 pub type tcpa_infect_response_t = *mut c_void;
 pub type tcpa_output_transfer_confirm_t = *mut c_void;

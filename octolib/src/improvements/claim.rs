@@ -5,23 +5,17 @@
 use libc;
 use core::ptr;
 use core::mem;
-use octo_agent;
 use octo_types;
 use octo_structs;
-use octo_ilet;
-use octo_proxy_claim;
-use octo_tile;
-use octo_signal;
+use bindings::octo_agent;
+use bindings::octo_ilet;
+use bindings::octo_proxy_claim;
+use bindings::octo_tile;
+use bindings::octo_signal;
+use helper::printer::{print, print_one};
 use improvements::constraints::Constraints;
 use improvements::closure_wrapper::closure_handler;
 use improvements::functions::reply_signal;
-extern {
-    fn printf(s: *const u8, ...);
-    fn simple_ilet_init(ilet: *mut octo_structs::simple_ilet,
-                        code: octo_types::rust_ilet_func,
-                        param: *mut octo_types::c_void);  // To allow rust fns to be used
-    fn closure_infect(claim: octo_types::agentclaim_t, ilet: extern fn(*mut octo_types::c_void, *mut octo_types::c_void), closure_data: *mut octo_types::c_void, param: *mut octo_types::c_void);
-}
 
 /// The AgentClaim struct wraps around an agentclaim_t object to offer
 /// a simplified interface to methods associated with an agent claim, implementing
@@ -42,6 +36,7 @@ pub struct AgentClaim {
 
 /// Implementation of the AgentClaim struct
 impl AgentClaim {
+
     /// Constructor for the AgentClaim struct. Automatically invades
     /// using the specified constraints
     ///
@@ -49,7 +44,6 @@ impl AgentClaim {
     ///
     /// * `constraints` - The constraints of this claim. Is consumed by this method.
     pub fn new(constraints: Constraints) -> AgentClaim {
-        // TODO Maybe find a way to NOT consume the constraints object
         let constr = constraints.to_constraints_t();
         let claim = octo_agent::agent_claim_invade(ptr::null_mut(), constr);
         AgentClaim { claim: claim, constraints: constr, verbose: false }
@@ -64,7 +58,11 @@ impl AgentClaim {
         self.verbose = verbose;
     }
 
-    /// Reinvades using the existing constraints
+    /// Reinvades using either the existing constraints or a set of new constraints
+    ///
+    /// # Arguments
+    ///
+    /// * `constraints` - The constraints to use. Use 'None' for the existing constraints
     pub fn reinvade(&mut self, constraints: Option<Constraints>) {
 
         let status;
@@ -81,9 +79,9 @@ impl AgentClaim {
 
         if self.verbose {
             if status == -1 {
-                unsafe { printf("* Reinvade Failed\n\0".as_ptr()); }
+                print("* Reinvade Failed\n\0");
             } else {
-                unsafe { printf("* Reinvade Successful\n\0".as_ptr()); }
+                print("* Reinvade Successful\n\0")
             }
         }
     }
@@ -94,7 +92,14 @@ impl AgentClaim {
     ///
     /// `ilet` - The ilet function/closure to execute
     /// `async` - Specifies if the infect will be done asynchronously or not
-    fn infecter<F>(&self, mut ilet: F, async: bool, data: Option<&[*mut octo_types::c_void]>) -> octo_structs::simple_signal
+    /// `data` - An array of user-provided data to be sent to the individual PEs.
+    ///          Must be an array with the exact amount of elements as the number of PEs
+    ///
+    /// # Return Value
+    ///
+    /// The signal used to communicate the end of the ilets' execution
+    fn infecter<F>(&self, mut ilet: F, async: bool, data: Option<&[*mut octo_types::c_void]>)
+        -> octo_structs::simple_signal
         where F: FnMut(*mut octo_types::c_void) {
 
         let mut sync = octo_structs::simple_signal { padding: [0; 64] };
@@ -118,15 +123,13 @@ impl AgentClaim {
 
             if pes != 0 { // Type = 0 ^= RISC
 
-                let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(
-                    self.claim, tile as i32, 0);
+                let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
+                if self.verbose {
+                    print_one("* Got Proxy Claim %p\n\0", proxy_claim);
+                    print("* Start Infecting\n\0");
+                }
 
                 unsafe {
-                    if self.verbose {
-                        printf("* Got Proxy Claim %p\n\0".as_ptr(), proxy_claim);
-                        printf("* Starting Infecting\n\0".as_ptr());
-                    }
-
                     // malloc/free because we can't initialize arrays like in C
                     let arraysize = pes as usize * mem::size_of::<octo_structs::simple_ilet>();
                     let ilets: *mut octo_structs::simple_ilet =
@@ -134,7 +137,7 @@ impl AgentClaim {
 
                     for i in 0..pes as isize {
 
-                        let mut param = match &data {
+                        let param = match &data {
                             &Some(ref d) => d[i as usize],
                             &None => ptr::null_mut()
                         };
@@ -149,20 +152,38 @@ impl AgentClaim {
 
         if !async {
             if self.verbose {
-                unsafe { printf("Waiting on Signal %p...\n\0".as_ptr(), &mut sync); }
+                print_one("Waiting on Signal %p...\n\0", &mut sync);
             }
             octo_signal::simple_signal_wait(&mut sync);
             if self.verbose {
-                unsafe { printf("All Signals received!\n\0".as_ptr()); }
+                print("All Signals received!\n\0");
             }
         }
         return sync;
     }
 
-    pub fn infect<F>(&self, mut ilet: F, data: Option<&[*mut octo_types::c_void]>) where F: FnMut(*mut octo_types::c_void) {
+    /// Standard infect that waits until all ilets have completed their execution
+    ///
+    /// # Arguments
+    ///
+    /// `ilet` - The function to execute
+    /// `data` - The user-provided data to send to the individual PEs
+    pub fn infect<F>(&self, mut ilet: F, data: Option<&[*mut octo_types::c_void]>)
+        where F: FnMut(*mut octo_types::c_void) {
         self.infecter(ilet, false, data);
     }
 
+    /// Standard infect that does not wait for the ilets to complete execution, but rather returns
+    /// a signal that is used by the ilets to communicate that their execution has completed
+    ///
+    /// # Arguments
+    ///
+    /// `ilet` - The function to execute
+    /// `data` - The user-provided data to send to the individual PEs
+    ///
+    /// # Return Value
+    ///
+    /// The signal used for communication with the individual ilets
     pub fn infect_async<F>(&self, mut ilet: F, data: Option<&[*mut octo_types::c_void]>) -> octo_structs::simple_signal
         where F: FnMut(*mut octo_types::c_void) {
         self.infecter(ilet, true, data)
@@ -176,7 +197,7 @@ impl Drop for AgentClaim {
     fn drop(&mut self) {
 
         if self.verbose {
-            unsafe { printf("* Retreating and deleting constraints\n\0".as_ptr()); }
+            print("* Retreating and deleting constraints\n\0");
         }
         octo_agent::agent_constr_delete(self.constraints);
         octo_agent::agent_claim_retreat(self.claim);
