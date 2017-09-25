@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
 
 [dependencies]
-core = { path = "deps/libcore" }
 libc = { path = "deps/libc", default-features = false }
-serde = "1.0.15"
+serde = { version = "1.0.15", default-features = false }
+serde_derive = { version = "1.0.15", default-features = false}
+#core = { path = "deps/libcore" }
