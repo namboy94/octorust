@@ -118,8 +118,11 @@ impl AgentClaim {
         let closure_data: &mut &mut FnMut(*mut octo_types::c_void) = unsafe { mem::transmute(ctx) };
         let mut closure_ptr = closure_data as *mut _ as *mut octo_types::c_void;
 
+        // TODO Benutzer-konfigurabel
         for tile in 0..octo_tile::get_tile_count() {
+            print_one("Tile number %d\n\0", tile);
             let pes = octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
+            print_one("PES:%d\n\0", pes);
 
             if pes != 0 { // Type = 0 ^= RISC
 

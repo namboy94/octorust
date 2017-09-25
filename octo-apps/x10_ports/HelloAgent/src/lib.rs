@@ -15,7 +15,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 	fn hello(param: *mut c_void) { print("Hello World!\n\0") }
 
-	let constr = Constraints::new(3, 4);
+	let constr = Constraints::new(9, 9);
 	let mut claim = AgentClaim::new(constr);
 	claim.set_verbose(true);
 
