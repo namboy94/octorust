@@ -4,9 +4,7 @@
 
 use helper::printer::print;
 extern crate serde;
-
-//#[macro_use]
-//extern crate serde_derive;
+extern crate serde_json;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Point {
@@ -16,7 +14,7 @@ struct Point {
 
 pub fn serialize_test() {
 
-//    let point= Point { x: 1, y: 2 };
-
+    let point= Point { x: 1, y: 2 };
+    let serialized = serde_json::to_string(&point).unwrap();
 
 }

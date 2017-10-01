@@ -1,4 +1,4 @@
-#![feature(intrinsics, lang_items)]
+#![feature(intrinsics, lang_items, libc)]
 #![crate_type="staticlib"]
 #![no_std]
 
