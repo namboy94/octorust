@@ -5,7 +5,7 @@ import time
 from subprocess import Popen
 
 # constants
-RUN_COUNT = 5
+RUN_COUNT = 1
 
 
 if __name__ == "__main__":
@@ -20,8 +20,10 @@ if __name__ == "__main__":
 
     directory = os.path.dirname(os.path.abspath(__file__))
 
+    bench_data = {}
+
     # for eval_dir in os.listdir(directory):
-    for eval_dir in ["startup"]:
+    for eval_dir in ["startup", "primes-naive", "primes-eratosthenes"]:
         eval_dir_path = os.path.join(directory, eval_dir)
 
         runtimes = {}
@@ -57,7 +59,13 @@ if __name__ == "__main__":
                 sizes[lang] = os.path.getsize("out")
                 os.remove("out")
 
-        print("\033[1;36m" + eval_dir + "\033[0;0m:\n")
+        bench_data[eval_dir] = (runtimes, sizes)
+
+    for data in bench_data.keys():
+        runtimes = bench_data[data][0]
+        sizes = bench_data[data][1]
+
+        print("\033[1;36m" + data + "\033[0;0m:\n")
 
         print("\033[1;34mRuntimes\033[0;0m:")
         for lang in sorted(runtimes, key=runtimes.get):
