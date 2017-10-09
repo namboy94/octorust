@@ -23,12 +23,16 @@ pub mod octo_types;
 pub mod _libc;
 pub mod bindings;
 
-
 // Improvements
 pub mod improvements;
+
+use helper::printer::print;
 
 // Usually in std, must be defined for an executable file
 #[lang = "eh_personality"] extern fn eh_personality() {}
 #[lang = "eh_unwind_resume"] extern fn eh_unwind_resume() {}
-#[lang = "panic_fmt"] fn panic_fmt() -> ! { loop {} }
+#[lang = "panic_fmt"] fn panic_fmt() -> ! {
+    print("PANICKED!\n\0");
+    loop {}
+}
 #[no_mangle] pub extern "C" fn _Unwind_Resume(_ex_obj: *mut ()) { }

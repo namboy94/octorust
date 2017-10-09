@@ -14,7 +14,7 @@ fn primes() {
 
     let LIMIT = 10000;
 
-    for i in 2..10000 {
+    for i in 2..LIMIT {
         let mut is_prime = true;
         for j in 2..i {
             if i % j == 0 {

@@ -5,7 +5,7 @@ import time
 from subprocess import Popen
 
 # constants
-RUN_COUNT = 1
+RUN_COUNT = 3
 
 
 if __name__ == "__main__":
@@ -80,3 +80,5 @@ if __name__ == "__main__":
             print(lang.ljust(15) + str(filesize))
 
         print("--------------------------------------------------------------")
+
+
