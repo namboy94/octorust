@@ -35,7 +35,14 @@ def generate_config() -> Config:
         else args.irtss_build_version
 
     return Config(
-        arch, variant, source, output, mode, args.keep, build_version)
+        arch,
+        variant,
+        source, output,
+        mode,
+        args.keep,
+        args.release,
+        build_version
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -67,6 +74,8 @@ def parse_args() -> argparse.Namespace:
                         help="Executes the application after compilation")
     parser.add_argument("-k", "--keep", action="store_true",
                         help="Keeps the produced files. Helpful for debugging")
+    parser.add_argument("--release", action="store_true",
+                        help="Compiles Rust programs in release mode")
     parser.add_argument("-i", "--irtss-build-version",
                         help="Optionally sets the irtss build version")
 

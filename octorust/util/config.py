@@ -15,8 +15,15 @@ class Config(object):
     process.
     """
 
-    def __init__(self, arch: str, variant: str, source: str, output: str,
-                 mode: List[str], keep: bool, build_version: str = ""):
+    def __init__(self,
+                 arch: str,
+                 variant: str,
+                 source: str,
+                 output: str,
+                 mode: List[str],
+                 keep: bool,
+                 release: bool,
+                 build_version: str = ""):
         """
         Creates a new Config object
         :param arch: The target architecture
@@ -25,6 +32,8 @@ class Config(object):
         :param output: The output file
         :param mode: The mode in which to run this program
         :param keep: Specifies if generated files should be deleted or not
+        :param release: Specifies if Rust program should be compiled
+                        in release mode or not
         :param build_version: The IRTSS build version
         """
         self.arch = arch
@@ -33,6 +42,7 @@ class Config(object):
         self.output = output
         self.mode = mode
         self.keep = keep
+        self.release = release
         self.build_version = build_version
 
         # Paths to dependencies locally installed by setup.py

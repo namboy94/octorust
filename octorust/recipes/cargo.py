@@ -41,14 +41,18 @@ def compile_static_library(config: Config) -> str:
     crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
 
     target_triple = get_rust_target_triple(config.arch)
-    command = ["cargo", "rustc", "--release", "--target", target_triple]
+    command = ["cargo", "rustc"]
+    if config.release:
+        command.append("--release")
+    command += ["--target", target_triple]
 
     if config.arch == "leon":
         generate_leon_specification(config)
         command += ["--", "-C", "link-dead-code"]
 
     libname = "lib" + crate_name + ".a"
-    output = os.path.join("target", target_triple, "release", libname)
+    output_name = "release" if config.release else "debug"
+    output = os.path.join("target", target_triple, output_name, libname)
 
     print(command)
     Popen(command).wait()
