@@ -5,16 +5,15 @@
 
 void main_ilet(claim_t claim) {
 
-    garbage();
+    int GARBAGE_SIZE = 10000;
+    int ITERATIONS = 1000000;
+
+    for (int i = 0; i < ITERATIONS; i++) {
+
+		int array[10000] = {}; // 10000 == GARBAGE_SIZE
+		free(array);
+
+	}
+
     shutdown(0);
-}
-
-void garbage() {
-
-    int test[10] = {};
-    printf("%d\n", test[0]);
-    printf("%d\n", test[10]);
-
-    5 / 0;
-
 }

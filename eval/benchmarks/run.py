@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import time
 from subprocess import Popen
 
 # constants
-RUN_COUNT = 3
+RUN_COUNT = 1 if len(sys.argv) == 1 else int(sys.argv[1])
 
 
 if __name__ == "__main__":
@@ -22,8 +23,12 @@ if __name__ == "__main__":
 
     bench_data = {}
 
-    # for eval_dir in os.listdir(directory):
-    for eval_dir in ["startup", "primes-naive", "primes-eratosthenes"]:
+    for eval_dir in [
+        "startup",
+        "primes-naive",
+        "primes-eratosthenes",
+        "garbageonly-gc-benchmark"
+    ]:
         eval_dir_path = os.path.join(directory, eval_dir)
 
         runtimes = {}
