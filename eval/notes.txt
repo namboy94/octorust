@@ -1,0 +1,7 @@
+Running on Hardware:
+
+Lenovo Thinkpad x250
+CPU: Intel  Core i5-5200U @ 2.20GHZ x 2
+Memory: 8GB
+OS: Antergos Linux
+Kernel: 4.12.13-1-ARCH
