@@ -99,29 +99,38 @@ if __name__ == "__main__":
 
         bench_data[eval_dir] = (runtimes, sizes, compile_times)
 
+    print("\n")
     for data in bench_data.keys():
         runtimes = bench_data[data][0]
         sizes = bench_data[data][1]
         compile_times = bench_data[data][2]
+
+        min_compile_time = \
+            compile_times[min(compile_times, key=compile_times.get)]
+        min_runtime = runtimes[min(runtimes, key=runtimes.get)]
+        min_filesize = sizes[min(sizes, key=sizes.get)]
 
         print("\033[1;36m" + data + "\033[0;0m:\n")
 
         print("\033[1;34mCompile Times\033[0;0m:")
         for lang in sorted(compile_times, key=compile_times.get):
             compile_time = compile_times[lang]
-            # noinspection PyUnresolvedReferences
-            print(colour_lang(lang).ljust(22) + str(round(compile_time, 4)))
+            print(colour_lang(lang).ljust(22) +
+                  str(round(compile_time, 4)).ljust(10) +
+                  " (+" + str(round(compile_time - min_compile_time, 4)) + ")")
 
         print("\033[1;34mRuntimes\033[0;0m:")
         for lang in sorted(runtimes, key=runtimes.get):
             runtime = runtimes[lang]
-            # noinspection PyUnresolvedReferences
-            print(colour_lang(lang).ljust(22) + str(round(runtime, 4)))
+            print(colour_lang(lang).ljust(22) +
+                  str(round(runtime, 4)).ljust(10) +
+                  " (+" + str(round(runtime - min_runtime, 4)) + ")")
 
         print("\033[1;34mFile Sizes\033[0;0m:")
         for lang in sorted(sizes, key=sizes.get):
             filesize = sizes[lang]
-            # noinspection PyUnresolvedReferences
-            print(colour_lang(lang).ljust(22) + str(filesize))
+            print(colour_lang(lang).ljust(22) +
+                  str(filesize).ljust(10) +
+                  " (+" + str(filesize - min_filesize) + ")")
 
         print("-------------------------------------------------------------")
