@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 import time
 import shutil
+import argparse
 from subprocess import Popen
 
-# constants
-RUN_COUNT = 1 if len(sys.argv) == 1 else int(sys.argv[1])
-ENABLE_X10 = False
-RECOMPILE_RUST = False
+# Helper constants
+octorust_base_cmd = [
+    "octorust",
+    "-i", "2017-06-07",
+    "-a", "x86guest",
+    "-v", "generic",
+    "-o", "out",
+    "--release"
+]
+directory = os.path.dirname(os.path.abspath(__file__))
 
 
 def colour_lang(l):
@@ -21,26 +27,42 @@ def colour_lang(l):
     }[l]
     return colour + l + "\033[0;0m"
 
+
+def parse_args():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--passes", type=int,
+                        help="Sets the amount of time to run each program")
+    parser.add_argument("--disable-x10", action="store_true",
+                        help="Disables compiling X10 programs")
+    parser.add_argument("--recompile-rust", action="store_true",
+                        help="Recompiles Rust dependencies every time")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
 
-    octorust_base_cmd = [
-        "octorust",
-        "-i", "2017-06-07",
-        "-a", "x86guest",
-        "-v", "generic",
-        "-o", "out",
-        "--release"
-    ]
+    # change-able constants
+    RUN_COUNT = 1
+    DISABLE_X10 = False
+    RECOMPILE_RUST = False
 
-    directory = os.path.dirname(os.path.abspath(__file__))
+    args = parse_args()
+
+    if args.passes is not None:
+        RUN_COUNT = args.passes
+    if args.disable_x10 is not None:
+        DISABLE_X10 = args.disable_x10
+    if args.recompile_rust is not None:
+        RECOMPILE_RUST = args.recompile_rust
 
     bench_data = {}
 
     for eval_dir in [
         "startup",
         "primes-naive",
-        # "primes-eratosthenes",
-        # "garbageonly-gc-benchmark"
+        "primes-eratosthenes",
+        "garbageonly-gc-benchmark"
     ]:
         eval_dir_path = os.path.join(directory, eval_dir)
 
@@ -71,7 +93,7 @@ if __name__ == "__main__":
 
                 elif test.endswith(".x10"):
 
-                    if not ENABLE_X10:
+                    if DISABLE_X10:
                         continue
 
                     lang = "X10"
