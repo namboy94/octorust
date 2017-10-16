@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "startup",
         "primes-naive",
         "primes-eratosthenes",
-        "garbageonly-gc-benchmark"
+        #"garbageonly-gc-benchmark"
     ]:
         eval_dir_path = os.path.join(directory, eval_dir)
 
