@@ -16,7 +16,8 @@ if __name__ == "__main__":
         "-i", "2017-06-07",
         "-a", "x86guest",
         "-v", "generic",
-        "-o", "out"
+        "-o", "out",
+        "--release"
     ]
 
     directory = os.path.dirname(os.path.abspath(__file__))
