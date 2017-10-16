@@ -1,4 +1,9 @@
-/* TODO Figure out how to integrate this
+/// Author: Hermann Krumrey <hermann@krumreyh.com> 2017
+/// Karlsruher Institut für Technologie, Matriculation number 1789804
+/// This fle is based on the IRTSS octo_event.h file
+
+
+/* TODO
 extern void octo_event_enable();
 extern void octo_event_disable();
 
