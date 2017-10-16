@@ -47,8 +47,11 @@ if __name__ == "__main__":
 
                 elif test.endswith(".x10"):
                     lang = "X10"
-                    print("TODO: X10")
-                    continue
+                    Popen([
+                        "x10firm",
+                        "-mtarget=i686-invasic-irtss",
+                        test_file, "-o", "out"
+                    ]).wait()
 
                 else:
                     continue
