@@ -1,7 +1,7 @@
 .idea/
 target/
 Cargo.lock
-samples/cargo_sample/Cargo.toml
+octo-apps/samples/cargo_sample/Cargo.toml
 *.egg-info
 dist/
 build/

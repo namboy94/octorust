@@ -25,6 +25,8 @@ def main():
         get_irtss_release(config.irtss_release_path, config.build_version,
                           config.arch, config.variant)
 
+    print(config.irtss_release_path)
+    print(os.path.isdir(config.irtss_release_path))
     if not os.path.isdir(config.irtss_release_path):
         print("No matching IRTSS release installed. Please use the " +
               "--fetch-irtss option to download the release.")

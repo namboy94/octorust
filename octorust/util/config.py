@@ -84,9 +84,14 @@ class Config(object):
 
         if not depcheck[0] and self.mode[0].startswith("compile"):
 
-            if depcheck[1] == self.irtss_release_path \
-                    and "fetch_irtss" in self.mode:
-                pass  # IRTSS will be downloaded
+            if depcheck[1] == self.irtss_release_path:
+                if "fetch_irtss" in self.mode:
+                    pass  # IRTSS will be downloaded
+                else:
+                    print("No matching IRTSS release installed. "
+                          "Please use the --fetch-irtss option to "
+                          "download the release.")
+                    sys.exit(1)
             else:
-                print(depcheck[1])
+                print("Dependency Missing: " + depcheck[1])
                 sys.exit(1)
