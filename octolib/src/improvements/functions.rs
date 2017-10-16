@@ -21,12 +21,16 @@ pub fn reply_signal(signal: *mut octo_types::c_void) {
     ///
     /// `sig` - The signal to reply to
     extern "C" fn inner(sig: *mut octo_types::c_void) {
-        octo_signal::simple_signal_signal_and_exit(sig as *mut octo_structs::simple_signal);
+        unsafe {
+            octo_signal::simple_signal_signal_and_exit(sig as *mut octo_structs::simple_signal);
+        }
     }
 
     let mut answer: octo_structs::simple_ilet = octo_structs::simple_ilet {
         padding: [0; octo_structs::SIMPLE_ILET_SIZE]
     };
-    octo_ilet::simple_ilet_init(&mut answer, inner, signal);
-    octo_dispatch_claim::dispatch_claim_send_reply(&mut answer);
+    unsafe {
+        octo_ilet::simple_ilet_init(&mut answer, inner, signal);
+        octo_dispatch_claim::dispatch_claim_send_reply(&mut answer);
+    }
 }

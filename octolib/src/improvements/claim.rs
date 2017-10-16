@@ -45,7 +45,7 @@ impl AgentClaim {
     /// * `constraints` - The constraints of this claim. Is consumed by this method.
     pub fn new(constraints: Constraints) -> AgentClaim {
         let constr = constraints.to_constraints_t();
-        let claim = octo_agent::agent_claim_invade(ptr::null_mut(), constr);
+        let claim = unsafe { octo_agent::agent_claim_invade(ptr::null_mut(), constr) };
         AgentClaim { claim: claim, constraints: constr, verbose: false }
     }
 
@@ -66,16 +66,18 @@ impl AgentClaim {
     pub fn reinvade(&mut self, constraints: Option<Constraints>) {
 
         let status;
-        match constraints {
-            Some(c) => {
-                octo_agent::agent_constr_delete(self.constraints);
-                self.constraints = c.to_constraints_t();
-                status = octo_agent::agent_claim_reinvade_constraints(self.claim, self.constraints);
-            }
-            None => {
-                status = octo_agent::agent_claim_reinvade(self.claim);
-            }
-        };
+        unsafe {
+            match constraints {
+                Some(c) => {
+                    octo_agent::agent_constr_delete(self.constraints);
+                    self.constraints = c.to_constraints_t();
+                    status = octo_agent::agent_claim_reinvade_constraints(self.claim, self.constraints);
+                }
+                None => {
+                    status = octo_agent::agent_claim_reinvade(self.claim);
+                }
+            };
+        }
 
         if self.verbose {
             if status == -1 {
@@ -103,8 +105,11 @@ impl AgentClaim {
         where F: FnMut(*mut octo_types::c_void) {
 
         let mut sync = octo_structs::simple_signal { padding: [0; 64] };
-        let pe_count = octo_agent::agent_claim_get_pecount(self.claim) as usize;
-        octo_signal::simple_signal_init(&mut sync, pe_count);
+        let pe_count = unsafe { octo_agent::agent_claim_get_pecount(self.claim) } as usize;
+
+        unsafe {
+            octo_signal::simple_signal_init(&mut sync, pe_count);
+        }
         let signal_ptr = &mut sync as *mut _ as *mut libc::c_void;
 
         let mut closure_wrap = |param: *mut octo_types::c_void| {
@@ -118,15 +123,16 @@ impl AgentClaim {
         let closure_data: &mut &mut FnMut(*mut octo_types::c_void) = unsafe { mem::transmute(ctx) };
         let mut closure_ptr = closure_data as *mut _ as *mut octo_types::c_void;
 
-        // TODO Benutzer-konfigurabel
-        for tile in 0..octo_tile::get_tile_count() {
+        for tile in 0..unsafe {octo_tile::get_tile_count() } {
             print_one("Tile number %d\n\0", tile);
-            let pes = octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0);
+            let pes = unsafe { octo_agent::agent_claim_get_pecount_tile_type(self.claim, tile as u8, 0) };
             print_one("PES:%d\n\0", pes);
 
             if pes != 0 { // Type = 0 ^= RISC
 
-                let proxy_claim = octo_agent::agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0);
+                let proxy_claim = unsafe {
+                    octo_agent::agent_claim_get_proxyclaim_tile_type(self.claim, tile as i32, 0)
+                };
                 if self.verbose {
                     print_one("* Got Proxy Claim %p\n\0", proxy_claim);
                     print("* Start Infecting\n\0");
@@ -157,7 +163,9 @@ impl AgentClaim {
             if self.verbose {
                 print_one("Waiting on Signal %p...\n\0", &mut sync);
             }
-            octo_signal::simple_signal_wait(&mut sync);
+            unsafe {
+                octo_signal::simple_signal_wait(&mut sync);
+            }
             if self.verbose {
                 print("All Signals received!\n\0");
             }
@@ -202,7 +210,9 @@ impl Drop for AgentClaim {
         if self.verbose {
             print("* Retreating and deleting constraints\n\0");
         }
-        octo_agent::agent_constr_delete(self.constraints);
-        octo_agent::agent_claim_retreat(self.claim);
+        unsafe {
+            octo_agent::agent_constr_delete(self.constraints);
+            octo_agent::agent_claim_retreat(self.claim);
+        }
     }
 }
