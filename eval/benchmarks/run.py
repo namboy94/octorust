@@ -25,9 +25,9 @@ if __name__ == "__main__":
 
     for eval_dir in [
         "startup",
-        "primes-naive",
-        "primes-eratosthenes",
-        "garbageonly-gc-benchmark"
+        "primes-naive"
+        # "primes-eratosthenes",
+        # "garbageonly-gc-benchmark"
     ]:
         eval_dir_path = os.path.join(directory, eval_dir)
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
                 elif test.endswith(".x10"):
                     lang = "X10"
                     Popen([
-                        "x10firm",
+                        "x10firm", "-v",
                         "-mtarget=i686-invasic-irtss",
                         test_file, "-o", "out"
                     ]).wait()

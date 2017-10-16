@@ -1,6 +1,6 @@
 import x10.io.Console;
 
-class EratosthenesPrimes {
+class Primes {
 	public static def main(Array[String]) {
 
 	    val LIMIT = 10000;
