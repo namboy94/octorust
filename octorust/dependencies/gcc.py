@@ -71,8 +71,8 @@ def download_sparc_elf_gcc():
             os.makedirs(toolchain_dir)
 
         gcc_url = "https://www4.cs.fau.de/invasic/tools/" \
-                  "sparc-elf-7.1.0-x86_64.tar.bz2"
+                  "sparc-elf-7.2.0-x86_64.tar.bz2"
         Popen(["wget", gcc_url]).wait()
-        Popen(["tar", "xjfv", "sparc-elf-7.1.0-x86_64.tar.bz2"]).wait()
-        os.remove("sparc-elf-7.1.0-x86_64.tar.bz2")
-        os.rename("sparc-elf-7.1.0", sparc_elf_root)
+        Popen(["tar", "xjfv", "sparc-elf-7.2.0-x86_64.tar.bz2"]).wait()
+        os.remove("sparc-elf-7.2.0-x86_64.tar.bz2")
+        os.rename("sparc-elf-7.2.0", sparc_elf_root)

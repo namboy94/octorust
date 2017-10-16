@@ -82,7 +82,8 @@ def compile_c_helper_lib(config: Config) -> List[str]:
     c_lib = os.path.join(config.octolib, "c")
 
     for c_file in os.listdir(c_lib):
-        c_file_path = os.path.join(c_lib, c_file)
-        objects.append(compile_c_object(config, c_file_path))
+        if c_file.endswith(".c"):
+            c_file_path = os.path.join(c_lib, c_file)
+            objects.append(compile_c_object(config, c_file_path))
 
     return objects
