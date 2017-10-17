@@ -10,7 +10,10 @@ void main_ilet(claim_t claim) {
 
     for (int i = 0; i < ITERATIONS; i++) {
 
-		int array[10000] = {}; // 10000 == GARBAGE_SIZE
+        int *array = (int*) malloc(GARBAGE_SIZE * sizeof(int));
+        for (int j = 0; j < GARBAGE_SIZE; j++) {
+            array[j] = 0;
+        }
 		free(array);
 
 	}
