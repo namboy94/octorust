@@ -3,22 +3,23 @@ import x10.io.Console;
 class Primes {
 	public static def main(Array[String]) {
 
-	    val LIMIT = 10000;
-	    val removed = []; // 10000 - 2 => false
+	    val LIMIT = 1000000;
+	    val removed = new Rail[Boolean](LIMIT - 2, false);
 
-	    for (i in 2..sqrt(LIMIT)) {
-	        if (!removed[i - 2]) {
-	            Console.OUT.println("" + i);
+	    val root = Int.operator_as(Math.sqrt(Double.implicit_operator_as(LIMIT)));
+	    for (i in 2..root) {
+	        if (!removed(i - 2)) {
+	            Console.OUT.println(i);
 	        }
-	        var j = i * i;
+	        var j:int = i * i;
 	        while (j < LIMIT) {
-	            removed[j - 2] = true;
+	            removed(j - 2) = true;
 	            j += i;
 	        }
 	    }
-	    for (i in (sqrt(LIMIT) + 1)..LIMIT) {
-	        if (!removed[i - 2]) {
-	            Console.OUT.println("" + i);
+	    for (i in (root + 1)..LIMIT) {
+	        if (!removed(i - 2)) {
+	            Console.OUT.println(i);
 	        }
 	    }
 	}
