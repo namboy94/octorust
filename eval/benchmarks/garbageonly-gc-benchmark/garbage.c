@@ -1,12 +1,11 @@
 #include <octopos.h>
 #include <stdio.h>
-#include <time.h>
 
 
 void main_ilet(claim_t claim) {
 
-    int GARBAGE_SIZE = 1000;
-    int ITERATIONS = 100000;
+    int GARBAGE_SIZE = 5000;
+    int ITERATIONS = 1000000;
 
     for (int i = 0; i < ITERATIONS; i++) {
 
@@ -20,5 +19,6 @@ void main_ilet(claim_t claim) {
 
 	}
 
+    printf("Done");
     shutdown(0);
 }

@@ -12,7 +12,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
 
 fn primes() {
 
-    let LIMIT = 10000;
+    let LIMIT = 50000;
 
     for i in 2..LIMIT {
         let mut is_prime = true;

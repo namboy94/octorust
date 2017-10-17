@@ -18,6 +18,10 @@ def parse_args() -> argparse.Namespace:
                         help="Sets the amount of time to run each program")
     parser.add_argument("--disable-x10", action="store_true",
                         help="Disables compiling X10 programs")
+    parser.add_argument("--disable-c", action="store_true",
+                        help="Disables compiling C programs")
+    parser.add_argument("--disable-rust", action="store_true",
+                        help="Disables compiling Rust programs")
     parser.add_argument("--recompile-rust", action="store_true",
                         help="Recompiles Rust dependencies every time")
     parser.add_argument("-b", "--blacklist",
@@ -208,6 +212,9 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
 
         if os.path.isdir(program_path) and os.path.isfile(cargo_toml):
 
+            if args.disable_rust:
+                continue
+
             if args.dual_rust_build:
                 for variant, optimized in {
                     "Rust (Debug)": False, "Rust (Release)": True
@@ -240,6 +247,10 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
                 )
 
         elif os.path.isfile(program_path) and program.endswith(".c"):
+
+            if args.disable_c:
+                continue
+
             language = "C"
             print(language)
             compile_time, executable = compile_with_octorust(

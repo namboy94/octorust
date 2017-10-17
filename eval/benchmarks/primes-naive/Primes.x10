@@ -3,7 +3,7 @@ import x10.io.Console;
 class Primes {
 	public static def main(Array[String]) {
 
-	    val LIMIT = 10000;
+	    val LIMIT = 50000;
 
 	    for (i in 2..LIMIT) {
 	        var isPrime:Boolean = true;

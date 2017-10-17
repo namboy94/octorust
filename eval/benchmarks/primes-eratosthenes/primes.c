@@ -4,14 +4,8 @@
 
 void main_ilet(claim_t claim) {
 
-    eratosthenes_primes();
-    shutdown(0);
-}
-
-void eratosthenes_primes() {
-
-    int LIMIT = 1000000;
-    int removed[1000000 - 2] = {};
+    int LIMIT = 1690000;
+    int removed[1690000 - 2] = {};
 
     for (int i = 2; i < LIMIT; i++) {
         removed[i - 2] = 0;
@@ -31,4 +25,5 @@ void eratosthenes_primes() {
             printf("%d\n", i);
         }
     }
+    shutdown(0);
 }

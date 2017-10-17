@@ -3,7 +3,7 @@ import x10.io.Console;
 class Primes {
 	public static def main(Array[String]) {
 
-	    val LIMIT = 1000000;
+	    val LIMIT = 1690000;
 	    val removed = new Rail[Boolean](LIMIT - 2, false);
 
 	    val root = Int.operator_as(Math.sqrt(Double.implicit_operator_as(LIMIT)));

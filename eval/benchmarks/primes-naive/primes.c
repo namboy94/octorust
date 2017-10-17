@@ -3,13 +3,7 @@
 
 void main_ilet(claim_t claim) {
 
-    primes();
-    shutdown(0);
-}
-
-void primes() {
-
-    int LIMIT = 10000;
+    int LIMIT = 50000;
 
     for (int i = 2; i < LIMIT + 1; i++) {
         int is_prime = 1;
@@ -23,4 +17,5 @@ void primes() {
         }
     }
 
+    shutdown(0);
 }
