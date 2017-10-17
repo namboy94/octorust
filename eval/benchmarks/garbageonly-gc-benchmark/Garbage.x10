@@ -7,7 +7,7 @@ class Garbage {
         val ITERATIONS = 100000;
 
         for (i in 0..ITERATIONS) {
-            int[] garbage = [0; GARBAGE_SIZE];
+             new Rail[int](GARBAGE_SIZE, 0);
         }
 
         Console.OUT.println("Done");
