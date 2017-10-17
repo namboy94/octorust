@@ -4,6 +4,7 @@
 extern crate alloc;
 extern crate octolib;
 use octolib::helper::printer::print;
+use alloc::boxed::Box;
 
 extern { fn sqrt(d: i32) -> f32; }
 

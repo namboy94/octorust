@@ -11,6 +11,7 @@ curl https://sh.rustup.rs -sSf | sh
 export PATH=$PATH:~/.cargo/bin
 rustup install nightly-2017-06-01
 rustup default nightly-2017-06-01
+rustup target install i686-unknown-linux-gnu
 
 echo "Installing octorust"
 python3 setup.py install --user

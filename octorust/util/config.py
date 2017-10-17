@@ -79,7 +79,7 @@ class Config(object):
         :return: None
         """
 
-        depcheck = dependency_check([self.octolib, self.libcore, self.libc],
+        depcheck = dependency_check([self.octolib],
                                     self.irtss_release_path)
 
         if not depcheck[0] and self.mode[0].startswith("compile"):

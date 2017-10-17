@@ -45,8 +45,10 @@ def compile_and_install_sparc_crates(sparc_gcc_path: str):
         os.makedirs(rustup_install_path)
 
     for existing_dep in os.listdir(rustup_install_path):
-        if "libcore" in existing_dep or "liblibc" in existing_dep:
-            os.remove(os.path.join(rustup_install_path, existing_dep))
+
+        for new_dep in ["libcore", "liblibc", "liballoc"]:
+            if new_dep in existing_dep:
+                os.remove(os.path.join(rustup_install_path, existing_dep))
 
     for dep in os.listdir("target/leon/release/deps"):
         if "debcompile" in dep:
