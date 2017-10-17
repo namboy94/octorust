@@ -47,7 +47,7 @@ def compile_static_library(config: Config) -> str:
     command += ["--target", target_triple]
 
     if config.arch == "leon":
-        generate_leon_specification(config)
+        generate_leon_specification(config.gcc)
         command += ["--", "-C", "link-dead-code"]
 
     libname = "lib" + crate_name + ".a"
@@ -79,7 +79,7 @@ def generate_cargo_toml(config: Config):
 
     with open("Cargo.toml", 'a') as octocargo:
         octocargo.write(
-            "core = { path = \"" + config.libcore + "\" }\n" +
+            # "core = { path = \"" + config.libcore + "\" }\n" +
             "octolib = { path = \"" + config.octolib + "\" }"
         )
 

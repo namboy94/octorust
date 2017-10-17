@@ -52,11 +52,11 @@ def get_native_path(gcc: str, arch: str, target: str) -> str:
     return check_output(command).decode().strip()
 
 
-def download_sparc_elf_gcc():
+def download_sparc_elf_gcc() -> str:
     """
     Downloads a sparc-elf-gcc if one can't be found in $PATH or in the
     .octorust directory
-    :return: None
+    :return: The path to the sparc-elf-gcc executable
     """
 
     toolchain_dir = os.path.join(
@@ -76,3 +76,7 @@ def download_sparc_elf_gcc():
         Popen(["tar", "xjfv", "sparc-elf-7.2.0-x86_64.tar.bz2"]).wait()
         os.remove("sparc-elf-7.2.0-x86_64.tar.bz2")
         os.rename("sparc-elf-7.2.0", sparc_elf_root)
+        return sparc_elf_gcc
+
+    else:
+        return "sparc-elf-gcc"

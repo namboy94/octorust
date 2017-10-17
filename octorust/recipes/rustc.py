@@ -16,7 +16,7 @@ def compile_using_rustc(config: Config):
     """
 
     if config.arch == "leon":
-        generate_leon_specification(config)
+        generate_leon_specification(config.gcc)
 
     rust_object = compile_rust_object(config)
     link_app(config, [rust_object])

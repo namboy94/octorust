@@ -1,5 +1,4 @@
 import json
-from octorust.util.config import Config
 
 
 def get_rust_target_triple(arch: str) -> str:
@@ -17,7 +16,7 @@ def get_rust_target_triple(arch: str) -> str:
     }[arch]
 
 
-def generate_leon_specification(config: Config):
+def generate_leon_specification(sparc_elf_gcc_path):
     """
     Generates a rust target specification file for the SPARC LEON architecture
     The specification file assumes a gcc cross-compiler for the architecture
@@ -26,7 +25,7 @@ def generate_leon_specification(config: Config):
     The installation process should in theory install a sparc-elf-gcc
     compiler though.
     The specification file is saved as leon.json
-    :param config: The configuration used
+    :param sparc_elf_gcc_path: The path to the SPARC ELF gcc compiler
     :return: None
     """
 
@@ -40,7 +39,7 @@ def generate_leon_specification(config: Config):
         "target-endian": "big",
         "target-pointer-width": "32",
         "linker-flavor": "ld",
-        "linker": config.gcc,
+        "linker": sparc_elf_gcc_path,
         "link-args": [
             "-nostartfiles"
         ]

@@ -1,11 +1,9 @@
 [package]
 name = "octolib"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
 
 [dependencies]
-core = { path = "deps/libcore" }
-libc = { path = "deps/libc", default-features = false }
 #serde = { path = "deps/serde", default-features = false }
 #serde_derive = { path = "deps/serde_derive", default-features = false }
 #serde_json = { path = "deps/serde_json", default-features = false }

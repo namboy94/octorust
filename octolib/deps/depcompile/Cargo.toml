@@ -1,0 +1,8 @@
+[package]
+name = "debcompile"
+version = "1.0.0"
+authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
+
+[dependencies]
+core = { path = "deps/libcore" }
+libc = { path = "deps/libc", default-features = false }

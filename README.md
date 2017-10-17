@@ -26,8 +26,8 @@ A `gcc` with support for both 32-bit and 64-bit is also required (Install the
 `gcc-multilib` package)
 
 A `sparc-elf-gcc` should also be installed and in the path, but if this is
-not the case, the installer will download one, store it in
-`~/.octorust/toolchains/sparc-elf` and append the path to `~/.bashrc`.
+not the case, the installer will download one and store it in
+`~/.octorust/toolchains/sparc-elf`.
 
 ## Installation from source
 
@@ -40,7 +40,9 @@ This will:
     1. Install the python application
     2. Create the directory ~/.octorust
     3. Copy octolib and any dependencies like libcore and libc to ~/.octorust
-    4. Install a sparc-elf-gcc if one could not be found in $PATH
+    4. Compile the libcore and libc crates and install them in the rustup
+       toolchain installation directory for SPARC
+    5. Install a sparc-elf-gcc if one could not be found in $PATH
     
 Once installed, make sure that `~/.local/bin` is in your path,
 which should make it possible to call the `octorust` command.
