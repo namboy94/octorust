@@ -15,7 +15,7 @@ pub extern "C" fn rust_main_ilet(claim: u8) {
     let ITERATIONS = 1000000;
 
     for i in 0..ITERATIONS {
-        let garbage = Box::new([0; 10000]); // 10000 == GARBAGE_SIZE
+        let garbage = Box::new([0; 5000]); // 5000 == GARBAGE_SIZE
     }
 
     print("Done\n\0");

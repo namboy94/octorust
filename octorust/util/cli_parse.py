@@ -105,7 +105,7 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
         mode.append("compile_c")
 
     elif source is not None and \
-            os.path.isfile(os.path.join(source, "OctoCargo.toml")):
+            os.path.isfile(os.path.join(source, "Cargo.toml")):
         print("Compiling using Cargo:")
         mode.append("compile_cargo")
 

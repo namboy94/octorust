@@ -1,6 +1,6 @@
 [package]
-name = "Tester"
-version = "0.1.0"
+name = "various_infect_methods"
+version = "1.0.0"
 authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
 
 [lib]

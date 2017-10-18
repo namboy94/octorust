@@ -1,6 +1,6 @@
 import os
 import sys
-import shutil
+import toml
 from subprocess import Popen
 from octorust.util.files import cleanup
 from octorust.util.config import Config
@@ -12,8 +12,7 @@ from octorust.recipes.rust import get_rust_target_triple,\
 
 def compile_using_cargo(config: Config):
     """
-    Compiles a rust crate using cargo. This crate needs to use an
-    'OctoCargo.toml' file instead of the normal 'Cargo.toml' file
+    Compiles a rust crate using cargo.
     :param config: The configuration to use while compiling
     :return: None
     """
@@ -37,7 +36,8 @@ def compile_static_library(config: Config) -> str:
     current = os.getcwd()
     os.chdir(config.source)
 
-    generate_cargo_toml(config)
+    validate_cargo_toml_file()
+    inject_octolib_into_cargo_toml(config)
     crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
 
     target_triple = get_rust_target_triple(config.arch)
@@ -62,26 +62,69 @@ def compile_static_library(config: Config) -> str:
         sys.exit(1)
 
     os.rename(output, os.path.join(current, libname))
-    cleanup(["leon.json", "Cargo.toml"], config)
+    cleanup(["leon.json"], config)
 
     os.chdir(current)
     return libname
 
 
-def generate_cargo_toml(config: Config):
+def validate_cargo_toml_file():
     """
-    Generates a Cargo.toml file from the crate's OctoCargo.toml file
+    Makes sure that the Cargo.toml file is valid
+    :return: None
+    """
+    if not os.path.isfile("Cargo.toml"):
+        print("Missing Cargo.toml file")
+        sys.exit(1)
+
+    with open("Cargo.toml", 'r') as cargo_toml_file:
+        try:
+            cargo_toml = toml.loads(cargo_toml_file.read())
+        except toml.TomlDecodeError:
+            print("The Cargo.toml file is invalid")
+            sys.exit(1)
+
+    if "lib" not in cargo_toml \
+            or "crate-type" not in cargo_toml["lib"] \
+            or cargo_toml["lib"]["crate-type"] != ["staticlib"]:
+        print("The project's crate type is not set to ['staticlib']")
+        print("Please change the crate type to ['staticlib']")
+        sys.exit(1)
+
+
+def inject_octolib_into_cargo_toml(config: Config):
+    """
+    Injects a dependency for the octolib crate into the project's
+    Cargo.toml file
     :param config: The config to use while compiling
     :return: None
     """
 
-    shutil.copyfile("OctoCargo.toml", "Cargo.toml")
+    with open("Cargo.toml", 'r') as cargo_toml_file:
+        cargo_toml = toml.loads(cargo_toml_file.read())
 
-    with open("Cargo.toml", 'a') as octocargo:
-        octocargo.write(
-            # "core = { path = \"" + config.libcore + "\" }\n" +
-            "octolib = { path = \"" + config.octolib + "\" }"
-        )
+    if "dependencies" not in cargo_toml:
+        cargo_toml["dependencies"] = {}
+    if "octolib" not in cargo_toml["dependencies"]:
+        cargo_toml["dependencies"]["octolib"] = {}
+
+    octolib_version = get_octolib_version(config)
+    cargo_toml["dependencies"]["octolib"]["path"] = config.octolib
+    cargo_toml["dependencies"]["octolib"]["version"] = octolib_version
+
+    with open("Cargo.toml", 'w') as cargo_toml_file:
+        cargo_toml_file.write(toml.dumps(cargo_toml))
+
+
+def get_octolib_version(config: Config) -> str:
+    """
+    Retrieves the version of the currently installed octolib crate
+    :param config: The configuration used when compiling
+    :return: The version string of the octolib crate
+    """
+    with open(os.path.join(config.octolib, "Cargo.toml"), 'r') as f:
+        cargo_toml = toml.loads(f.read())
+        return cargo_toml["package"]["version"]
 
 
 def read_crate_name_from_cargo_toml(cargo_toml: str) -> str:

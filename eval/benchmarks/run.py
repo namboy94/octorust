@@ -208,7 +208,7 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
     for program in os.listdir(benchmark_path):
         program_path = os.path.join(benchmark_path, program)
 
-        cargo_toml = os.path.join(program_path, "OctoCargo.toml")
+        cargo_toml = os.path.join(program_path, "Cargo.toml")
 
         if os.path.isdir(program_path) and os.path.isfile(cargo_toml):
 
