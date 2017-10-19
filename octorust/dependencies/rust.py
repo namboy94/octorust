@@ -18,7 +18,7 @@ def copy_rust_libs():
     shutil.copytree("octolib", octolib_dep)
 
 
-def compile_and_install_sparc_crates(sparc_gcc_path: str):
+def compile_and_install_crates(sparc_gcc_path: str):
     """
     Compiles the core and libc crates and installs them in the local rustup
     toolchain installation directory for the SPARC LEON architecture
@@ -27,34 +27,42 @@ def compile_and_install_sparc_crates(sparc_gcc_path: str):
     """
     os.chdir("octolib/deps/depcompile")
     generate_leon_specification(sparc_gcc_path)
-    Popen(["cargo", "rustc", "--target", "leon", "--release"]).wait()
+
+    for target in [
+        "leon",
+        "i686-unknown-linux-gnu",
+        "x86_64-unknown-linux-gnu"
+    ]:
+        Popen(["cargo", "rustc", "--target", target, "--release"]).wait()
+
+        rustup_output = check_output(["rustup", "show"]).decode("utf-8")
+        rustup_toolchain = rustup_output.rsplit("-----", 1)[1].strip()
+        rustup_toolchain = rustup_toolchain.split("\n")[0].split(" (default)")[0]
+        rustup_install_path = os.path.join(
+            os.path.expanduser("~"),
+            ".rustup",
+            "toolchains",
+            rustup_toolchain,
+            "lib/rustlib",
+            target,
+            "lib"
+        )
+
+        if not os.path.isdir(rustup_install_path):
+            os.makedirs(rustup_install_path)
+
+        for existing_dep in os.listdir(rustup_install_path):
+
+            for new_dep in ["libcore", "liblibc", "liballoc"]:
+                if new_dep in existing_dep:
+                    os.remove(os.path.join(rustup_install_path, existing_dep))
+
+        for dep in os.listdir("target/" + target + "/release/deps"):
+            if "debcompile" in dep:
+                continue
+            dep_path = os.path.join("target/" + target + "/release/deps", dep)
+            dest_path = os.path.join(rustup_install_path, dep)
+            os.rename(dep_path, dest_path)
+
     os.remove("leon.json")
-
-    rustup_output = check_output(["rustup", "show"]).decode("utf-8")
-    rustup_toolchain = rustup_output.rsplit("-----", 1)[1].strip()
-    rustup_toolchain = rustup_toolchain.split("\n")[0].split(" (default)")[0]
-    rustup_install_path = os.path.join(
-        os.path.expanduser("~"),
-        ".rustup",
-        "toolchains",
-        rustup_toolchain,
-        "lib/rustlib/leon/lib"
-    )
-
-    if not os.path.isdir(rustup_install_path):
-        os.makedirs(rustup_install_path)
-
-    for existing_dep in os.listdir(rustup_install_path):
-
-        for new_dep in ["libcore", "liblibc", "liballoc"]:
-            if new_dep in existing_dep:
-                os.remove(os.path.join(rustup_install_path, existing_dep))
-
-    for dep in os.listdir("target/leon/release/deps"):
-        if "debcompile" in dep:
-            continue
-        dep_path = os.path.join("target/leon/release/deps", dep)
-        dest_path = os.path.join(rustup_install_path, dep)
-        os.rename(dep_path, dest_path)
-
     os.chdir("../../..")
