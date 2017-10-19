@@ -1,9 +1,9 @@
 [package]
 name = "various_infect_methods"
 version = "1.0.0"
-authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
+authors = [ "Hermann Krumrey <hermann@krumreyh.com>",]
 
 [lib]
-crate-type = ["staticlib"]
+crate-type = [ "staticlib",]
 
 [dependencies]

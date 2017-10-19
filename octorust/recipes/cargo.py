@@ -37,35 +37,42 @@ def compile_static_library(config: Config) -> str:
     os.chdir(config.source)
 
     validate_cargo_toml_file()
-    inject_octolib_into_cargo_toml(config)
-    crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
+    old_cargo_toml = inject_octolib_into_cargo_toml(config)
 
-    target_triple = get_rust_target_triple(config.arch)
-    command = ["cargo", "rustc"]
-    if config.release:
-        command.append("--release")
-    command += ["--target", target_triple]
+    try:
+        crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
 
-    if config.arch == "leon":
-        generate_leon_specification(config.gcc)
-        command += ["--", "-C", "link-dead-code"]
+        target_triple = get_rust_target_triple(config.arch)
+        command = ["cargo", "rustc"]
+        if config.release:
+            command.append("--release")
+        command += ["--target", target_triple]
 
-    libname = "lib" + crate_name + ".a"
-    output_name = "release" if config.release else "debug"
-    output = os.path.join("target", target_triple, output_name, libname)
+        if config.arch == "leon":
+            generate_leon_specification(config.gcc)
+            command += ["--", "-C", "link-dead-code"]
 
-    print(command)
-    Popen(command).wait()
+        libname = "lib" + crate_name + ".a"
+        output_name = "release" if config.release else "debug"
+        output = os.path.join("target", target_triple, output_name, libname)
 
-    if not os.path.isfile(output):
-        print("Failed to compile the static rust library")
-        sys.exit(1)
+        print(command)
+        Popen(command).wait()
 
-    os.rename(output, os.path.join(current, libname))
-    cleanup(["leon.json"], config)
+        if not os.path.isfile(output):
+            print("Failed to compile the static rust library")
+            sys.exit(1)
 
-    os.chdir(current)
-    return libname
+        os.rename(output, os.path.join(current, libname))
+        cleanup(["leon.json"], config)
+
+        restore_cargo_toml(old_cargo_toml)
+        os.chdir(current)
+        return libname
+
+    except BaseException as e:
+        restore_cargo_toml(old_cargo_toml)
+        raise e
 
 
 def validate_cargo_toml_file():
@@ -92,16 +99,18 @@ def validate_cargo_toml_file():
         sys.exit(1)
 
 
-def inject_octolib_into_cargo_toml(config: Config):
+def inject_octolib_into_cargo_toml(config: Config) -> toml:
     """
     Injects a dependency for the octolib crate into the project's
     Cargo.toml file
     :param config: The config to use while compiling
-    :return: None
+    :return: A backup of the Cargo.toml content
     """
 
     with open("Cargo.toml", 'r') as cargo_toml_file:
-        cargo_toml = toml.loads(cargo_toml_file.read())
+        cargo_toml_content = cargo_toml_file.read()
+        cargo_toml = toml.loads(cargo_toml_content)
+        cargo_toml_backup = toml.loads(cargo_toml_content)
 
     if "dependencies" not in cargo_toml:
         cargo_toml["dependencies"] = {}
@@ -114,6 +123,19 @@ def inject_octolib_into_cargo_toml(config: Config):
 
     with open("Cargo.toml", 'w') as cargo_toml_file:
         cargo_toml_file.write(toml.dumps(cargo_toml))
+
+    return cargo_toml_backup
+
+
+def restore_cargo_toml(toml_backup: toml):
+    """
+    Writes the old Cargo.toml data back to the Cargo.toml file
+    :param toml_backup: The previous Cargo.toml data
+    :return: None
+    """
+
+    with open("Cargo.toml", "w") as f:
+        f.write(toml.dumps(toml_backup))
 
 
 def get_octolib_version(config: Config) -> str:

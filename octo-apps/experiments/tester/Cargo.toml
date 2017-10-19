@@ -6,6 +6,4 @@ authors = [ "Hermann Krumrey <hermann@krumreyh.com>",]
 [lib]
 crate-type = [ "staticlib",]
 
-[dependencies.octolib]
-path = "/home/hermann/.octorust/octolib"
-version = "0.1.0"
+[dependencies]
