@@ -48,6 +48,17 @@ impl Constraints {
         }
     }
 
+    /// Merges a constraints_t struct with this one
+    ///
+    /// # Arguments
+    ///
+    /// * `to_merge` - The constraints_t struct to merge with this Constraints struct
+    pub fn merge_constraints_t(&self, to_merge: octo_types::constraints_t) {
+        unsafe {
+            octo_agent::agent_constr_overwrite(self.constraints, to_merge);
+        }
+    }
+
     /// Sets the amount of processing elements of this constraint
     ///
     /// # Arguments
