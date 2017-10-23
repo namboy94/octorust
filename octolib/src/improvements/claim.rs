@@ -14,7 +14,7 @@ use bindings::octo_tile;
 use bindings::octo_signal;
 use helper::printer::{print, print_one};
 use improvements::constraints::Constraints;
-use improvements::closure_wrapper::closure_handler;
+use improvements::closure_wrapper::execute_closure;
 use improvements::functions::reply_signal;
 
 /// The AgentClaim struct wraps around an agentclaim_t object to offer
@@ -151,7 +151,8 @@ impl AgentClaim {
                             &None => ptr::null_mut()
                         };
 
-                        octo_ilet::dual_ilet_init(ilets.offset(i), closure_handler, closure_ptr, param as *mut libc::c_void)
+                        octo_ilet::dual_ilet_init(
+                            ilets.offset(i), execute_closure, closure_ptr, param as *mut libc::c_void)
                     }
                     octo_proxy_claim::proxy_infect(proxy_claim, ilets.offset(0), pes as u32);
                     libc::free(ilets as *mut _ as *mut libc::c_void);

@@ -1,17 +1,17 @@
 #include <octopos.h>
 #include <stdio.h>
-#include <math.h>
 
 void main_ilet(claim_t claim) {
 
     int LIMIT = 1690000;
     int removed[1690000 - 2] = {};
+    int root = 1300;
 
     for (int i = 2; i < LIMIT; i++) {
         removed[i - 2] = 0;
     }
 
-    for (int i = 2; i < sqrt(LIMIT); i++) {
+    for (int i = 2; i < root; i++) {
         if (removed[i - 2] == 0) {
             printf("%d\n", i);
         }
@@ -20,7 +20,7 @@ void main_ilet(claim_t claim) {
         }
     }
 
-    for (int i = sqrt(LIMIT) + 1; i < LIMIT; i++) {
+    for (int i = root + 1; i < LIMIT; i++) {
         if (removed[i - 2] == 0) {
             printf("%d\n", i);
         }

@@ -6,7 +6,9 @@ class Primes {
 	    val LIMIT = 1690000;
 	    val removed = new Rail[Boolean](LIMIT - 2, false);
 
-	    val root = Int.operator_as(Math.sqrt(Double.implicit_operator_as(LIMIT)));
+	    val root = 1300
+	    //val root = Int.operator_as(Math.sqrt(Double.implicit_operator_as(LIMIT)));
+
 	    for (i in 2..root) {
 	        if (!removed(i - 2)) {
 	            Console.OUT.println(i);

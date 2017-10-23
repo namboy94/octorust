@@ -11,7 +11,7 @@ use octo_types::c_void;
 ///
 /// `closure_data` - The closure data
 /// `params` - Parameter for the closure function
-pub extern "C" fn closure_handler(closure_data: *mut c_void, params: *mut c_void) {
+pub extern "C" fn execute_closure(closure_data: *mut c_void, params: *mut c_void) {
     let closure: &mut &mut FnMut(*mut c_void) = unsafe { mem::transmute(closure_data) };
     closure(params);
 }
