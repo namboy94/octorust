@@ -269,8 +269,6 @@ extern {
     /// If this functions fails, the passed object will be invalid and <b>must not</b>
     /// be used any further!
     ///
-    /// # Note
-    ///
     /// When called with a ProxyAgentOctoClaim (via claim->asPAOC()), be aware that the reinvade changes the ucid,
     /// so the next time calling a function on the ProxyAgentOctoClaim, the application exits with an error message.
     /// See os::agent::ProxyAgentOctoClaim::reinvadeSameConstr() for more information about that.
