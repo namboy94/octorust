@@ -96,6 +96,7 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
 
     mode = []
 
+    no_source = False
     if source is not None and source.endswith(".rs"):
         print("Compiling using rustc")
         mode.append("compile_rustc")
@@ -108,12 +109,16 @@ def determine_mode(source: str, fetch_irtss: bool, run: bool) -> List[str]:
             os.path.isfile(os.path.join(source, "Cargo.toml")):
         print("Compiling using Cargo:")
         mode.append("compile_cargo")
+    else:
+        no_source = True
 
     if fetch_irtss:
         print("Fetching IRTSS:")
         mode.append("fetch_irtss")
 
     if len(mode) == 0:  # Undefined modes can't be used
+        if no_source:
+            print("WARNING: No valid project found to compile")
         print("Undefined Mode, please check your combination of arguments")
         sys.exit(1)
 

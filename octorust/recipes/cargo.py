@@ -40,8 +40,6 @@ def compile_static_library(config: Config) -> str:
     old_cargo_toml = inject_octolib_into_cargo_toml(config)
 
     try:
-        crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
-
         target_triple = get_rust_target_triple(config.arch)
         command = ["cargo", "rustc"]
         if config.release:
@@ -52,7 +50,8 @@ def compile_static_library(config: Config) -> str:
             generate_leon_specification(config.gcc)
             command += ["--", "-C", "link-dead-code"]
 
-        libname = "lib" + crate_name + ".a"
+        crate_name = read_crate_name_from_cargo_toml("Cargo.toml")
+        libname = "lib" + crate_name.replace("-", "_") + ".a"
         output_name = "release" if config.release else "debug"
         output = os.path.join("target", target_triple, output_name, libname)
 

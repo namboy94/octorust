@@ -1,0 +1,7 @@
+[package]
+name = "primes-naive"
+version = "1.0.0"
+authors = [ "Hermann Krumrey <hermann@krumreyh.com>",]
+
+[lib]
+crate-type = [ "staticlib",]
