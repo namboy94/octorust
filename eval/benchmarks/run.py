@@ -164,6 +164,7 @@ def compile_with_x10firm(path: str, avoid_recompile: bool = False) -> tuple:
     Popen([
         "x10firm",
         "-mtarget=i686-invasic-irtss",
+        "-O3",
         path, "-o", outfile
     ]).wait()
     return time.time() - compile_time, outfile
