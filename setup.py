@@ -1,6 +1,13 @@
 # imports
 import os
+import sys
 from setuptools import setup, find_packages
+
+if sys.version_info.major < 3:
+    print("Only python 3+ is supported")
+    sys.exit(1)
+
+# Only import python3 modules after checking that python 3 is used
 from octorust.dependencies.gcc import download_sparc_elf_gcc
 from octorust.dependencies.rust import copy_rust_libs
 from octorust.dependencies.rust import compile_and_install_crates
