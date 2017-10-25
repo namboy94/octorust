@@ -4,7 +4,7 @@ import os
 import time
 import shutil
 import argparse
-from subprocess import Popen
+from subprocess import Popen, check_output
 
 
 def parse_args() -> argparse.Namespace:
@@ -184,6 +184,8 @@ def run_benchmark(path: str, passes: int, use_median: bool = False) -> float:
         Popen([path]).wait()
         measurements.append(time.time() - start_time)
 
+    run_temci(path)
+
     if use_median:
         return measurements[int(passes / 2)]
     else:
@@ -287,6 +289,18 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
         "runtimes": runtimes,
         "file_sizes": file_sizes
     }
+
+
+def run_temci(executable: str, runs: int = 10):
+    if not os.path.isdir("temci_output"):
+        os.makedirs("temci_output")
+    output_file = os.path.join("temci_output", executable + ".yaml")
+    printed = check_output(
+        ["temci", "short", "exec", "-wd", executable, "--runs", str(runs),
+         "--out", output_file]
+    )
+    with open(os.path.join("temci_output", executable + ".txt"), 'w') as f:
+        f.write(printed)
 
 
 # noinspection PyUnresolvedReferences
