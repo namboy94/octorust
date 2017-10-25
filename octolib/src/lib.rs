@@ -36,5 +36,6 @@ use helper::printer::print;
     unsafe {
         bindings::octo_guest::shutdown(1);
     }
+    loop {}
 }
 #[no_mangle] pub extern "C" fn _Unwind_Resume(_ex_obj: *mut ()) { }
