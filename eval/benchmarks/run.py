@@ -296,12 +296,16 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
 def run_temci(executable: str, runs: int = 10):
     if not os.path.isdir("temci_output"):
         os.makedirs("temci_output")
-    output_file = os.path.join("temci_output", executable + ".yaml")
+
+    executable_name = os.path.basename(executable)
+    output_yaml_file = os.path.join("temci_output", executable_name + ".yaml")
+    output_txt_file = os.path.join("temci_output", executable_name + ".txt")
+
     printed = check_output(
         ["temci", "short", "exec", "-wd", executable, "--runs", str(runs),
-         "--out", output_file]
+         "--out", output_yaml_file]
     ).decode("utf-8")
-    with open(os.path.join("temci_output", executable + ".txt"), 'w') as f:
+    with open(output_txt_file, 'w') as f:
         f.write(printed)
 
 
