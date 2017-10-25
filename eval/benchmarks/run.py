@@ -180,13 +180,14 @@ def run_benchmark(path: str, passes: int, use_median: bool = False) -> float:
     :return: The mean or median runtime of the program
     """
     measurements = []
-    for x in range(0, passes):
-        start_time = time.time()
-        Popen([path]).wait()
-        measurements.append(time.time() - start_time)
+    # for x in range(0, passes):
+    #    start_time = time.time()
+    #    Popen([path]).wait()
+    #    measurements.append(time.time() - start_time)
 
-    run_temci(path)
+    run_temci(path, passes)
 
+    return 0.0;
     if use_median:
         return measurements[int(passes / 2)]
     else:
@@ -299,7 +300,7 @@ def run_temci(executable: str, runs: int = 10):
     printed = check_output(
         ["temci", "short", "exec", "-wd", executable, "--runs", str(runs),
          "--out", output_file]
-    )
+    ).decode("utf-8")
     with open(os.path.join("temci_output", executable + ".txt"), 'w') as f:
         f.write(printed)
 
