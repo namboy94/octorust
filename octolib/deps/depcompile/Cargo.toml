@@ -7,3 +7,4 @@ authors = ["Hermann Krumrey <hermann@krumreyh.com>"]
 core = { path = "deps/libcore" }
 libc = { path = "deps/libc", default-features = false }
 alloc = { path = "deps/liballoc", default-features = false }
+alloc_system = { path = "deps/liballoc_system", default-features = false }

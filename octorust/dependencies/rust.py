@@ -1,4 +1,5 @@
 import os
+import toml
 import shutil
 from subprocess import Popen, check_output
 from octorust.recipes.rust import generate_leon_specification
@@ -33,11 +34,28 @@ def compile_and_install_crates(sparc_gcc_path: str):
         "i686-unknown-linux-gnu",
         "x86_64-unknown-linux-gnu"
     ]:
+
+        # Ugly hack to keep liballoc and liballoc_system out for leon
+        if target == "leon":
+            shutil.copyfile("Cargo.toml", "Cargo.toml.backup")
+            with open("Cargo.toml", 'r') as f:
+                cargo_toml = toml.loads(f.read())
+            cargo_toml["dependencies"].pop("alloc")
+            cargo_toml["dependencies"].pop("alloc_system")
+            with open("Cargo.toml", 'w') as f:
+                f.write(toml.dumps(cargo_toml))
+
         Popen(["cargo", "rustc", "--target", target, "--release"]).wait()
+
+        if os.path.isfile("Cargo.toml.backup"):
+            if os.path.isfile("Cargo.toml"):
+                os.remove("Cargo.toml")
+            os.rename("Cargo.toml.backup", "Cargo.toml")
 
         rustup_output = check_output(["rustup", "show"]).decode("utf-8")
         rustup_toolchain = rustup_output.rsplit("-----", 1)[1].strip()
-        rustup_toolchain = rustup_toolchain.split("\n")[0].split(" (default)")[0]
+        rustup_toolchain = rustup_toolchain.split("\n")[0].split(
+            " (default)")[0]
         rustup_install_path = os.path.join(
             os.path.expanduser("~"),
             ".rustup",
@@ -53,9 +71,14 @@ def compile_and_install_crates(sparc_gcc_path: str):
 
         for existing_dep in os.listdir(rustup_install_path):
 
-            for new_dep in ["libcore", "liblibc", "liballoc"]:
+            for new_dep in ["libcore",
+                            "liblibc",
+                            "liballoc",
+                            "liballoc_system"]:
                 if new_dep in existing_dep:
-                    os.remove(os.path.join(rustup_install_path, existing_dep))
+                    to_delete = os.path.join(rustup_install_path, existing_dep)
+                    if os.path.isfile(to_delete):
+                        os.remove(to_delete)
 
         for dep in os.listdir("target/" + target + "/release/deps"):
             if "debcompile" in dep:
