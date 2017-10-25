@@ -78,8 +78,8 @@ def print_stats(title: str, stats: dict,
         # noinspection PyTypeChecker
         language_string = {
             "Rust": "\033[1;33m",
-            "Rust (Debug)": "\033[1;32m",
-            "Rust (Release)": "\033[1;33m",
+            "Rust(Debug)": "\033[1;32m",
+            "Rust(Release)": "\033[1;33m",
             "C": "\033[1;31m",
             "X10": "\033[1;35m"
         }[language] + language + "\033[0;0m"
@@ -118,8 +118,8 @@ def compile_with_octorust(path: str, language: str,
                  The time it took to compile the program, 
                  The path to the compiled executable file
     """
-
-    outfile = path + language + ".out"
+    proj_name = os.path.basename(os.path.dirname(path))
+    outfile = path + proj_name + language + ".out"
 
     if os.path.isfile(outfile) and avoid_recompile:
         return 0.0, outfile
@@ -154,8 +154,8 @@ def compile_with_x10firm(path: str, avoid_recompile: bool = False) -> tuple:
                  The time it took to compile the program, 
                  The path to the compiled executable file
     """
-
-    outfile = path + ".out"
+    proj_name = os.path.basename(os.path.dirname(path))
+    outfile = path + proj_name + ".out"
 
     if os.path.isfile(outfile) and avoid_recompile:
         return 0.0, outfile
@@ -221,7 +221,7 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
 
             if args.dual_rust_build:
                 for variant, optimized in {
-                    "Rust (Debug)": False, "Rust (Release)": True
+                    "Rust(Debug)": False, "Rust(Release)": True
                 }.items():
                     print(variant)
                     compile_time, executable = compile_with_octorust(
@@ -352,7 +352,7 @@ def main():
         compile_times = data["compile_times"]
         startup_runtimes = benchmark_data["startup"]["runtimes"]
 
-        lang_length = 22 if "Rust (Debug)" not in runtimes else 30
+        lang_length = 22 if "Rust(Debug)" not in runtimes else 30
 
         print("\033[1;36m" + benchmark + "\033[0;0m:\n")
         print_stats("Compile Times", compile_times, lang_length=lang_length)
