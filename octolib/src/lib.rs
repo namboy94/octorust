@@ -33,6 +33,8 @@ use helper::printer::print;
 #[lang = "eh_unwind_resume"] extern fn eh_unwind_resume() {}
 #[lang = "panic_fmt"] fn panic_fmt() -> ! {
     print("PANICKED!\n\0");
-    loop {}
+    unsafe {
+        bindings::octo_guest::shutdown(1);
+    }
 }
 #[no_mangle] pub extern "C" fn _Unwind_Resume(_ex_obj: *mut ()) { }

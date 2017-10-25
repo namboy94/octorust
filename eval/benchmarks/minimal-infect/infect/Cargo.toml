@@ -1,5 +1,5 @@
 [package]
-name = "garbage"
+name = "infect"
 version = "1.0.0"
 authors = [ "Hermann Krumrey <hermann@krumreyh.com>",]
 
