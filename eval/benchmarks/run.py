@@ -24,6 +24,9 @@ def parse_args() -> argparse.Namespace:
                         help="Recompiles Rust dependencies every time")
     parser.add_argument("-b", "--blacklist",
                         help="A comma-seperated list of programs to skip")
+    parser.add_argument("--show-exec", action="stroe_true",
+                        help="Shows the execution output instead of"
+                             "using temci")
     parser.add_argument("-k", "--keep-executables", action="store_true",
                         help="Stops the program from deleting the executable"
                              "files after executing them")
@@ -133,8 +136,12 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
         executable, opt_executable = \
             compiler_fn(program_path, language, args.avoid_recompile)
 
-        run_temci(executable, args.passes)
-        run_temci(opt_executable, args.passes)
+        if args.show_exec:
+            Popen(["./" + executable]).wait()
+            Popen(["./" + opt_executable]).wait()
+        else:
+            run_temci(executable, args.passes)
+            run_temci(opt_executable, args.passes)
 
         if not args.keep_executables:
             os.remove(executable)
