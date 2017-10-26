@@ -151,7 +151,8 @@ def run_temci(executable: str, runs: int):
     output_txt_file = os.path.join("temci_output", exec_name + ".txt")
 
     printed = check_output(
-        ["temci", "short", "exec", "-wd", executable, "--runs", str(runs),
+        ["temci", "short", "exec", "-wd", "./" + executable,
+         "--runs", str(runs),
          "--out", output_yaml_file]
     ).decode("utf-8")
     with open(output_txt_file, 'w') as f:
