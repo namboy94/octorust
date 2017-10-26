@@ -30,9 +30,11 @@ def compile_c_object(config: Config, target: str) -> str:
             "-nodefaultlibs",
             "-nostdlib",
             "-mcx16",
-            "-D__STDC_LIMIT_MACROS",
-            "-O3"
+            "-D__STDC_LIMIT_MACROS"
         ]
+
+        if config.release:
+            command.append("-O3")
 
     elif config.arch == "leon":
         command += ["-mcpu=v8", "-O3"]

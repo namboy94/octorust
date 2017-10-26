@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import yaml
 import math
 import argparse
@@ -33,13 +32,20 @@ def main():
             pass  # print(f.read())
 
         e_times = temci_yaml[0]["data"]["etime"]
-        print("mean:                " + str(calculate_mean(e_times)))
-        print("median:              " + str(calculate_median(e_times)))
-        print("MAD:                 " + str(calculate_median_absolute_deviation(e_times)))
-        print("mean max deviation:  " + str(calculate_maximum_absolute_deviation(e_times, True)))
-        print("median max deviation:" + str(calculate_maximum_absolute_deviation(e_times)))
-        print("mean std deviation:  " + str(calculate_standard_deviation(e_times, True)))
-        print("median std deviation:" + str(calculate_standard_deviation(e_times)))
+
+        mean = round(calculate_mean(e_times), 4)
+        median = round(calculate_median(e_times), 4)
+        std_dev = round(calculate_standard_deviation(e_times, True), 4)
+        mad = round(calculate_median_absolute_deviation(e_times), 4)
+
+        print("\033[1;31m", end="")
+        print(
+            str(mean).ljust(6, "0") + " & " +
+            str(median).ljust(4, "0") + " & " +
+            str(std_dev).ljust(6, "0") + " & " +
+            str(mad).ljust(6, "0") + "\033[0;0m"
+        )
+        print()
 
 
 def calculate_mean(data: list) -> float:

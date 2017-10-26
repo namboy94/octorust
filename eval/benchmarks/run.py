@@ -187,7 +187,7 @@ def run_benchmark(path: str, passes: int, use_median: bool = False) -> float:
 
     run_temci(path, passes)
 
-    return 0.0;
+    return 0.0
     if use_median:
         return measurements[int(passes / 2)]
     else:
