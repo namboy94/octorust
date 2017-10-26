@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
                         help="Recompiles Rust dependencies every time")
     parser.add_argument("-b", "--blacklist",
                         help="A comma-seperated list of programs to skip")
-    parser.add_argument("--show-exec", action="stroe_true",
+    parser.add_argument("--show-exec", action="store_true",
                         help="Shows the execution output instead of"
                              "using temci")
     parser.add_argument("-k", "--keep-executables", action="store_true",
