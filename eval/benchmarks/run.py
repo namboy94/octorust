@@ -36,11 +36,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def compile_with_octorust(path: str, language: str,
+def compile_with_octorust(path: str, executable_path: str, language: str,
                           avoid_recompile: bool = False) -> tuple:
     """
     Compiles a C or Rust Program using octorust
     :param path: The path to the C or Rust Program
+    :param executable_path: Path to the directory containing executables
     :param language: The language of the Program
     :param avoid_recompile: Avoids recompiling the program
                             if an executable already exists
@@ -49,7 +50,7 @@ def compile_with_octorust(path: str, language: str,
                  The path to the optimized compiled executable file
     """
     proj_name = os.path.basename(os.path.dirname(path))
-    outfile = proj_name + "-" + language
+    outfile = os.path.join(executable_path, proj_name + "-" + language)
     outfile_opt = outfile + "-opt"
 
     if os.path.isfile(outfile) and os.path.isfile(outfile_opt) and \
@@ -67,11 +68,12 @@ def compile_with_octorust(path: str, language: str,
     return outfile, outfile_opt
 
 
-def compile_with_x10firm(path: str, language: str,
+def compile_with_x10firm(path: str, executable_path: str, language: str,
                          avoid_recompile: bool = False) -> tuple:
     """
     Compiles an X10 program using x10firm
     :param path: The path to the file to compile
+    :param executable_path: Path to the directory containing executables
     :param language: The language, should always be X10
     :param avoid_recompile: Avoids recompiling the program
                             if an executable already exists
@@ -80,7 +82,7 @@ def compile_with_x10firm(path: str, language: str,
                  The path to the optimized compiled executable file
     """
     proj_name = os.path.basename(os.path.dirname(path))
-    outfile = proj_name + "-" + language
+    outfile = os.path.join(executable_path, proj_name + "-" + language)
     outfile_opt = outfile + "-opt"
 
     if os.path.isfile(outfile) and avoid_recompile:
@@ -99,11 +101,14 @@ def compile_with_x10firm(path: str, language: str,
     
 
 # noinspection PyUnresolvedReferences
-def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
+def run_benchmark_collection(benchmark_path: str, executable_path: str,
+                             args: argparse.Namespace):
     """
     Runs all benchmarks found in the provided directory
     :param benchmark_path: The directory in which the individual
                            benchmarks are located
+    :param executable_path: Path to the directory containing the executable
+                            files for this benchmark
     :param args: The CLI arguments
     :return: None
     """
@@ -134,11 +139,12 @@ def run_benchmark_collection(benchmark_path: str, args: argparse.Namespace):
             continue
 
         executable, opt_executable = \
-            compiler_fn(program_path, language, args.avoid_recompile)
+            compiler_fn(program_path, executable_path, language,
+                        args.avoid_recompile)
 
         if args.show_exec:
-            Popen(["./" + executable]).wait()
-            Popen(["./" + opt_executable]).wait()
+            Popen([executable]).wait()
+            Popen([opt_executable]).wait()
         else:
             run_temci(executable, args.passes)
             run_temci(opt_executable, args.passes)
@@ -193,11 +199,15 @@ def main():
     for benchmark in benchmarks:
         print("Benchmark " + benchmark)
         benchmark_path = os.path.join(directory, benchmark)
+        executable_path = os.path.join("build", benchmark)
+
+        if not os.path.isdir(executable_path):
+            os.makedirs(executable_path)
 
         if not os.path.isdir(benchmark_path):
             continue
         else:
-            run_benchmark_collection(benchmark_path, args)
+            run_benchmark_collection(benchmark_path, executable_path, args)
 
     print("Done")
 
