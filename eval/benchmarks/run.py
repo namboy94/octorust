@@ -85,7 +85,7 @@ def compile_with_x10firm(path: str, language: str,
 
     command = [
         "x10firm",
-        "-mtarget=1686-invasic-irtss",
+        "-mtarget=i686-invasic-irtss",
         path
     ]
 
