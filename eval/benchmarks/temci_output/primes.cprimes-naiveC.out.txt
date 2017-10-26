@@ -1,6 +1,0 @@
-Make the 1 discarded benchmarks 
-/home/virtual/Documents/octorust/eval/benchmarks/primes-naive/primes.cprimes-naiveC.out (   50 single benchmarks)
-	 etime              mean =         4.44(1), deviation = 1.12%
-	 max_res_set        mean =        3.48(3)k, deviation = 0.80%
-	 stime              mean =    2(16).(200)m, deviation = 32.53%
-	 utime              mean =         3.92(6), deviation = 0.85%
