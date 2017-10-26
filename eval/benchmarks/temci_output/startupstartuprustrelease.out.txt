@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+/home/virtual/Documents/octorust/eval/benchmarks/startup/startupstartuprustrelease.out (   50 single benchmarks)
+	 etime              mean =    47(7).(000)m, deviation = 3.67%
+	 max_res_set        mean =        3.48(8)k, deviation = 1.20%
+	 stime              mean =    17(8).(800)m, deviation = 11.61%
+	 utime              mean =     5(8).(200)m, deviation = 26.10%

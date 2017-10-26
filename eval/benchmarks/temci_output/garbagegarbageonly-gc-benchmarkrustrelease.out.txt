@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+/home/virtual/Documents/octorust/eval/benchmarks/garbageonly-gc-benchmark/garbagegarbageonly-gc-benchmarkrustrelease.out (   50 single benchmarks)
+	 etime              mean =         5.55(4), deviation = 0.51%
+	 max_res_set        mean =        3.54(9)k, deviation = 1.39%
+	 stime              mean =         1.7(29), deviation = 4.31%
+	 utime              mean =         3.5(83), deviation = 2.13%

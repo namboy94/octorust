@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+/home/virtual/Documents/octorust/eval/benchmarks/primes-eratosthenes/primesprimes-eratosthenesrustrelease.out (   50 single benchmarks)
+	 etime              mean =    59(1).(800)m, deviation = 2.52%
+	 max_res_set        mean =        6.77(9)k, deviation = 0.70%
+	 stime              mean =    22(4).(800)m, deviation = 9.26%
+	 utime              mean =    11(6).(800)m, deviation = 15.92%
