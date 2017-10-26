@@ -10,7 +10,7 @@ use octolib::improvements::claim::AgentClaim;
 #[no_mangle]
 pub extern "C" fn rust_main_ilet(claim: u8) {
 
-    let pes = 1;
+    let pes = 10;
     let limit = 500000;
     let mut prime_array = [false; 500000 - 2];
 
