@@ -24,12 +24,6 @@ def parse_args() -> argparse.Namespace:
                         help="Recompiles Rust dependencies every time")
     parser.add_argument("-b", "--blacklist",
                         help="A comma-seperated list of programs to skip")
-    parser.add_argument("--use-median", action="store_true",
-                        help="Uses the median instead of the mean when"
-                             "averaging runtimes")
-    parser.add_argument("--dual-rust-build", action="store_true",
-                        help="Compiles both a debug and a release version of "
-                             "rust programs")
     parser.add_argument("-k", "--keep-executables", action="store_true",
                         help="Stops the program from deleting the executable"
                              "files after executing them")
@@ -53,7 +47,7 @@ def compile_with_octorust(path: str, language: str,
     """
     proj_name = os.path.basename(os.path.dirname(path))
     outfile = proj_name + "-" + language
-    outfile_opt = proj_name + "-opt"
+    outfile_opt = outfile + "-opt"
 
     if os.path.isfile(outfile) and os.path.isfile(outfile_opt) and \
             avoid_recompile:
@@ -84,7 +78,7 @@ def compile_with_x10firm(path: str, language: str,
     """
     proj_name = os.path.basename(os.path.dirname(path))
     outfile = proj_name + "-" + language
-    outfile_opt = proj_name + "-opt"
+    outfile_opt = outfile + "-opt"
 
     if os.path.isfile(outfile) and avoid_recompile:
         return outfile, outfile_opt
