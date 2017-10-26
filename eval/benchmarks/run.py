@@ -27,6 +27,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--show-exec", action="store_true",
                         help="Shows the execution output instead of"
                              "using temci")
+    parser.add_argument("--no-exec", action="store_true",
+                        help="Disables executing the programs")
     parser.add_argument("-k", "--keep-executables", action="store_true",
                         help="Stops the program from deleting the executable"
                              "files after executing them")
@@ -142,16 +144,17 @@ def run_benchmark_collection(benchmark_path: str, executable_path: str,
             compiler_fn(program_path, executable_path, language,
                         args.avoid_recompile)
 
-        if args.show_exec:
-            Popen([executable]).wait()
-            Popen([opt_executable]).wait()
-        else:
-            run_temci(executable, args.passes)
-            run_temci(opt_executable, args.passes)
+        if not args.no_exec:
+            if args.show_exec:
+                Popen([executable]).wait()
+                Popen([opt_executable]).wait()
+            else:
+                run_temci(executable, args.passes)
+                run_temci(opt_executable, args.passes)
 
-        if not args.keep_executables:
-            os.remove(executable)
-            os.remove(opt_executable)
+            if not args.keep_executables:
+                os.remove(executable)
+                os.remove(opt_executable)
 
 
 def run_temci(executable: str, runs: int):
