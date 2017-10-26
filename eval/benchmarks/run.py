@@ -182,7 +182,9 @@ def main():
         "startup",
         "primes-naive",
         "primes-eratosthenes",
-        "garbageonly-gc-benchmark"
+        "primes-parallel",
+        "garbageonly-gc-benchmark",
+        "minimal-infect"
     ]
 
     if args.blacklist is not None:
