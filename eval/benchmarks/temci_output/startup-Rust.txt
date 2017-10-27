@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/startup/startup-Rust (   50 single benchmarks)
+	 etime              mean =    38(2).(000)m, deviation = 3.59%
+	 max_res_set        mean =        3.48(8)k, deviation = 1.02%
+	 stime              mean =    27(6).(600)m, deviation = 12.20%
+	 utime              mean =     6(7).(200)m, deviation = 22.28%

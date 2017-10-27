@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/primes-naive/primes-naive-X10-opt (   50 single benchmarks)
+	 etime              mean =         5.9(69), deviation = 1.19%
+	 max_res_set        mean =      133.67(2)k, deviation = 0.03%
+	 stime              mean =         2.3(83), deviation = 3.41%
+	 utime              mean =         4.9(13), deviation = 1.91%

@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/primes-naive/primes-naive-Rust (   50 single benchmarks)
+	 etime              mean =        61.6(46), deviation = 0.46%
+	 max_res_set        mean =        3.49(3)k, deviation = 1.08%
+	 stime              mean =    31(4).(000)m, deviation = 15.03%
+	 utime              mean =        61.3(05), deviation = 0.46%

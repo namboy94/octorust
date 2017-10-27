@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/minimal-infect/minimal-infect-Rust-opt (   50 single benchmarks)
+	 etime              mean =    37(7).(800)m, deviation = 2.77%
+	 max_res_set        mean =        3.62(7)k, deviation = 0.99%
+	 stime              mean =    28(7).(800)m, deviation = 7.26%
+	 utime              mean =     6(6).(200)m, deviation = 22.38%

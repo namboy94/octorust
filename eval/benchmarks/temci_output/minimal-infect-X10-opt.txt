@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/minimal-infect/minimal-infect-X10-opt (   50 single benchmarks)
+	 etime              mean =         1.74(6), deviation = 1.43%
+	 max_res_set        mean =      133.5(60)k, deviation = 0.04%
+	 stime              mean =         2.3(52), deviation = 2.34%
+	 utime              mean =    71(9).(800)m, deviation = 6.76%

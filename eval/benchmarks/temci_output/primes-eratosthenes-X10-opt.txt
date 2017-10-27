@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/primes-eratosthenes/primes-eratosthenes-X10-opt (   50 single benchmarks)
+	 etime              mean =         1.98(9), deviation = 1.36%
+	 max_res_set        mean =      145.53(8)k, deviation = 0.03%
+	 stime              mean =         2.4(36), deviation = 2.17%
+	 utime              mean =    90(3).(200)m, deviation = 5.08%

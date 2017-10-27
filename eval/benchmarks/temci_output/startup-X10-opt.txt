@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/startup/startup-X10-opt (   50 single benchmarks)
+	 etime              mean =         1.75(1), deviation = 1.32%
+	 max_res_set        mean =      133.01(4)k, deviation = 0.03%
+	 stime              mean =         2.3(66), deviation = 2.23%
+	 utime              mean =    71(5).(200)m, deviation = 6.47%
