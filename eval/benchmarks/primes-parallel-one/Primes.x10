@@ -8,7 +8,7 @@ import invasic.Claim;
 class Primes {
     public static def main(Array[String]) {
 
-        val pes = 10;
+        val pes = 1;
         val limit = 500000;
 
         val ilet = (id: IncarnationID ):Rail[Boolean] => {

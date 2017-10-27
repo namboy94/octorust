@@ -1,7 +1,7 @@
 #include <octopos.h>
 #include <stdio.h>
 
-#define PES 10
+#define PES 1
 #define LIMIT 500000
 
 int primes_array[LIMIT - 2];

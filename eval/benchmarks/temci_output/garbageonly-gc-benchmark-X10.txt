@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/garbageonly-gc-benchmark/garbageonly-gc-benchmark-X10 (   50 single benchmarks)
+	 etime              mean =       339.(345), deviation = 0.69%
+	 max_res_set        mean =      191.60(6)k, deviation = 0.02%
+	 stime              mean =     62(3).(905), deviation = 1.08%
+	 utime              mean =       341.(447), deviation = 0.90%
