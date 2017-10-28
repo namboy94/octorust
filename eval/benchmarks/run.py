@@ -191,7 +191,8 @@ def main():
         "startup",
         "primes-naive",
         "primes-eratosthenes",
-        "primes-parallel",
+        "primes-parallel-one",
+        "primes-parallel-eight",
         "garbageonly-gc-benchmark",
         "minimal-infect"
     ]

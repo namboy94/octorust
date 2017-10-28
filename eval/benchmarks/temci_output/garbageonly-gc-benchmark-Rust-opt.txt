@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/garbageonly-gc-benchmark/garbageonly-gc-benchmark-Rust-opt (   50 single benchmarks)
+	 etime              mean =         5.10(2), deviation = 0.50%
+	 max_res_set        mean =        3.53(9)k, deviation = 1.18%
+	 stime              mean =         1.5(82), deviation = 4.33%
+	 utime              mean =         3.4(98), deviation = 1.97%

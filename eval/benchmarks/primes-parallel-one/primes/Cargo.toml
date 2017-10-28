@@ -1,0 +1,7 @@
+[lib]
+crate-type = [ "staticlib",]
+
+[package]
+authors = [ "Hermann Krumrey <hermann@krumreyh.com>",]
+name = "primes-parallel"
+version = "1.0.0"
