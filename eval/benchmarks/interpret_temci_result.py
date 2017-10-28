@@ -28,21 +28,23 @@ def main():
         with open(temci_yaml, 'r') as f:
             temci_yaml = yaml.load(f)
 
-        with open(txt_file, 'r') as f:
-            pass  # print(f.read())
+        #with open(txt_file, 'r') as f:
+        #    pass  # print(f.read())
 
         e_times = temci_yaml[0]["data"]["etime"]
 
         mean = round(calculate_mean(e_times), 4)
         median = round(calculate_median(e_times), 4)
-        std_dev = round(calculate_standard_deviation(e_times, True), 4)
+        std_dev = round(calculate_standard_deviation(e_times), 4)
+        variation_coefficient = round(calculate_empirical_variation_coefficient(e_times, True), 4)
         mad = round(calculate_median_absolute_deviation(e_times), 4)
 
         print("\033[1;31m", end="")
         print(
             str(mean).ljust(6, "0") + " & " +
-            str(median).ljust(4, "0") + " & " +
+            str(median).ljust(6, "0") + " & " +
             str(std_dev).ljust(6, "0") + " & " +
+            str(variation_coefficient).ljust(6, "0") + "\\% & " +
             str(mad).ljust(6, "0") + "\033[0;0m"
         )
         print()
@@ -75,11 +77,18 @@ def calculate_maximum_absolute_deviation(data: list, use_mean: bool = False) \
     return max(map(lambda x: abs(x - average), data))
 
 
-def calculate_standard_deviation(data: list, use_mean: bool = False) -> float:
+def calculate_standard_deviation(data: list) -> float:
 
-    average = calculate_mean(data) if use_mean else calculate_median(data)
+    average = calculate_mean(data)
     new = list(map(lambda x: (x - average) ** 2, data))
-    return math.sqrt(calculate_mean(new) if use_mean else calculate_median(new))
+    return math.sqrt(sum(new) / (len(new) - 1))
+
+
+def calculate_empirical_variation_coefficient(data: list, percentage: bool = False) -> float:
+
+    std_dev = calculate_standard_deviation(data)
+    var_co = std_dev / calculate_mean(data)
+    return var_co if not percentage else var_co * 100
 
 
 if __name__ == "__main__":
