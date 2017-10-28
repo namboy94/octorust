@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/primes-parallel-one/primes-parallel-one-X10-opt (   50 single benchmarks)
+	 etime              mean =        31.4(58), deviation = 1.32%
+	 max_res_set        mean =      138.85(2)k, deviation = 0.03%
+	 stime              mean =         2.3(57), deviation = 3.11%
+	 utime              mean =        30.4(17), deviation = 1.42%

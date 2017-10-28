@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/primes-parallel-one/primes-parallel-one-Rust-opt (   50 single benchmarks)
+	 etime              mean =        37.(621), deviation = 1.75%
+	 max_res_set        mean =        4.11(0)k, deviation = 0.43%
+	 stime              mean =    33(4).(800)m, deviation = 13.12%
+	 utime              mean =        37.(263), deviation = 1.77%

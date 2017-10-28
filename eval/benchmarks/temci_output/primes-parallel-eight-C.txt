@@ -1,0 +1,6 @@
+Make the 1 discarded benchmarks 
+./build/primes-parallel-eight/primes-parallel-eight-C (   50 single benchmarks)
+	 etime              mean =        13.8(14), deviation = 0.67%
+	 max_res_set        mean =        7.51(0)k, deviation = 0.37%
+	 stime              mean =    30(1).(400)m, deviation = 11.16%
+	 utime              mean =        44.5(65), deviation = 0.25%
