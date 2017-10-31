@@ -12,7 +12,8 @@ class Infect {
 	        Console.OUT.println("Hello World!");
 	    };
 
-	    val constraints = new PEQuantity(4, 4) && TileSharing.WITH_OTHER_APPLICATIONS;
+	    val constraints = new PEQuantity(4, 4)
+	        && TileSharing.WITH_OTHER_APPLICATIONS;
         val claim = Claim.invade(constraints);
         claim.infect(ilet);
         claim.retreat();

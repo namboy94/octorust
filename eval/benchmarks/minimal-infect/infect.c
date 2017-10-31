@@ -26,7 +26,10 @@ void main_ilet(claim_t claim_id) {
     for (int tile=0; tile < get_tile_count(); tile++) {
         int pes=agent_claim_get_pecount_tile_type(claim,  tile, 0);
         if (pes) {
-            proxy_claim_t p_claim = agent_claim_get_proxyclaim_tile_type(claim, tile, 0);
+            proxy_claim_t p_claim = 
+                agent_claim_get_proxyclaim_tile_type(
+                    claim, tile, 0
+                );
 
             simple_ilet ilets[pes];
             for (int i = 0; i < pes; ++i) {
