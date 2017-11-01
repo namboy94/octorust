@@ -1,5 +1,6 @@
 #include <octopos.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void main_ilet(claim_t claim) {
@@ -8,8 +9,6 @@ void main_ilet(claim_t claim) {
     int ITERATIONS = 1000000;
 
     for (int i = 0; i < ITERATIONS; i++) {
-
-    char (*arr)[256]=malloc(512*256);
 
         int *array = (int*) malloc(GARBAGE_SIZE * sizeof(int));
         for (int j = 0; j < GARBAGE_SIZE; j++) {

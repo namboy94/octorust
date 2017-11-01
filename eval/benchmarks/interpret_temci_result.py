@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-3
+#!/usr/bin/env python3
 import os
 import yaml
 import math
@@ -28,24 +27,19 @@ def main():
         with open(temci_yaml, 'r') as f:
             temci_yaml = yaml.load(f)
 
-        #with open(txt_file, 'r') as f:
-        #    pass  # print(f.read())
-
         e_times = temci_yaml[0]["data"]["etime"]
 
         mean = round(calculate_mean(e_times), 4)
         median = round(calculate_median(e_times), 4)
         std_dev = round(calculate_standard_deviation(e_times), 4)
-        variation_coefficient = round(calculate_empirical_variation_coefficient(e_times, True), 4)
-        mad = round(calculate_median_absolute_deviation(e_times), 4)
+        variation_coefficient = round(calculate_variation_coefficient(e_times, True), 4)
 
         print("\033[1;31m", end="")
         print(
             str(mean).ljust(6, "0") + " & " +
             str(median).ljust(6, "0") + " & " +
             str(std_dev).ljust(6, "0") + " & " +
-            str(variation_coefficient).ljust(6, "0") + "\\% & " +
-            str(mad).ljust(6, "0") + "\033[0;0m"
+            str(variation_coefficient).ljust(6, "0") + "\\% \033[0;0m"
         )
         print()
 
@@ -63,20 +57,6 @@ def calculate_median(data: list) -> float:
         return sorted(data)[int(len(data) / 2)]
 
 
-def calculate_median_absolute_deviation(data: list) -> float:
-    median = calculate_median(data)
-    new = list(map(lambda x: abs(x - median), data))
-    return calculate_median(new)
-
-
-def calculate_maximum_absolute_deviation(data: list, use_mean: bool = False) \
-        -> float:
-
-    average = calculate_mean(data) if use_mean else calculate_median(data)
-    # noinspection PyTypeChecker
-    return max(map(lambda x: abs(x - average), data))
-
-
 def calculate_standard_deviation(data: list) -> float:
 
     average = calculate_mean(data)
@@ -84,7 +64,7 @@ def calculate_standard_deviation(data: list) -> float:
     return math.sqrt(sum(new) / (len(new) - 1))
 
 
-def calculate_empirical_variation_coefficient(data: list, percentage: bool = False) -> float:
+def calculate_variation_coefficient(data: list, percentage: bool = False) -> float:
 
     std_dev = calculate_standard_deviation(data)
     var_co = std_dev / calculate_mean(data)

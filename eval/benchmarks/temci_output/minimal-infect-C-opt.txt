@@ -1,6 +1,6 @@
 Make the 1 discarded benchmarks 
 ./build/minimal-infect/minimal-infect-C-opt (   50 single benchmarks)
-	 etime              mean =    38(4).(800)m, deviation = 4.48%
-	 max_res_set        mean =        3.62(3)k, deviation = 0.79%
-	 stime              mean =    34(1).(000)m, deviation = 6.67%
-	 utime              mean =     1(9).(200)m, deviation = 51.92%
+	 etime              mean =    38(1).(000)m, deviation = 3.94%
+	 max_res_set        mean =        3.63(6)k, deviation = 1.26%
+	 stime              mean =    28(9).(000)m, deviation = 8.57%
+	 utime              mean =     6(8).(200)m, deviation = 22.27%

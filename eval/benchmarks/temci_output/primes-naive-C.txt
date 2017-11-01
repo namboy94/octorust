@@ -1,6 +1,6 @@
 Make the 1 discarded benchmarks 
 ./build/primes-naive/primes-naive-C (   50 single benchmarks)
-	 etime              mean =         4.20(9), deviation = 0.51%
-	 max_res_set        mean =        3.49(0)k, deviation = 1.37%
-	 stime              mean =    29(8).(000)m, deviation = 12.04%
-	 utime              mean =         3.88(4), deviation = 0.95%
+	 etime              mean =         4.69(0), deviation = 0.66%
+	 max_res_set        mean =        3.49(0)k, deviation = 1.17%
+	 stime              mean =    28(9).(200)m, deviation = 14.75%
+	 utime              mean =         4.35(5), deviation = 0.69%

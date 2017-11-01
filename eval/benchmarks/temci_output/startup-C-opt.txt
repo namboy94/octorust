@@ -1,6 +1,6 @@
 Make the 1 discarded benchmarks 
 ./build/startup/startup-C-opt (   50 single benchmarks)
-	 etime              mean =    39(0).(000)m, deviation = 5.28%
-	 max_res_set        mean =        3.48(4)k, deviation = 0.81%
-	 stime              mean =    30(5).(600)m, deviation = 10.62%
-	 utime              mean =     6(7).(400)m, deviation = 21.56%
+	 etime              mean =    38(5).(200)m, deviation = 4.38%
+	 max_res_set        mean =        3.48(2)k, deviation = 0.82%
+	 stime              mean =    28(4).(600)m, deviation = 10.64%
+	 utime              mean =     7(3).(400)m, deviation = 21.39%
