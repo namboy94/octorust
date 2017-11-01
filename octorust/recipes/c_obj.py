@@ -19,7 +19,7 @@ def compile_c_object(config: Config, target: str) -> str:
 
     if config.arch == "x86guest":
 
-        command += ["-mfpmath=sse", "-msse2", "-m32", "-O3"]
+        command += ["-mfpmath=sse", "-msse2", "-m32"]
 
     elif config.arch == "x64native":
 
@@ -33,11 +33,11 @@ def compile_c_object(config: Config, target: str) -> str:
             "-D__STDC_LIMIT_MACROS"
         ]
 
-        if config.release:
-            command.append("-O3")
-
     elif config.arch == "leon":
-        command += ["-mcpu=v8", "-O3"]
+        command += ["-mcpu=v8"]
+
+    if config.release:
+            command.append("-O3")
 
     command += [  # Same for all architectures
         "-nostdinc",
