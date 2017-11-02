@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import sys
 import yaml
 import math
 import argparse
@@ -10,12 +11,43 @@ def parse_args() -> str:
     parser = argparse.ArgumentParser()
     parser.add_argument("temci_output", action="store", nargs="+",
                         help="The temci output YAML file(s)")
+    parser.add_argument("--speedup", action="store_true")
     args = parser.parse_args()
+
+    if args.speedup:
+    	print_speedup()
+    	sys.exit(0)
+
     return args.temci_output
 
 
-def main():
+def print_speedup():
 
+	for lang in ["C", "Rust", "X10"]:
+		for variant in ["", "-opt"]:
+			with open("temci_output/primes-parallel-one-" + lang + variant + ".yaml", 'r') as f:
+				one = yaml.load(f)[0]["data"]["etime"]
+			with open("temci_output/primes-parallel-eight-" + lang + variant + ".yaml", 'r') as f:
+				eight = yaml.load(f)[0]["data"]["etime"]
+			
+			one_mean = calculate_mean(one)
+			one_median = calculate_median(one)
+			eight_mean = calculate_mean(eight)
+			eight_median = calculate_median(eight)
+
+			mean_speedup = one_mean / eight_mean
+			median_speedup = one_median / eight_median
+			mean_eff = mean_speedup / 8
+			median_eff = median_speedup / 8
+
+			print(lang + variant)
+			print(
+				str(round(mean_speedup, 4)) + " & " + str(round(median_speedup, 4)) + " & " + str(round(mean_eff, 4)) + " & " + str(round(median_eff, 4))
+			)
+			print()
+
+
+def main():
     for temci_yaml in parse_args():
 
         txt_file = temci_yaml.rsplit(".", 1)[0] + ".txt"
