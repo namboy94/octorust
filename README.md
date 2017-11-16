@@ -1,8 +1,13 @@
-# octorust
+# octorust [![pipeline status](https://gitlab.namibsun.net/namboy94/octorust/badges/master/pipeline.svg)](https://gitlab.namibsun.net/namboy94/octorust/commits/master)
+
+![Logo](resources/logo/logo-readme.png)
 
 `octorust` is a python application that makes use of `rustc`, `cargo` and `gcc`
 to compile applications written in rust for use in invasive Platforms
 utilizing OctoPOS/iRTSS.
+
+The program has been written in the course of my bachelor thesis, which can be
+found [here](https://pp.ipd.kit.edu/uploads/publikationen/krumrey17bachelorarbeit.pdf).
 
 # Installation
 

@@ -1,0 +1,3 @@
+logo.png is a modified version of the official Rust logo, which has been
+released under the Creative Commons Attribution License (CC-BY)
+(https://creativecommons.org/licenses/by/4.0/).
