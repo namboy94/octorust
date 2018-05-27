@@ -99,7 +99,7 @@ will be used. Once compiled, the `out` file will contain this program.
 ## Further Information
 
 * [Changelog](CHANGELOG)
-* [License](LICENSE)
+* [License (GPLv3)](LICENSE)
 * [Gitlab](https://gitlab.namibsun.net/kit/invasive-rust/octorust)
 * [Github](https://github.com/namboy94/octorust)
 * [Progstats](https://progstats.namibsun.net/projects/octorust)
