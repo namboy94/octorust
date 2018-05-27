@@ -1,11 +1,11 @@
 stages:
-  - mirror
+  - stats
 
-github_mirror:
-  stage: mirror
+gitstats:
+  stage: stats
   tags:
-    - github_namboy94_push
+    - python3
+    - gitstats
   script:
-    - git checkout master
-    - git pull
-    - git push git@github.com:namboy94/octorust.git master -f
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - gitstats-gen
