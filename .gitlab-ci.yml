@@ -6,6 +6,7 @@ gitstats:
   tags:
     - python3
     - gitstats
+    - progstats
   script:
     - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
     - gitstats-gen
